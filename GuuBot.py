@@ -162,7 +162,7 @@ async def on_message(message):
         #    await user.send(content=new_invite)
 
     if "nico" in message.content.lower():
-        message.channel.send(content=nico, embed=nico_embed)
+        await message.channel.send(content=nico, embed=nico_embed)
 
     if "nora" in message.content.lower():
         nora_select = random.randrange(0, 2)
