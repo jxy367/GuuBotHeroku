@@ -1,1 +1,1 @@
-worker: python GuuBot.py
+worker: py -3 GuuBot.py
