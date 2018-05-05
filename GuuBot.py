@@ -14,6 +14,7 @@ awoo = "Awoo.. Awoo.. Awoo.."
 woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
 boop = "Boop"
+conan = "At least the ice will melt..."
 
 # Guu Embeds #
 woo_embed = discord.Embed()
@@ -48,6 +49,9 @@ nora_embed1.set_image(url='http://i.imgur.com/sHlntIg.gif')
 nora_embed2 = discord.Embed()
 nora_embed2.set_image(url='https://orig00.deviantart.net/15ae/f/2016/184/8/c/rwby_chibi_episode_8_nora_s_inflation_by_bittyheart-da8mail.gif')
 
+conan_embed = discord.Embed()
+conan_embed.set_image(url='https://i.imgur.com/bFE5wR9.jpg')
+
 mr_dictionary = {}
 
 
@@ -69,6 +73,8 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
             return exactly_in(str1, str2[:index] + str2[index + len_str1:])
 
     return True
+
+
 
 
 @client.event
@@ -173,6 +179,9 @@ async def on_message(message):
         else:
             await message.channel.send(content=boop)
 
+    if "A secret makes a woman, woman." == message.content:
+        await message.channel.send(content=conan, embed=conan_embed)
+        
 @client.event
 async def on_member_join(member):
     global client
