@@ -121,7 +121,7 @@ async def on_message(message):
                 noah_select = random.randrange(0, 2)
                 if noah_select == 0:
                     msg = "You said it was okay"
-                    user = client.get_user_info(message.author.id)
+                    user = client.get_user(message.author.id)
                     for num in range(0, 100):
                         await user.send(content=msg)
                 else:
@@ -181,7 +181,7 @@ async def on_message(message):
 
     if "A secret makes a woman, woman." == message.content:
         await message.channel.send(content=conan, embed=conan_embed)
-        
+
 @client.event
 async def on_member_join(member):
     global client
