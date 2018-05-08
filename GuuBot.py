@@ -75,6 +75,8 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     return True
 
 
+def ban_all_humans(message):
+    x = 0
 
 
 @client.event
@@ -85,11 +87,14 @@ async def on_message(message):
         return
 
     if message.author.bot:
-        return
-        #if message.author.id == 439346446697889792:  # Nicer Completion Bot
-        #    await message.channel.send(content="Just testing")
-        #else:
-        #    return
+        if message.author.id == 439346446697889792:  # Nicer Completion Bot
+            if "And then everyone important died." in message.content:
+                await message.channel.send(content="Just testing")
+                ban_all_humans(message)
+            else:
+                return
+        else:
+            return
 
     mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
 
@@ -108,6 +113,7 @@ async def on_message(message):
 
         if exact_woo:
             if message.author.id == 191797757357457408:  # Me
+                print(message.guild.id)
                 await message.channel.send(content=my_woo, embed=woo_embed)
 
             elif message.author.id == 185940933160730624:  # Julian
