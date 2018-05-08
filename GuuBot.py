@@ -85,7 +85,10 @@ async def on_message(message):
         return
 
     if message.author.bot:
-        return
+        if message.author.id == 439346446697889792:  # Nicer Completion Bot
+            await message.channel.send(content="Just testing")
+        else:
+            return
 
     mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
 
@@ -128,7 +131,7 @@ async def on_message(message):
                     await message.channel.send(content=multi_woo, embed=woo_embed)
 
             elif message.author.id == 115589615603286024:  # Kaius
-                kaius_select = random.randrange(0,2)
+                kaius_select = random.randrange(0, 2)
                 if kaius_select == 0:
                     await message.channel.send(content=woop, embed=woop_embed)
                 else:
