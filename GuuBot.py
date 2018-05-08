@@ -85,10 +85,11 @@ async def on_message(message):
         return
 
     if message.author.bot:
-        if message.author.id == 439346446697889792:  # Nicer Completion Bot
-            await message.channel.send(content="Just testing")
-        else:
-            return
+        return
+        #if message.author.id == 439346446697889792:  # Nicer Completion Bot
+        #    await message.channel.send(content="Just testing")
+        #else:
+        #    return
 
     mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
 
