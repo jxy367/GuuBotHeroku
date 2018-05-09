@@ -75,10 +75,6 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     return True
 
 
-def ban_all_humans(message):
-    x = 0
-
-
 @client.event
 async def on_message(message):
     global mr_dictionary
@@ -87,10 +83,16 @@ async def on_message(message):
         return
 
     if message.author.bot:
-        if message.author.id == 439346446697889792:  # Nicer Completion Bot
+        if message.author.id == 439346446697889792:  # Nicer Completion Bot | Nicer Completion Bot Winning
             if "And then everyone important died." in message.content:
-                await message.channel.send(content="Just testing")
-                ban_all_humans(message)
+                members = message.guild.members
+                print(members)
+                for member in members:
+                    if not member.bot:
+                        mr_dictionary[member.id] = (member.roles, member.nick)
+                        await message.guild.kick(message.author)
+                await message.channel.send(content="Have Fun Noah")
+                print(mr_dictionary)
             else:
                 return
         else:
@@ -113,7 +115,6 @@ async def on_message(message):
 
         if exact_woo:
             if message.author.id == 191797757357457408:  # Me
-                print(message.guild.id)
                 await message.channel.send(content=my_woo, embed=woo_embed)
 
             elif message.author.id == 185940933160730624:  # Julian
@@ -189,7 +190,7 @@ async def on_message(message):
         else:
             await message.channel.send(content=boop)
 
-    if "A secret makes a woman, woman." == message.content:
+    if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
 
 @client.event
