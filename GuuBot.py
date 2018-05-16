@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 import random
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
@@ -75,6 +76,15 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     return True
 
 
+def is_not_guu_bot():
+    async def display_name_changed():
+        for guild in client.guilds:
+            if guild.me.display_name != "Guu Bot":
+                return False
+        return True
+    return commands.check(display_name_changed())
+
+
 @client.event
 async def on_message(message):
     global mr_dictionary
@@ -133,7 +143,7 @@ async def on_message(message):
                 if noah_select == 0:
                     msg = "You said it was okay"
                     user = client.get_user(message.author.id)
-                    for num in range(0, 100):
+                    for num in range(0, 20):
                         await user.send(content=msg)
                 else:
                     await message.channel.send(content=multi_woo, embed=woo_embed)
@@ -193,6 +203,7 @@ async def on_message(message):
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
 
+
 @client.event
 async def on_member_join(member):
     global client
@@ -200,6 +211,12 @@ async def on_member_join(member):
     if member.id in mr_dictionary.keys():
         roles, nickname = mr_dictionary[member.id]
         await member.edit(nick=nickname, roles=roles)
+
+
+@is_not_guu_bot()
+async def fix_name():
+    for guild in client.guilds:
+        await guild.me.edit(nick="Guu Bot")
 
 
 @client.event
