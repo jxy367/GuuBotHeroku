@@ -213,6 +213,7 @@ async def on_member_join(member):
         await member.edit(nick=nickname, roles=roles)
 
 
+@client.event
 @is_not_guu_bot()
 async def fix_name():
     print("Was not Guu Bot")
