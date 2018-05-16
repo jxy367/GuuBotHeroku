@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import random
+from datetime import datetime
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
@@ -15,6 +16,7 @@ awoo = "Awoo.. Awoo.. Awoo.."
 woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
 boop = "Boop"
+morning = "It's morning!"
 conan = "At least the ice will melt..."
 
 # Guu Embeds #
@@ -44,11 +46,20 @@ woop_embed.set_image(url='https://media.giphy.com/media/zPSkALwMfE72U/giphy.gif'
 nico_embed = discord.Embed()
 nico_embed.set_image(url='http://i0.kym-cdn.com/photos/images/newsfeed/001/205/802/99e.gif')
 
-nora_embed1 = discord.Embed()
-nora_embed1.set_image(url='http://i.imgur.com/sHlntIg.gif')
+nora_urls = ['http://i.imgur.com/sHlntIg.gif',
+             'https://orig00.deviantart.net/15ae/f/2016/184/8/c/rwby_chibi_episode_8_nora_s_inflation_by_bittyheart-da8mail.gif',
+             'https://media1.tenor.com/images/a4e275e68373678a11b0ba56a47ce9d9/tenor.gif?itemid=7880758',
+             'https://vignette.wikia.nocookie.net/rwby/images/5/5d/Nora.gif/revision/latest?cb=20131223235127',
+             'https://78.media.tumblr.com/d5fffbbbd9e9d0cf0e8ef425aea5a50a/tumblr_mvyn1hGPhJ1sjxjt0o1_500.gif']
 
-nora_embed2 = discord.Embed()
-nora_embed2.set_image(url='https://orig00.deviantart.net/15ae/f/2016/184/8/c/rwby_chibi_episode_8_nora_s_inflation_by_bittyheart-da8mail.gif')
+nora_embeds = []
+for nora_url in nora_urls:
+    nora_embed = discord.Embed()
+    nora_embed.set_image(url=nora_url)
+    nora_embeds.append(nora_embed)
+
+nora_morning = discord.Embed()
+nora_morning.set_image(url='https://media1.tenor.com/images/bbb22e19dd5fbdf57982bf6efe026f32/tenor.gif')
 
 conan_embed = discord.Embed()
 conan_embed.set_image(url='https://i.imgur.com/bFE5wR9.jpg')
@@ -199,13 +210,14 @@ async def on_message(message):
         await message.channel.send(content=nico, embed=nico_embed)
 
     if "nora" in message.content.lower():
-        nora_select = random.randrange(0, 2)
-        if nora_select == 0:
-            await message.channel.send(content=boop, embed=nora_embed1)
-        elif nora_select == 1:
-            await message.channel.send(content=boop, embed=nora_embed2)
+        today = datetime.now()
+        if today.hour - 2 < 12:
+            await message.channel.send(content=morning, embed=nora_morning)
         else:
-            await message.channel.send(content=boop)
+            nora_select = random.randrange(0, len(nora_embeds))
+            if nora_select == len(nora_embeds):
+                nora_select = nora_select - 1
+            await message.channel.send(content=boop, embed=nora_embeds[nora_select])
 
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
