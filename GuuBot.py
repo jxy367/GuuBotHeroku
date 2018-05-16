@@ -82,7 +82,7 @@ def reset_display_name():
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            print(changed_guild.me.edit(nick="Guu Bot"))
+            print(changed_guild.me.edit(nick=None))
 
 
 async def background_update():
