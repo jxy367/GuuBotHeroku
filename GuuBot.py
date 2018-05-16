@@ -78,7 +78,7 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
 
 def is_not_guu_bot():
     print("testing")
-
+    print(client.guilds)
     for guild in client.guilds:
         print(guild.name)
         print(guild.me.display_name)
@@ -222,6 +222,7 @@ async def on_member_join(member):
         await member.edit(nick=nickname, roles=roles)
 
 
+@client.event
 @is_not_guu_bot()
 async def fix_name():
     print("Was not Guu Bot")
