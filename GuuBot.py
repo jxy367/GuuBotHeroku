@@ -49,7 +49,7 @@ nico_embed.set_image(url='http://i0.kym-cdn.com/photos/images/newsfeed/001/205/8
 nora_urls = ['http://i.imgur.com/sHlntIg.gif',
              'https://orig00.deviantart.net/15ae/f/2016/184/8/c/rwby_chibi_episode_8_nora_s_inflation_by_bittyheart-da8mail.gif',
              'https://media1.tenor.com/images/a4e275e68373678a11b0ba56a47ce9d9/tenor.gif?itemid=7880758',
-             'https://vignette.wikia.nocookie.net/rwby/images/5/5d/Nora.gif/revision/latest?cb=20131223235127',
+             'https://i.imgur.com/sizNJ7o.gif',
              'https://78.media.tumblr.com/d5fffbbbd9e9d0cf0e8ef425aea5a50a/tumblr_mvyn1hGPhJ1sjxjt0o1_500.gif']
 
 nora_embeds = []
@@ -211,7 +211,7 @@ async def on_message(message):
 
     if "nora" in message.content.lower():
         today = datetime.now()
-        if today.hour - 2 < 12:
+        if today.hour < 12:
             await message.channel.send(content=morning, embed=nora_morning)
         else:
             nora_select = random.randrange(0, len(nora_embeds))
