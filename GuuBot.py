@@ -82,7 +82,7 @@ def reset_display_name():
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            changed_guild.me.change_nickname("Guu Bot")
+            changed_guild.me.edit(nick="Guu Bot")
 
 
 def fix_name():
