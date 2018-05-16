@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+import asyncio
 import random
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
@@ -84,14 +84,27 @@ def is_not_guu_bot():
         print(guild.me.display_name)
         print("---")
 
-    async def display_name_changed():
-        for guild in client.guilds:
-            if guild.me.display_name != "Guu Bot":
-                print(guild.me.display_name)
-                return False
-        return True
 
-    return commands.check(display_name_changed)
+def reset_display_name():
+    for changed_guild in client.guilds:
+        if changed_guild.me.display_name != "Guu Bot":
+            print(changed_guild.name)
+            print(changed_guild.me.display_name)
+            print("---")
+            changed_guild.me.edit(nick="Guu Bot")
+
+
+def fix_name():
+    print("Was not Guu Bot")
+    for guild in client.guilds:
+        guild.me.edit(nick="Guu Bot")
+
+
+async def background_update():
+    await client.wait_until_ready()
+    while not client.is_closed():
+        reset_display_name()
+        await asyncio.sleep(60)
 
 
 @client.event
@@ -223,18 +236,11 @@ async def on_member_join(member):
 
 
 @client.event
-@is_not_guu_bot()
-async def fix_name():
-    print("Was not Guu Bot")
-    for guild in client.guilds:
-        await guild.me.edit(nick="Guu Bot")
-
-
-@client.event
 async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
     print('------')
+    client.loop.create_task(background_update())
 
 client.run(TOKEN)
