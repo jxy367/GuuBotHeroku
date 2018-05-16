@@ -88,7 +88,7 @@ async def reset_display_name():
 async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
-        reset_display_name()
+        await reset_display_name()
         await asyncio.sleep(60)
 
 
