@@ -82,13 +82,7 @@ def reset_display_name():
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            changed_guild.me.edit(nick="Guu Bot")
-
-
-def fix_name():
-    print("Was not Guu Bot")
-    for guild in client.guilds:
-        guild.me.edit(nick="Guu Bot")
+            await changed_guild.me.edit(nick="Guu Bot")
 
 
 async def background_update():
