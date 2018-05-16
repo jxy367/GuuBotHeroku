@@ -76,22 +76,13 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     return True
 
 
-def is_not_guu_bot():
-    print("testing")
-    print(client.guilds)
-    for guild in client.guilds:
-        print(guild.name)
-        print(guild.me.display_name)
-        print("---")
-
-
 def reset_display_name():
     for changed_guild in client.guilds:
-        if changed_guild.me.display_name != "Guu Bot":
+        if changed_guild.me.display_name != "GuuBot":
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            changed_guild.me.edit(nick="Guu Bot")
+            changed_guild.me.change_nickname("Guu Bot")
 
 
 def fix_name():
