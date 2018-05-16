@@ -82,13 +82,13 @@ def reset_display_name():
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            await changed_guild.me.edit(nick="Guu Bot")
+            changed_guild.me.edit(nick="Guu Bot")
 
 
 async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
-        reset_display_name()
+        await reset_display_name()
         await asyncio.sleep(60)
 
 
