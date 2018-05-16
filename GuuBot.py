@@ -215,6 +215,7 @@ async def on_member_join(member):
 
 @is_not_guu_bot()
 async def fix_name():
+    print ("Was not Guu Bot")
     for guild in client.guilds:
         await guild.me.edit(nick="Guu Bot")
 
