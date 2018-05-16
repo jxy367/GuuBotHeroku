@@ -77,11 +77,15 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
 
 
 def is_not_guu_bot():
+    print("testing")
+
     async def display_name_changed():
         for guild in client.guilds:
             if guild.me.display_name != "Guu Bot":
+                print(guild.me.display_name)
                 return False
         return True
+
     return commands.check(display_name_changed)
 
 
