@@ -76,13 +76,13 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     return True
 
 
-def reset_display_name():
+async def reset_display_name():
     for changed_guild in client.guilds:
         if changed_guild.me.display_name != "GuuBot":
             print(changed_guild.name)
             print(changed_guild.me.display_name)
             print("---")
-            print(changed_guild.me.edit(nick=None))
+            await changed_guild.me.edit(nick=None)
 
 
 async def background_update():
