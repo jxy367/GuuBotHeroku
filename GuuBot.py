@@ -82,7 +82,7 @@ def is_not_guu_bot():
             if guild.me.display_name != "Guu Bot":
                 return False
         return True
-    return commands.check(display_name_changed())
+    return commands.check(display_name_changed)
 
 
 @client.event
