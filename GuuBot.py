@@ -222,8 +222,6 @@ async def on_message(message):
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
 
-    if "test" in message.content.lower():
-        await message.channel.send(content="!anime island")
 
 @client.event
 async def on_member_join(member):
