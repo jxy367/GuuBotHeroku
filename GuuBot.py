@@ -2,6 +2,7 @@ import discord
 import asyncio
 import random
 from datetime import datetime
+from pytz import timezone
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
@@ -210,7 +211,8 @@ async def on_message(message):
         await message.channel.send(content=nico, embed=nico_embed)
 
     if "nora" in message.content.lower():
-        today = datetime.now()
+        est = timezone('EST')
+        today = datetime.now().astimezone(est)
         if today.hour < 12:
             await message.channel.send(content=morning, embed=nora_morning)
         else:
