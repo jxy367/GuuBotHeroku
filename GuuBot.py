@@ -80,19 +80,21 @@ mr_dictionary = {}
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     index = str2.find(str1)
     len_str1 = len(str1)
-
+    #print(str(index) + "," + str(len_str1))
     if index < 0:
         return False
 
     if index + len_str1 < len(str2):
         next_char = str2[index + len_str1]
         if next_char.isalnum():
-            return exactly_in(str1, str2[:index] + str2[index+len_str1:])
+            #return exactly_in(str1, str2[:index] + str2[index+len_str1:])
+            return False
 
     if index > 0:
         past_char = str2[index - 1]
         if past_char.isalnum():
-            return exactly_in(str1, str2[:index] + str2[index + len_str1:])
+            #return exactly_in(str1, str2[:index] + str2[index + len_str1:])
+            return False
 
     return True
 
@@ -119,6 +121,8 @@ def at_end_of(str1: str, str2: str):
 
 
 def str1_star_str2(str1: str, str2: str, str3: str):
+    #print(str1)
+    #print(str(exactly_in(str1, str3)) + "," + str(at_end_of(str2, str3)))
     if not exactly_in(str1, str3) or not at_end_of(str2, str3):
         return False
     else:
@@ -200,12 +204,24 @@ async def on_message(message):
                     await  message.channel.send(content=multi_woo, embed=woo_embed)
 
             elif message.author.id == 165481032043331584:  # noah
-                noah_select = random.randrange(0, 2)
+                noah_select = random.randrange(0, 10)
+                user = client.get_user(message.author.id)
                 if noah_select == 0:
                     msg = "You said it was okay"
-                    user = client.get_user(message.author.id)
                     for num in range(0, 20):
                         await user.send(content=msg)
+
+                elif noah_select == 1:
+                    await user.send(content="I have Mercy, for now. (McCree took a day off)")
+
+                elif noah_select == 2:
+                    await user.send(content="In case you haven't noticed, I changed the likelihood of getting spammed")
+
+                elif noah_select == 3:
+                    await user.send(content="In case you haven't noticed, I changed the likelihood of getting spammed")
+                    for num in range(0, 10):
+                        await user.send(content="spammed")
+
                 else:
                     await message.channel.send(content=multi_woo, embed=woo_embed)
 
@@ -266,15 +282,15 @@ async def on_message(message):
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
 
-    if at_end_of("let's go", message.content.lower()) or at_end_of("lets go", message.content.lower()) \
-            or at_end_of("let" + u"\u2019" + "s go", message.content.lower()):
-        await message.channel.send(content=malt_shop, embed=malt_shop_embed)
+    #if at_end_of("let's go", message.content.lower()) or at_end_of("lets go", message.content.lower()) \
+    #        or at_end_of("let" + u"\u2019" + "s go", message.content.lower()):
+    #    await message.channel.send(content=malt_shop, embed=malt_shop_embed)
 
     lets_go_found = False
-    for lets in ["let's ", "lets ", "let" + u"\u2019" + "s "]:
+    for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
         if not lets_go_found:
             if str1_star_str2(lets, "go", message.content.lower()):
-                await message.channel.send(content="Testing")
+                await message.channel.send(content=malt_shop, embed=malt_shop_embed)
                 lets_go_found = True
 
 #def google_vision_request(url: str):
