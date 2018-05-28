@@ -118,6 +118,15 @@ def at_end_of(str1: str, str2: str):
     return True
 
 
+def str1_star_str2(str1: str, str2: str, str3: str):
+    if not exactly_in(str1, str3) or not at_end_of(str2, str3):
+        return False
+    else:
+        index = str2.find(str1)
+        len_str1 = len(str1)
+        return exactly_in(str2, str3[index+len_str1:])
+
+
 async def reset_display_name():
     for changed_guild in client.guilds:
         if changed_guild.me.display_name != "GuuBot":
@@ -261,6 +270,12 @@ async def on_message(message):
             or at_end_of("let" + u"\u2019" + "s go", message.content.lower()):
         await message.channel.send(content=malt_shop, embed=malt_shop_embed)
 
+    lets_go_found = False
+    for lets in ["let's ", "lets ", "let" + u"\u2019" + "s "]:
+        if not lets_go_found:
+            if str1_star_str2(lets, "go", message.content.lower()):
+                await message.channel.send(content="Testing")
+                lets_go_found = True
 
 #def google_vision_request(url: str):
     # Instantiates a client
