@@ -3,6 +3,11 @@ import asyncio
 import random
 from datetime import datetime
 from pytz import timezone
+#import urllib as ul
+#import base64
+#from google.cloud import vision
+#from google.cloud.vision import types
+
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
@@ -19,6 +24,7 @@ nico = "Nico Nico No"
 boop = "Boop"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
+malt_shop = "To the malt shop"
 
 # Guu Embeds #
 woo_embed = discord.Embed()
@@ -64,6 +70,9 @@ nora_morning.set_image(url='https://media1.tenor.com/images/bbb22e19dd5fbdf57982
 
 conan_embed = discord.Embed()
 conan_embed.set_image(url='https://i.imgur.com/bFE5wR9.jpg')
+
+malt_shop_embed = discord.Embed()
+malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
 
 mr_dictionary = {}
 
@@ -128,6 +137,9 @@ async def on_message(message):
             return
 
     mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
+
+    #url = message.image
+    #google_vision_request(url)
 
     if "awoo" in message.content.lower():
         awoo_select = random.randrange(0, 4)
@@ -223,6 +235,26 @@ async def on_message(message):
 
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
+
+    if "let's go" in message.content.lower():
+        await message.channel.send(content=malt_shop, embed=malt_shop_embed)
+
+
+#def google_vision_request(url: str):
+    # Instantiates a client
+#    google_client = vision.ImageAnnotatorClient()
+
+    # Get image_url data and encode
+#    contents = ul.urlopen(url).read()
+
+    # Prepare data for detection
+#    data = base64.b64encode(contents)
+#    image = types.Image(content=data)
+
+    # Performs label detection on the image file
+#    response = google_client.web_entity_detection(image=image)
+#    entities = response.web_entity_annotations
+#    return entities
 
 
 @client.event
