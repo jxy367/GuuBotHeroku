@@ -24,7 +24,7 @@ nico = "Nico Nico No"
 boop = "Boop"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
-malt_shop = "To the malt shop"
+malt_shop = "To the malt shop."
 
 # Guu Embeds #
 woo_embed = discord.Embed()
@@ -86,13 +86,34 @@ def exactly_in(str1: str, str2: str):  # str1 exactly in str2
 
     if index + len_str1 < len(str2):
         next_char = str2[index + len_str1]
-        if next_char.isalpha():
+        if next_char.isalnum():
             return exactly_in(str1, str2[:index] + str2[index+len_str1:])
 
     if index > 0:
         past_char = str2[index - 1]
-        if past_char.isalpha():
+        if past_char.isalnum():
             return exactly_in(str1, str2[:index] + str2[index + len_str1:])
+
+    return True
+
+
+def at_end_of(str1: str, str2: str):
+    index = str2.find(str1)
+    len_str1 = len(str1)
+
+    if index < 0:  # str1 not in str 2
+        return False
+
+    if index + len_str1 < len(str2):  # str1 is in str2 but not necessarily at end
+        next_char_index = index + len_str1
+        while next_char_index < len(str2):
+            if str2[next_char_index].isalnum():
+                return False
+            next_char_index += 1
+
+    if index > 0:
+        if str2[index - 1].isalnum():
+            return False
 
     return True
 
