@@ -257,7 +257,7 @@ async def on_message(message):
     if "secret" in message.content.lower() and "woman" in message.content.lower():
         await message.channel.send(content=conan, embed=conan_embed)
 
-    if "let's go" in message.content.lower():
+    if at_end_of("let's go", message.content.lower()):
         await message.channel.send(content=malt_shop, embed=malt_shop_embed)
 
 
