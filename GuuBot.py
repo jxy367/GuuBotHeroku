@@ -25,6 +25,7 @@ boop = "Boop"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
 malt_shop = "To the malt shop."
+fire = 'We should have guubot fire on "freaked it" - Danny Miles'
 
 # Guu Embeds #
 woo_embed = discord.Embed()
@@ -73,6 +74,9 @@ conan_embed.set_image(url='https://i.imgur.com/bFE5wR9.jpg')
 
 malt_shop_embed = discord.Embed()
 malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
+
+fire_embed = discord.Embed()
+fire_embed.set_image(url='https://i.gifer.com/MRnP.gif')
 
 mr_dictionary = {}
 
@@ -292,6 +296,9 @@ async def on_message(message):
             if str1_star_str2(lets, "go", message.content.lower()):
                 await message.channel.send(content=malt_shop, embed=malt_shop_embed)
                 lets_go_found = True
+
+    if "freaked it" in message.content.lower():
+        await message.channel.send(content=fire, embed=fire_embed)
 
 #def google_vision_request(url: str):
     # Instantiates a client
