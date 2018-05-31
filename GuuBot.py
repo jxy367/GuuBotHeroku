@@ -21,7 +21,6 @@ wu = "Wu"
 awoo = "Awoo.. Awoo.. Awoo.."
 woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
-boop = "Boop"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
 malt_shop = "To the malt shop."
@@ -54,18 +53,6 @@ woop_embed.set_image(url='https://media.giphy.com/media/zPSkALwMfE72U/giphy.gif'
 nico_embed = discord.Embed()
 nico_embed.set_image(url='http://i0.kym-cdn.com/photos/images/newsfeed/001/205/802/99e.gif')
 
-nora_urls = ['http://i.imgur.com/sHlntIg.gif',
-             'https://orig00.deviantart.net/15ae/f/2016/184/8/c/rwby_chibi_episode_8_nora_s_inflation_by_bittyheart-da8mail.gif',
-             'https://media1.tenor.com/images/a4e275e68373678a11b0ba56a47ce9d9/tenor.gif?itemid=7880758',
-             'https://i.imgur.com/sizNJ7o.gif',
-             'https://78.media.tumblr.com/d5fffbbbd9e9d0cf0e8ef425aea5a50a/tumblr_mvyn1hGPhJ1sjxjt0o1_500.gif']
-
-nora_embeds = []
-for nora_url in nora_urls:
-    nora_embed = discord.Embed()
-    nora_embed.set_image(url=nora_url)
-    nora_embeds.append(nora_embed)
-
 nora_morning = discord.Embed()
 nora_morning.set_image(url='https://media1.tenor.com/images/bbb22e19dd5fbdf57982bf6efe026f32/tenor.gif')
 
@@ -78,8 +65,44 @@ malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/21630492
 fire_embed = discord.Embed()
 fire_embed.set_image(url='https://i.gifer.com/MRnP.gif')
 
+fair_embeds = []
+fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
+        'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
+        'https://media1.fdncms.com/clevescene/imager/u/original/9012469/ohio_state_fair_-_readingandlearning_instagram.png',
+        'https://media.nbcwashington.com/images/652*367/fairgrounds071017.jpg',
+        'https://d3m7xw68ay40x8.cloudfront.net/assets/2016/10/14163048/1016-state-fair.jpg',
+        'http://www.stratfordagriculturalsociety.com/wp-content/uploads/2015/09/FB-Fair-pic.jpg',
+        'https://scontent.fbkl1-1.fna.fbcdn.net/v/t31.0-8/11148833_10153519083058322_8334046223350439297_o.jpg?_nc_cat=0&oh=7c835a3f739107548538ca894c06a507&oe=5B9A73E2',
+        'https://upload.wikimedia.org/wikipedia/commons/b/b7/L.A._County_Fair_1262.jpg',
+        'https://www.gannett-cdn.com/-mm-/c0059ff26d6046b65292170ffc20f75e93874fea/c=0-261-3396-2180&r=x1683&c=3200x1680/local/-/media/2016/10/17/Phoenix/Phoenix/636122964086278930-Arizona-State-Fair-20.jpg',
+        'http://www.effinghamcountyfair.com/wp-content/uploads/2014/12/county-fair.jpg',
+        'https://i.ytimg.com/vi/2yVeQRcOTi4/maxresdefault.jpg',
+        'http://www.lancasterfair.com/wp-content/uploads/2017/01/44.jpg']
+
+for url in fair_urls:
+    new_embed = discord.Embed()
+    new_embed.set_image(url=url)
+    fair_embeds.append(new_embed)
+
 mr_dictionary = {}
 
+on_cooldown = True
+cooldown_time = 9701
+# Server specific ids
+# Channels
+venting_channel = 400096015740567552
+
+
+
+# Bots
+nicer_completion_bot = 439346446697889792
+
+# People
+me = 191797757357457408
+julian = 185940933160730624
+kaius = 115589615603286024
+kolson = 316041338862829569
+riley = 306997179367555074
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     index = str2.find(str1)
@@ -151,15 +174,30 @@ async def background_update():
         await asyncio.sleep(60)
 
 
+async def cooldown():
+    global on_cooldown
+    while not client.is_closed():
+        if on_cooldown:
+            on_cooldown = False
+            await asyncio.sleep(20)
+
+
+async def await_message(message, content=None, embed=None):
+    global on_cooldown
+    await message.channel.send(content=content, embed=embed)
+    on_cooldown = True
+
+
 @client.event
 async def on_message(message):
     global mr_dictionary
+    global on_cooldown
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
 
     if message.author.bot:
-        if message.author.id == 439346446697889792:  # Nicer Completion Bot | Nicer Completion Bot Winning
+        if message.author.id == nicer_completion_bot:  # Nicer Completion Bot | Nicer Completion Bot Winning
             if "And then everyone important died." in message.content:
                 members = message.guild.members
                 print(members)
@@ -167,7 +205,7 @@ async def on_message(message):
                     if not member.bot:
                         mr_dictionary[member.id] = (member.roles, member.nick)
                         await message.guild.kick(message.author)
-                await message.channel.send(content="Have Fun Noah")
+                await await_message(message, content="Have Fun Noah")
                 print(mr_dictionary)
             else:
                 return
@@ -176,146 +214,101 @@ async def on_message(message):
 
     mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
 
-    #url = message.image
-    #google_vision_request(url)
+    if on_cooldown:
+        return
 
-    if "awoo" in message.content.lower():
-        awoo_select = random.randrange(0, 4)
-        if awoo_select < 3:
-            await message.channel.send(content=awoo, embed=awoo_embed1)
-        elif awoo_select == 4:
-            await message.channel.send(content=awoo, embed=awoo_embed2)
-        else:
-            await message.channel.send(content=awoo, embed=awoo_embed1)
+    if message.channel.id == venting_channel:
+        return
 
-    elif "woo" in message.content.lower():
+    guu_bot_select = random.randrange(0, 4)
+    if guu_bot_select == 0:
+        # Figure out if version of "let's go" is in the message
+        lets_go_found = False
+        for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
+            if not lets_go_found:
+                if str1_star_str2(lets, "go", message.content.lower()):
+                    await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
+                    lets_go_found = True
 
-        exact_woo = exactly_in("woo", message.content.lower())
+        if "awoo" in message.content.lower():
 
-        if exact_woo:
-            if message.author.id == 191797757357457408:  # Me
-                await message.channel.send(content=my_woo, embed=woo_embed)
+            awoo_select = random.randrange(0, 4)
 
-            elif message.author.id == 185940933160730624:  # Julian
-                wu_option_select = random.randrange(0, 6)
-                if wu_option_select == 0:
-                    await  message.channel.send(content=wu, embed=wu_embed1)
-                elif wu_option_select == 1:
-                    await  message.channel.send(content=wu, embed=wu_embed2)
-                elif wu_option_select == 2:
-                    await  message.channel.send(content=wu, embed=wu_embed3)
+            if awoo_select < 3:
+                await await_message(message=message, content=awoo, embed=awoo_embed1)
+            elif awoo_select == 4:
+                await await_message(message=message, content=awoo, embed=awoo_embed2)
+            else:
+                await await_message(message=message, content=awoo, embed=awoo_embed1)
+
+        elif "woo" in message.content.lower():
+
+            exact_woo = exactly_in("woo", message.content.lower())
+
+            if exact_woo:
+                if message.author.id == me:
+                    await await_message(message=message, content=my_woo, embed=woo_embed)
+
+                elif message.author.id == julian:
+                    wu_option_select = random.randrange(0, 6)
+                    if wu_option_select == 0:
+                        await  await_message(message=message, content=wu, embed=wu_embed1)
+                    elif wu_option_select == 1:
+                        await  await_message(message=message, content=wu, embed=wu_embed2)
+                    elif wu_option_select == 2:
+                        await  await_message(message=message, content=wu, embed=wu_embed3)
+                    else:
+                        await  await_message(message=message, content=multi_woo, embed=woo_embed)
+
+                elif message.author.id == kaius:
+                    kaius_select = random.randrange(0, 2)
+                    if kaius_select == 0:
+                        await await_message(message=message, content=woop, embed=woop_embed)
+                    else:
+                        await await_message(message=message, content=multi_woo, embed=woo_embed)
+
+                elif message.author.id == riley:
+                    riley_select = random.randrange(0, 2)
+                    if riley_select == 0:
+                        await await_message(message=message, content=woop, embed=woop_embed)
+                    else:
+                        await await_message(message=message, content=multi_woo, embed=woo_embed)
+
                 else:
-                    await  message.channel.send(content=multi_woo, embed=woo_embed)
-
-            elif message.author.id == 165481032043331584:  # noah
-                noah_select = random.randrange(0, 10)
-                user = client.get_user(message.author.id)
-                if noah_select == 0:
-                    msg = "You said it was okay"
-                    for num in range(0, 20):
-                        await user.send(content=msg)
-
-                elif noah_select == 1:
-                    await user.send(content="I have Mercy, for now. (McCree took a day off)")
-
-                elif noah_select == 2:
-                    await user.send(content="In case you haven't noticed, I changed the likelihood of getting spammed")
-
-                elif noah_select == 3:
-                    await user.send(content="In case you haven't noticed, I changed the likelihood of getting spammed")
-                    for num in range(0, 10):
-                        await user.send(content="spammed")
-
-                else:
-                    await message.channel.send(content=multi_woo, embed=woo_embed)
-
-            elif message.author.id == 115589615603286024:  # Kaius
-                kaius_select = random.randrange(0, 2)
-                if kaius_select == 0:
-                    await message.channel.send(content=woop, embed=woop_embed)
-                else:
-                    await message.channel.send(content=multi_woo, embed=woo_embed)
-
-            elif message.author.id == 306997179367555074:  # Riley
-                riley_select = random.randrange(0, 2)
-                if riley_select == 0:
-                    await message.channel.send(content=woop, embed=woop_embed)
-                else:
-                    await message.channel.send(content=multi_woo, embed=woo_embed)
+                    await await_message(message=message, content=multi_woo, embed=woo_embed)
 
             else:
-                await message.channel.send(content=multi_woo, embed=woo_embed)
+                await await_message(message=message, content=woo, embed=woo_embed)
+
+        elif "pasta" in message.content.lower():
+            if message.author.id == kolson:
+                new_invite = await message.channel.create_invite(max_uses=1)
+                user = client.get_user(message.author.id)
+                await user.send(content=new_invite)
+                await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
+                await message.guild.kick(message.author)
+                await await_message(message=message, content='Fine. Just the kick hammer...')
+
+        elif "nico" in message.content.lower():
+            await await_message(message=message, content=nico, embed=nico_embed)
+
+        elif "secret" in message.content.lower() and "woman" in message.content.lower():
+            await await_message(message=message, content=conan, embed=conan_embed)
+
+        elif lets_go_found:
+            await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
+
+        elif "freaked it" in message.content.lower():
+            await await_message(message=message, content=fire, embed=fire_embed)
+
+        elif "nora" in message.content.lower():
+            est = timezone('EST')
+            today = datetime.now().astimezone(est)
+            if today.hour < 12:
+                await await_message(message=message, content=morning, embed=nora_morning)
 
         else:
-            await message.channel.send(content=woo, embed=woo_embed)
-
-    else:
-        x = 0
-
-    if "pasta" in message.content.lower():
-        if message.author.id == 316041338862829569:  # Kolson
-            new_invite = await message.channel.create_invite(max_uses=1)
-            user = client.get_user(message.author.id)
-            await user.send(content=new_invite)
-            ban_msg = 'He said "pasta"! SWING THE BAN HAMMER!'
-            await message.channel.send(ban_msg)
-            await message.guild.kick(message.author)
-            kick_msg = 'Fine. Just the kick hammer...'
-            await message.channel.send(kick_msg)
-
-        #if message.author.id == 191797757357457408:  # Me
-        #    await message.channel.send("pasta")
-        #    new_invite = await message.channel.create_invite(max_uses=1)
-        #    user = client.get_user(message.author.id)
-        #    await user.send(content=new_invite)
-
-    if "nico" in message.content.lower():
-        await message.channel.send(content=nico, embed=nico_embed)
-
-    if "nora" in message.content.lower():
-        est = timezone('EST')
-        today = datetime.now().astimezone(est)
-        if today.hour < 12:
-            await message.channel.send(content=morning, embed=nora_morning)
-        else:
-            nora_select = random.randrange(0, len(nora_embeds))
-            if nora_select == len(nora_embeds):
-                nora_select = nora_select - 1
-            await message.channel.send(content=boop, embed=nora_embeds[nora_select])
-
-    if "secret" in message.content.lower() and "woman" in message.content.lower():
-        await message.channel.send(content=conan, embed=conan_embed)
-
-    #if at_end_of("let's go", message.content.lower()) or at_end_of("lets go", message.content.lower()) \
-    #        or at_end_of("let" + u"\u2019" + "s go", message.content.lower()):
-    #    await message.channel.send(content=malt_shop, embed=malt_shop_embed)
-
-    lets_go_found = False
-    for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
-        if not lets_go_found:
-            if str1_star_str2(lets, "go", message.content.lower()):
-                await message.channel.send(content=malt_shop, embed=malt_shop_embed)
-                lets_go_found = True
-
-    if "freaked it" in message.content.lower():
-        await message.channel.send(content=fire, embed=fire_embed)
-
-#def google_vision_request(url: str):
-    # Instantiates a client
-#    google_client = vision.ImageAnnotatorClient()
-
-    # Get image_url data and encode
-#    contents = ul.urlopen(url).read()
-
-    # Prepare data for detection
-#    data = base64.b64encode(contents)
-#    image = types.Image(content=data)
-
-    # Performs label detection on the image file
-#    response = google_client.web_entity_detection(image=image)
-#    entities = response.web_entity_annotations
-#    return entities
-
+            x = 0
 
 @client.event
 async def on_member_join(member):
@@ -333,5 +326,8 @@ async def on_ready():
     print(client.user.id)
     print('------')
     client.loop.create_task(background_update())
+    client.loop.create_task(cooldown())
 
 client.run(TOKEN)
+
+
