@@ -178,6 +178,7 @@ async def background_update():
 
 async def cooldown():
     global on_cooldown
+    await client.wait_until_ready()
     while not client.is_closed():
         if on_cooldown:
             on_cooldown = False
