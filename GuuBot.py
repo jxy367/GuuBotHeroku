@@ -3,10 +3,6 @@ import asyncio
 import random
 from datetime import datetime
 from pytz import timezone
-#import urllib as ul
-#import base64
-#from google.cloud import vision
-#from google.cloud.vision import types
 
 
 TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
@@ -65,6 +61,9 @@ malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/21630492
 fire_embed = discord.Embed()
 fire_embed.set_image(url='https://i.gifer.com/MRnP.gif')
 
+sheik_embed = discord.Embed()
+sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
+
 fair_embeds = []
 fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
         'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
@@ -86,7 +85,7 @@ for url in fair_urls:
 
 mr_dictionary = {}
 
-on_cooldown = True
+on_cooldown = False
 cooldown_time = 9701
 # Server specific ids
 # Channels
@@ -103,24 +102,24 @@ julian = 185940933160730624
 kaius = 115589615603286024
 kolson = 316041338862829569
 riley = 306997179367555074
+danny = 191426236935831552
+
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     index = str2.find(str1)
     len_str1 = len(str1)
-    #print(str(index) + "," + str(len_str1))
+
     if index < 0:
         return False
 
     if index + len_str1 < len(str2):
         next_char = str2[index + len_str1]
         if next_char.isalnum():
-            #return exactly_in(str1, str2[:index] + str2[index+len_str1:])
             return False
 
     if index > 0:
         past_char = str2[index - 1]
         if past_char.isalnum():
-            #return exactly_in(str1, str2[:index] + str2[index + len_str1:])
             return False
 
     return True
@@ -148,8 +147,6 @@ def at_end_of(str1: str, str2: str):
 
 
 def str1_star_str2(str1: str, str2: str, str3: str):
-    #print(str1)
-    #print(str(exactly_in(str1, str3)) + "," + str(at_end_of(str2, str3)))
     if not exactly_in(str1, str3) or not at_end_of(str2, str3):
         return False
     else:
@@ -172,17 +169,19 @@ async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
-        print(on_cooldown)
-        await asyncio.sleep(5)
+        await asyncio.sleep(60)
 
 
 async def cooldown():
     global on_cooldown
+    global cooldown_time
     await client.wait_until_ready()
     while not client.is_closed():
         if on_cooldown:
+            await asyncio.sleep(cooldown_time)
             on_cooldown = False
-            await asyncio.sleep(20)
+        else:
+            await asyncio.sleep(1)
 
 
 async def await_message(message, content=None, embed=None):
@@ -232,6 +231,9 @@ async def on_message(message):
                 if str1_star_str2(lets, "go", message.content.lower()):
                     await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
                     lets_go_found = True
+
+        # Check if "fair" appears in message
+        exact_fair = exactly_in("fair", message.content.lower())
 
         if "awoo" in message.content.lower():
 
@@ -283,6 +285,17 @@ async def on_message(message):
             else:
                 await await_message(message=message, content=woo, embed=woo_embed)
 
+        elif exact_fair:
+            index = random.randrange(0, len(fair_embeds))
+            if message.author.id == danny:  # Danny
+                danny_select = random.randrange(0, 2)
+                if danny_select == 0:
+                    await await_message(message=message, embed=sheik_embed)
+                else:
+                    await await_message(message=message, embed=fair_embeds[index])
+            else:
+                await await_message(message=message, embed=fair_embeds[index])
+
         elif "pasta" in message.content.lower():
             if message.author.id == kolson:
                 new_invite = await message.channel.create_invite(max_uses=1)
@@ -312,6 +325,7 @@ async def on_message(message):
 
         else:
             x = 0
+
 
 @client.event
 async def on_member_join(member):
