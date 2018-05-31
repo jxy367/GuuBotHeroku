@@ -86,7 +86,7 @@ for url in fair_urls:
 mr_dictionary = {}
 
 on_cooldown = False
-cooldown_time = 9701
+cooldown_time = 10
 # Server specific ids
 # Channels
 venting_channel = 400096015740567552
@@ -186,7 +186,12 @@ async def cooldown():
 
 async def await_message(message, content=None, embed=None):
     global on_cooldown
-    await message.channel.send(content=content, embed=embed)
+    if content is None:
+        await message.channel.send(embed=embed)
+    elif embed is None:
+        await message.channel.send(content=content)
+    else:
+        await message.channel.send(content=content, embed=embed)
     on_cooldown = True
 
 
