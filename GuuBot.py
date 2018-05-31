@@ -168,10 +168,12 @@ async def reset_display_name():
 
 
 async def background_update():
+    global on_cooldown
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
-        await asyncio.sleep(60)
+        print(on_cooldown)
+        await asyncio.sleep(5)
 
 
 async def cooldown():
