@@ -86,7 +86,7 @@ for url in fair_urls:
 mr_dictionary = {}
 
 on_cooldown = False
-cooldown_time = 9701
+cooldown_time = 8761
 # Server specific ids
 # Channels
 venting_channel = 400096015740567552
