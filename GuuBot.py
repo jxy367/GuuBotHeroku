@@ -235,8 +235,9 @@ async def on_message(message):
         for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
             if not lets_go_found:
                 if str1_star_str2(lets, "go", message.content.lower()):
-                    await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
+                    #await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
                     lets_go_found = True
+                    print("Let's go found")
 
         # Check if "fair" appears in message
         exact_fair = exactly_in("fair", message.content.lower())
