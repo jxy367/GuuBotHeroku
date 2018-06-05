@@ -229,16 +229,15 @@ async def on_message(message):
         return
 
     guu_bot_select = random.randrange(0, 4)
+    print(guu_bot_select)
     if guu_bot_select == 0:
         # Figure out if version of "let's go" is in the message
         lets_go_found = False
         for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
             if not lets_go_found:
-                print(lets)
                 if str1_star_str2(lets, "go", message.content.lower()):
                     #await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
                     lets_go_found = True
-                    print("Let's go found")
 
         # Check if "fair" appears in message
         exact_fair = exactly_in("fair", message.content.lower())
