@@ -234,6 +234,7 @@ async def on_message(message):
         lets_go_found = False
         for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
             if not lets_go_found:
+                print(lets)
                 if str1_star_str2(lets, "go", message.content.lower()):
                     #await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
                     lets_go_found = True
