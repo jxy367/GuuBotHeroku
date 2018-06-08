@@ -7,3 +7,4 @@ async-timeout==2.0.1
 chardet==3.0.4
 idna==2.6
 pytz==2018.4
+discord.py == 1.0.0a1462+g60f0b22

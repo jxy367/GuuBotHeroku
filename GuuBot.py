@@ -228,8 +228,9 @@ async def on_message(message):
     if message.channel.id == venting_channel:
         return
 
-    guu_bot_select = random.randrange(0, 4)
-    print(guu_bot_select)
+    #guu_bot_select = random.randrange(0, 4)
+    guu_bot_select = 0
+    #print(guu_bot_select)
     if guu_bot_select == 0:
         # Figure out if version of "let's go" is in the message
         lets_go_found = False
