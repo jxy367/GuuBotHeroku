@@ -93,6 +93,10 @@ cooldown_time = 10
 venting_channel = 400096015740567552
 
 
+# emojis
+expand2 = 0
+expand3 = 0
+expand4 = 0
 
 # Bots
 nicer_completion_bot = 439346446697889792
@@ -336,6 +340,19 @@ async def on_message(message):
 
 
 @client.event
+async def on_reaction_add(reaction, user):
+    global expand2
+    global expand3
+    global expand4
+    message = reaction.message
+    expand1_id = 459124362075832320
+    if reaction.emoji.id == expand1_id:
+        await message.add_reaction(expand2)
+        await message.add_reaction(expand3)
+        await message.add_reaction(expand4)
+
+
+@client.event
 async def on_member_join(member):
     global client
     global mr_dictionary
@@ -346,12 +363,18 @@ async def on_member_join(member):
 
 @client.event
 async def on_ready():
+    global expand2
+    global expand3
+    global expand4
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
     print('------')
     client.loop.create_task(background_update())
     client.loop.create_task(cooldown())
+    expand2 = client.get_emoji(459124362063118336)
+    expand3 = client.get_emoji(459124362004529173)
+    expand4 = client.get_emoji(459124361698213890)
 
 client.run(TOKEN)
 
