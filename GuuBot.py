@@ -94,9 +94,10 @@ venting_channel = 400096015740567552
 
 
 # emojis
-expand2 = 0
-expand3 = 0
-expand4 = 0
+expand1 = 459124362075832320
+expand2 = 459124362075832320
+expand3 = 459124362004529173
+expand4 = 459124361698213890
 
 # Bots
 nicer_completion_bot = 439346446697889792
@@ -341,12 +342,14 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
+    global expand1
     global expand2
     global expand3
     global expand4
     message = reaction.message
     expand1_id = 459124362075832320
     if reaction.emoji.id == expand1_id:
+        await message.add_reaction(expand1)
         await message.add_reaction(expand2)
         await message.add_reaction(expand3)
         await message.add_reaction(expand4)
@@ -363,6 +366,7 @@ async def on_member_join(member):
 
 @client.event
 async def on_ready():
+    global expand1
     global expand2
     global expand3
     global expand4
@@ -372,9 +376,10 @@ async def on_ready():
     print('------')
     client.loop.create_task(background_update())
     client.loop.create_task(cooldown())
-    expand2 = client.get_emoji(459124362063118336)
-    expand3 = client.get_emoji(459124362004529173)
-    expand4 = client.get_emoji(459124361698213890)
+    expand1 = client.get_emoji(expand1)
+    expand2 = client.get_emoji(expand2)
+    expand3 = client.get_emoji(expand3)
+    expand4 = client.get_emoji(expand4)
 
 client.run(TOKEN)
 
