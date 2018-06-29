@@ -336,6 +336,9 @@ async def on_message(message):
             if today.hour < 12:
                 await await_message(message=message, content=morning, embed=nora_morning)
 
+        elif "@someone" in message.content.lower():
+            await await_message(message=message, content="^ "+message.author.mention)
+
         else:
             x = 0
 
