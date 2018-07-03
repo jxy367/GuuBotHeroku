@@ -373,10 +373,17 @@ async def on_message(message):
             await await_message(message=message, content="^ "+message.author.mention)
 
         elif "guubot play " in message.content.lower():
-            await await_message(message=message, content=request_youtube_video(message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
+            if message.author == noah:
+                noah_select = random.randrange(0, 10)
+                if noah_select == 0:
+                    await await_message(message=message, content=request_youtube_video("barbie girl"))
+                else:
+                    await await_message(message=message, content=request_youtube_video(
+                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
 
-        elif "guubot play despacito" in message.content.lower():
-            await await_message(message=message, content=despacito)
+            else:
+                await await_message(message=message, content=request_youtube_video(
+                    message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
             if message.author == noah:
