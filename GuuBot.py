@@ -3,9 +3,16 @@ import asyncio
 import random
 from datetime import datetime
 from pytz import timezone
+import os
+import urllib
+from urllib import request
+from urllib import parse
+from bs4 import BeautifulSoup
+import time
 
-
-TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
+#API_KEY = os.environ.get('API_KEY')
+TOKEN = os.environ.get('TOKEN')
+#TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
 client = discord.Client()
 
@@ -111,6 +118,7 @@ kolson = 316041338862829569
 riley = 306997179367555074
 danny = 191426236935831552
 esther = 145075344095969281
+noah = 165481032043331584
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
@@ -161,6 +169,29 @@ def str1_star_str2(str1: str, str2: str, str3: str):
         index = str2.find(str1)
         len_str1 = len(str1)
         return exactly_in(str2, str3[index+len_str1:])
+
+
+def request_youtube_video(keyword: str):
+    start = time.time()
+    query = urllib.parse.quote(keyword)
+    quote_finished = time.time()
+    url = "https://www.youtube.com/results?search_query=" + query
+    url_made = time.time()
+    response = urllib.request.urlopen(url)
+    response_received = time.time()
+    html = response.read()
+    response_read = time.time()
+    soup = BeautifulSoup(html, 'html.parser')
+    soup_made = time.time()
+
+    for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
+        video_url = 'https://www.youtube.com' + vid['href']
+        find_index = video_url.find('https://www.youtube.com/watch')
+        if find_index == 0:
+            return video_url
+
+    print("Returning despacito")
+    return despacito
 
 
 async def reset_display_name():
@@ -341,8 +372,20 @@ async def on_message(message):
         elif "@someone" in message.content.lower():
             await await_message(message=message, content="^ "+message.author.mention)
 
+        elif "guubot play " in message.content.lower():
+            await await_message(message=message, content=request_youtube_video(message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
+
         elif "guubot play despacito" in message.content.lower():
             await await_message(message=message, content=despacito)
+
+        elif "sad" == message.content.lower() or "sad!" == message.content.lower():
+            if message.author == noah:
+                await await_message(message=message, content="Smile")
+                await await_message(message=message, content="Sweet")
+                await await_message(message=message, content="Sister")
+                await await_message(message=message, content="Sadistic")
+                await await_message(message=message, content="Surprise")
+                await await_message(message=message, content="Service")
 
         else:
             x = 0
