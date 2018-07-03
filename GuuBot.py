@@ -21,6 +21,7 @@ morning = "It's morning!"
 conan = "At least the ice will melt..."
 malt_shop = "To the malt shop."
 fire = 'We should have guubot fire on "freaked it" - Danny Miles'
+despacito = 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
 
 # Guu Embeds #
 woo_embed = discord.Embed()
@@ -109,6 +110,7 @@ kaius = 115589615603286024
 kolson = 316041338862829569
 riley = 306997179367555074
 danny = 191426236935831552
+esther = 145075344095969281
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
@@ -338,6 +340,9 @@ async def on_message(message):
 
         elif "@someone" in message.content.lower():
             await await_message(message=message, content="^ "+message.author.mention)
+
+        elif "guubot play despacito" in message.content.lower():
+            await await_message(message=message, content=despacito)
 
         else:
             x = 0
