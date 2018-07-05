@@ -373,7 +373,7 @@ async def on_message(message):
             await await_message(message=message, content="^ "+message.author.mention)
 
         elif "guubot play " in message.content.lower():
-            if message.author == noah:
+            if message.author.id == noah:
                 noah_select = random.randrange(0, 10)
                 if noah_select == 0:
                     await await_message(message=message, content=request_youtube_video("barbie girl"))
@@ -386,7 +386,7 @@ async def on_message(message):
                     message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
-            if message.author == noah:
+            if message.author.id == noah:
                 await await_message(message=message, content="Smile")
                 await await_message(message=message, content="Sweet")
                 await await_message(message=message, content="Sister")
