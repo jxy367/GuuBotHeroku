@@ -403,7 +403,7 @@ async def on_message(message):
             elif number_of_rolls.isnumeric() and number_of_sides.isnumeric():
                 dice_list = []
                 for num in range(0, int(number_of_rolls)):
-                    dice_list.append(random.randrange(1, int(number_of_sides)))
+                    dice_list.append(random.randrange(1, int(number_of_sides) + 1))
 
                 roll_string =str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
             else:
