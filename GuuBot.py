@@ -434,14 +434,15 @@ async def on_message(message):
                 # continue with modifier matching
                 assert "+" in message_string or "-" in message_string
 
-                modifier_symbol = message_string.find("+")
-                modifier_as_multiplier = 2 * int(modifier_symbol) + 1
+                modifier_symbol = "+" in message_string
+                modifier_as_multiplier = 2 * int(modifier_symbol) - 1
 
                 numeric_values = find_digits.findall(message_string)
                 assert len(numeric_values) == 3
                 number_of_rolls = int(numeric_values[0])
                 number_of_sides = int(numeric_values[1])
                 modifier = int(numeric_values[2])
+                print(modifier)
                 if number_of_rolls < 1 or number_of_sides < 1:
                     roll_string = "At least one of the values is less than 1"
 
