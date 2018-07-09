@@ -393,7 +393,7 @@ async def on_message(message):
         elif message.content.lower().find("roll ") == 0:
             roll_string = "Input was not acceptable"
             message_string = message.content
-            modifier_matching = re.compile('roll \d+d\d+ *[-+]\d*', re.IGNORECASE)
+            modifier_matching = re.compile('roll \d+d\d+ *[-+] *\d*', re.IGNORECASE)
             modifier_match = modifier_matching.match(message_string)
             find_digits = re.compile('\d+')
             if modifier_match is None:
@@ -430,7 +430,7 @@ async def on_message(message):
 
             else:
                 # continue with modifier matching
-                assert message_string.find("+") + message_string.find("-") == -1
+                assert message_string.find("+") + message_string.find("-") == 1
 
                 modifier_symbol = message_string.find("+")
                 modifier_as_multiplier = 2 * int(modifier_symbol) + 1
