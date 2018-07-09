@@ -404,6 +404,7 @@ async def on_message(message):
                     x = 0
 
                 elif basic_match.end() != len(message_string):
+                    print(str(basic_match.end())+","+str(len(message_string)))
                     x = 0
 
                 else:
@@ -427,6 +428,7 @@ async def on_message(message):
 
             elif modifier_match.end() != len(message_string):
                 x = 0
+                print(str(modifier_match.end()) + "," + str(len(message_string)))
 
             else:
                 # continue with modifier matching
