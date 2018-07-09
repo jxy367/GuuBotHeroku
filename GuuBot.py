@@ -442,7 +442,7 @@ async def on_message(message):
                 number_of_rolls = int(numeric_values[0])
                 number_of_sides = int(numeric_values[1])
                 modifier = int(numeric_values[2])
-                print(modifier)
+                #print(modifier)
                 if number_of_rolls < 1 or number_of_sides < 1:
                     roll_string = "At least one of the values is less than 1"
 
@@ -455,7 +455,7 @@ async def on_message(message):
                         dice_list.append(random.randrange(1, number_of_sides + 1))
 
                     roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list)) \
-                                  + "\nModifier: " + str(modifier_symbol * modifier) + "\nFinal value: " \
+                                  + "\nModifier: " + str(modifier_as_multiplier * modifier) + "\nFinal value: " \
                                   + str(sum(dice_list) + modifier*modifier_as_multiplier)
 
             await await_message(message=message, content=roll_string)
