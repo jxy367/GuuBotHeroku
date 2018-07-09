@@ -394,22 +394,21 @@ async def on_message(message):
             d_location = rest.find("d")
             number_of_rolls = rest[:d_location]
             number_of_sides = rest[d_location+1:]
-            if number_of_rolls < 0 or number_of_sides < 0:
-                roll_string = "At lesat one of the values is less than 0"
+            if number_of_rolls.isnumeric() and number_of_sides.isnumeric():
+                if int(number_of_rolls) < 0 or int(number_of_sides) < 0:
+                    roll_string = "At lesat one of the values is less than 0"
 
-            elif number_of_rolls > 100 or number_of_sides > 100:
-                roll_string = "At least one of the values is greater than 100"
+                elif int(number_of_rolls) > 100 or int(number_of_sides) > 100:
+                    roll_string = "At least one of the values is greater than 100"
 
-            elif number_of_rolls.isnumeric() and number_of_sides.isnumeric():
-                dice_list = []
-                for num in range(0, int(number_of_rolls)):
-                    dice_list.append(random.randrange(1, int(number_of_sides) + 1))
+                else:
+                    dice_list = []
+                    for num in range(0, int(number_of_rolls)):
+                        dice_list.append(random.randrange(1, int(number_of_sides) + 1))
 
-                roll_string =str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
-            else:
-                roll_string = "You done fucked up"
-
-            await await_message(message=message, content=roll_string)
+                    roll_string = str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
+                    
+                await await_message(message=message, content=roll_string)
         else:
             x = 0
 
