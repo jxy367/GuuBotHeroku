@@ -430,7 +430,7 @@ async def on_message(message):
 
             else:
                 # continue with modifier matching
-                assert message_string.find("+") + message_string.find("-") == 1
+                assert "+" in message_string or "-" in message_string
 
                 modifier_symbol = message_string.find("+")
                 modifier_as_multiplier = 2 * int(modifier_symbol) + 1
