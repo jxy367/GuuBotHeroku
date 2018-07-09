@@ -395,8 +395,8 @@ async def on_message(message):
             number_of_rolls = rest[:d_location]
             number_of_sides = rest[d_location+1:]
             if number_of_rolls.isnumeric() and number_of_sides.isnumeric():
-                if int(number_of_rolls) < 0 or int(number_of_sides) < 0:
-                    roll_string = "At lesat one of the values is less than 0"
+                if int(number_of_rolls) < 1 or int(number_of_sides) < 1:
+                    roll_string = "At least one of the values is less than 1"
 
                 elif int(number_of_rolls) > 100 or int(number_of_sides) > 100:
                     roll_string = "At least one of the values is greater than 100"
@@ -407,7 +407,7 @@ async def on_message(message):
                         dice_list.append(random.randrange(1, int(number_of_sides) + 1))
 
                     roll_string = str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
-                    
+
                 await await_message(message=message, content=roll_string)
         else:
             x = 0
