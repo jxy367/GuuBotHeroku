@@ -398,7 +398,7 @@ async def on_message(message):
                 roll_string = ""
                 for num in range(0, int(number_of_rolls)):
                     roll_string = roll_string + str(random.randrange(1, int(number_of_sides)))
-                    if num < number_of_rolls:
+                    if num < int(number_of_rolls):
                         roll_string = roll_string + ", "
                 await await_message(message=message, content=roll_string)
 
