@@ -387,12 +387,20 @@ async def on_message(message):
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
             if message.author.id == noah:
-                await await_message(message=message, content="Smile")
-                await await_message(message=message, content="Sweet")
-                await await_message(message=message, content="Sister")
-                await await_message(message=message, content="Sadistic")
-                await await_message(message=message, content="Surprise")
-                await await_message(message=message, content="Service")
+                await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
+
+        elif message.content.lower().find("roll ") == 0:
+            rest = message.content.lower()[len("roll "):]
+            d_location = rest.find("d")
+            number_of_rolls = rest[:d_location]
+            number_of_sides = rest[d_location+1:]
+            if number_of_rolls.isnumeric() and number_of_sides.isnumeric():
+                roll_string = ""
+                for num in range(0, int(number_of_rolls)):
+                    roll_string = roll_string + str(random.randrange(1, int(number_of_sides)))
+                    if num < number_of_rolls:
+                        roll_string = roll_string + ", "
+                await await_message(message=message, content=roll_string)
 
         else:
             x = 0
