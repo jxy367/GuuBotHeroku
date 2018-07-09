@@ -395,7 +395,7 @@ async def on_message(message):
             message_string = message.content
             modifier_matching = re.compile('roll \d+d\d+ *[-+]\d*', re.IGNORECASE)
             modifier_match = modifier_matching.match(message_string)
-            find_digits = re.compile('r\d+')
+            find_digits = re.compile('\d+')
             if modifier_match is None:
                 # Try basic matching
                 basic_matching = re.compile('roll \d+d\d+', re.IGNORECASE)
