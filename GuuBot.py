@@ -438,7 +438,7 @@ async def on_message(message):
                 modifier_as_multiplier = 2 * int(modifier_symbol) + 1
 
                 numeric_values = find_digits.findall(message_string)
-                assert len(numeric_values) == 2
+                assert len(numeric_values) == 3
                 number_of_rolls = int(numeric_values[0])
                 number_of_sides = int(numeric_values[1])
                 modifier = int(numeric_values[2])
