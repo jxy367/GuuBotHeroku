@@ -472,8 +472,13 @@ async def on_reaction_add(reaction, user):
     global expand4
     message = reaction.message
     expand1_id = 459124362075832320
+    if expand1 is None:
+        expand1 = client.get_emoji(459124362075832320)
+        expand2 = client.get_emoji(459124362063118336)
+        expand3 = client.get_emoji(459124362004529173)
+        expand4 = client.get_emoji(459124361698213890)
+
     if reaction.emoji.id == expand1_id:
-        print(expand1)
         await message.add_reaction(expand1)
         await message.add_reaction(expand2)
         await message.add_reaction(expand3)
