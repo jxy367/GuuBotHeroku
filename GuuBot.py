@@ -473,6 +473,7 @@ async def on_reaction_add(reaction, user):
     message = reaction.message
     expand1_id = 459124362075832320
     if reaction.emoji.id == expand1_id:
+        print(expand1)
         await message.add_reaction(expand1)
         await message.add_reaction(expand2)
         await message.add_reaction(expand3)
