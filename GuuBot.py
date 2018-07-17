@@ -526,7 +526,8 @@ async def on_member_update(before, after):
                 noah_separate_cooldown = False
 
             if before.status != after.status:
-                await await_channel(channel=TS_channel, embed=noah_morning_embed)
+                channel = client.get_channel(TS_channel)
+                await await_channel(channel=channel, embed=noah_morning_embed)
                 noah_separate_cooldown = False
 
 
