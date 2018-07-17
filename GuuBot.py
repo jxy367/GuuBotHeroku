@@ -518,12 +518,17 @@ async def on_reaction_add(reaction, user):
         expand3 = client.get_emoji(459124362004529173)
         expand4 = client.get_emoji(459124361698213890)
 
-    if reaction.emoji.id == expand1_id:
+    if isinstance(reaction.emoji, str):
+        pass
+
+    elif reaction.emoji.id == expand1_id:
         await message.add_reaction(expand1)
         await message.add_reaction(expand2)
         await message.add_reaction(expand3)
         await message.add_reaction(expand4)
 
+    else:
+        pass
 
 @client.event
 async def on_member_join(member):
