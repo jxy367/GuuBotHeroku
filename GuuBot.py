@@ -87,6 +87,9 @@ fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/sc
         'https://i.ytimg.com/vi/2yVeQRcOTi4/maxresdefault.jpg',
         'http://www.lancasterfair.com/wp-content/uploads/2017/01/44.jpg']
 
+noah_morning_embed = discord.Embed()
+noah_morning_embed.set_image(url='https://cdn.discordapp.com/attachments/239214414132281344/468755357200809984/image.jpg')
+
 for url in fair_urls:
     new_embed = discord.Embed()
     new_embed.set_image(url=url)
@@ -95,12 +98,15 @@ for url in fair_urls:
 mr_dictionary = {}
 
 on_cooldown = False
-#cooldown_time = 8761
 cooldown_time = 10
+
+noah_cooldown = False
+noah_separate_cooldown = False
 # Server specific ids
 # Channels
 venting_channel = 400096015740567552
-
+main_channel = 239214414132281344
+TS_channel =  405046053809946647
 
 # emojis
 expand1 = 459124362075832320
@@ -204,11 +210,29 @@ async def reset_display_name():
             await changed_guild.me.edit(nick=None)
 
 
+async def reset_noah_cooldown():
+    global noah_cooldown
+    est = timezone('EST')
+    today = datetime.now().astimezone(est)
+    if today.hour == 5 and today.minute == 0:
+        noah_cooldown = True
+
+
+async def reset_separate_cooldown():
+    global noah_separate_cooldown
+    est = timezone('EST')
+    today = datetime.now().astimezone(est)
+    if today.minute % 2 == 0:
+        noah_separate_cooldown = True
+
+
 async def background_update():
     global on_cooldown
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
+        await reset_noah_cooldown()
+        await reset_separate_cooldown()
         await asyncio.sleep(60)
 
 
@@ -234,6 +258,16 @@ async def await_message(message, content=None, embed=None):
         await message.channel.send(content=content, embed=embed)
     on_cooldown = True
 
+
+async def await_channel(channel, content=None, embed=None):
+    global on_cooldown
+    if content is None:
+        await channel.send(embed=embed)
+    elif embed is None:
+        await channel.send(content=content)
+    else:
+        await channel.send(content=content, embed=embed)
+    on_cooldown = True
 
 @client.event
 async def on_message(message):
@@ -463,6 +497,28 @@ async def on_message(message):
         else:
             x = 0
 
+
+@client.event
+async def on_message_edit(before, after):
+    if not exactly_in("fair", before.content.lower()) and exactly_in("fair", after.content.lower()):
+        index = random.randrange(0, len(fair_embeds))
+        await await_message(message=after, embed=fair_embeds[index])
+
+@client.event
+async def on_member_update(before, after):
+    global noah_cooldown
+    global noah_separate_cooldown
+    if before.id == noah:
+        if noah_cooldown:
+            if before.status == discord.Status.offline and after.status == discord.Status.online:
+                await await_channel(channel=main_channel, embed=noah_morning_embed)
+                noah_cooldown = False
+
+    if before.id == noah:
+        if noah_separate_cooldown:
+            if before.status == discord.Status.offline and after.status == discord.Status.online:
+                await await_channel(channel=main_channel, embed=noah_morning_embed)
+                noah_separate_cooldown = False
 
 @client.event
 async def on_reaction_add(reaction, user):
