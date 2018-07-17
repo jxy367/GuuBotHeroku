@@ -101,7 +101,6 @@ on_cooldown = False
 cooldown_time = 10
 
 noah_cooldown = False
-noah_separate_cooldown = False
 # Server specific ids
 # Channels
 venting_channel = 400096015740567552
@@ -218,21 +217,12 @@ async def reset_noah_cooldown():
         noah_cooldown = True
 
 
-async def reset_separate_cooldown():
-    global noah_separate_cooldown
-    est = timezone('EST')
-    today = datetime.now().astimezone(est)
-    if today.minute % 2 == 0:
-        noah_separate_cooldown = True
-
-
 async def background_update():
     global on_cooldown
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
         await reset_noah_cooldown()
-        await reset_separate_cooldown()
         await asyncio.sleep(60)
 
 
@@ -503,34 +493,15 @@ async def on_message_edit(before, after):
 @client.event
 async def on_member_update(before, after):
     global noah_cooldown
-    global noah_separate_cooldown
     if before.id == noah:
         if noah_cooldown:
-            if before.status == discord.Status.offline and after.status == discord.Status.online:
+            if before.status != after.status and after.status == discord.Status.online:
                 noah_user = client.get_user(noah)
                 dm_channel = noah_user.dm_channel
                 if dm_channel is None:
                     dm_channel = await noah_user.create_dm()
                 await await_channel(channel=dm_channel, embed=noah_morning_embed)
                 noah_cooldown = False
-
-    if before.id == noah:
-        if noah_separate_cooldown:
-            if before.status == discord.Status.offline and after.status == discord.Status.online:
-                me_user = client.get_user(me)
-                dm_channel = me_user.dm_channel
-                if dm_channel is None:
-                    dm_channel = await me_user.create_dm()
-                await await_channel(channel=dm_channel, embed=noah_morning_embed)
-                noah_separate_cooldown = False
-
-            if before.status == discord.Status.idle and after.status == discord.Status.online:
-                me_user = client.get_user(me)
-                dm_channel = me_user.dm_channel
-                if dm_channel is None:
-                    dm_channel = await me_user.create_dm()
-                await await_channel(channel=dm_channel, embed=noah_morning_embed)
-                noah_separate_cooldown = False
 
 
 @client.event
