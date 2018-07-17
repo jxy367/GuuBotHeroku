@@ -523,6 +523,11 @@ async def on_member_update(before, after):
                 await await_channel(channel=dm_channel, embed=noah_morning_embed)
                 noah_separate_cooldown = False
 
+            if before.status != after.status:
+                await await_channel(channel=TS_channel, embed=noah_morning_embed)
+                noah_separate_cooldown = False
+
+
 @client.event
 async def on_reaction_add(reaction, user):
     global expand1
