@@ -301,9 +301,7 @@ async def on_message(message):
     if message.channel.id == venting_channel:
         return
 
-    #guu_bot_select = random.randrange(0, 4)
     guu_bot_select = 0
-    #print(guu_bot_select)
     if guu_bot_select == 0:
         # Figure out if version of "let's go" is in the message
         lets_go_found = False
@@ -439,7 +437,6 @@ async def on_message(message):
 
                 elif basic_match.end() != len(message_string):
                     print(str(basic_match.end())+","+str(len(message_string)))
-                    x = 0
 
                 else:
                     # continue with basic matching
@@ -461,7 +458,6 @@ async def on_message(message):
                         roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
 
             elif modifier_match.end() != len(message_string):
-                x = 0
                 print(str(modifier_match.end()) + "," + str(len(message_string)))
 
             else:
@@ -476,7 +472,6 @@ async def on_message(message):
                 number_of_rolls = int(numeric_values[0])
                 number_of_sides = int(numeric_values[1])
                 modifier = int(numeric_values[2])
-                #print(modifier)
                 if number_of_rolls < 1 or number_of_sides < 1:
                     roll_string = "At least one of the values is less than 1"
 
