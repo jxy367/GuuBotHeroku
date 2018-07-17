@@ -259,15 +259,17 @@ async def await_message(message, content=None, embed=None):
     on_cooldown = True
 
 
-async def await_channel(channel, content=None, embed=None):
+async def await_channel(channel_id, content=None, embed=None):
+    channel = client.get_channel(channel_id)
     global on_cooldown
-    if content is None:
-        await channel.send(embed=embed)
-    elif embed is None:
-        await channel.send(content=content)
-    else:
-        await channel.send(content=content, embed=embed)
-    on_cooldown = True
+    if channel is not None:
+        if content is None:
+            await channel.send(embed=embed)
+        elif embed is None:
+            await channel.send(content=content)
+        else:
+            await channel.send(content=content, embed=embed)
+        on_cooldown = True
 
 @client.event
 async def on_message(message):
