@@ -524,7 +524,7 @@ async def on_member_update(before, after):
                 await await_channel(channel=dm_channel, embed=noah_morning_embed)
                 noah_separate_cooldown = False
 
-            if before.status != after.status:
+            if before.status == discord.Status.idle and after.status == discord.Status.online:
                 channel = client.get_channel(TS_channel)
                 await await_channel(channel=channel, embed=noah_morning_embed)
                 noah_separate_cooldown = False
