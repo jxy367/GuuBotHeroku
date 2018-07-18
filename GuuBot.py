@@ -284,7 +284,10 @@ async def on_message(message):
         else:
             return
 
-    mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
+    try:
+        mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
+    except AttributeError:
+        pass
 
     if on_cooldown:
         return
