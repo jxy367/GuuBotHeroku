@@ -97,7 +97,7 @@ for url in fair_urls:
 
 mr_dictionary = {}
 
-on_cooldown = False
+on_cooldown = {}
 cooldown_time = 10
 
 noah_cooldown = False
@@ -105,7 +105,8 @@ noah_cooldown = False
 # Channels
 venting_channel = 400096015740567552
 main_channel = 239214414132281344
-TS_channel =  405046053809946647
+TS_channel = 405046053809946647
+voice_text_channel = 455118686315872257
 
 # emojis
 expand1 = 459124362075832320
@@ -218,7 +219,6 @@ async def reset_noah_cooldown():
 
 
 async def background_update():
-    global on_cooldown
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
@@ -228,25 +228,28 @@ async def background_update():
 
 async def cooldown():
     global on_cooldown
-    global cooldown_time
     await client.wait_until_ready()
     while not client.is_closed():
-        if on_cooldown:
-            await asyncio.sleep(cooldown_time)
-            on_cooldown = False
-        else:
-            await asyncio.sleep(1)
+        for guild in on_cooldown:
+            on_cooldown[guild] = on_cooldown[guild] - 1
+            if on_cooldown[guild] < 0:
+                on_cooldown[guild] = 0
+        await asyncio.sleep(1)
 
 
 async def await_message(message, content=None, embed=None):
     global on_cooldown
+    global cooldown_time
+
     if content is None:
         await message.channel.send(embed=embed)
     elif embed is None:
         await message.channel.send(content=content)
     else:
         await message.channel.send(content=content, embed=embed)
-    on_cooldown = True
+
+    guild_id = message.guild
+    on_cooldown[guild_id] = cooldown_time
 
 
 async def await_channel(channel, content=None, embed=None):
@@ -264,6 +267,11 @@ async def await_channel(channel, content=None, embed=None):
 async def on_message(message):
     global mr_dictionary
     global on_cooldown
+
+    guild_id = message.guild
+    if guild_id not in on_cooldown:
+        on_cooldown[guild_id] = 0
+
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
@@ -289,7 +297,8 @@ async def on_message(message):
     except AttributeError:
         pass
 
-    if on_cooldown:
+    guild_cooldown = on_cooldown[guild_id] <= 0
+    if not guild_cooldown:
         return
 
     if message.channel.id == venting_channel:
@@ -400,17 +409,23 @@ async def on_message(message):
             await await_message(message=message, content="^ "+message.author.mention)
 
         elif "guubot play " in message.content.lower():
+            play_url = ""
             if message.author.id == noah:
                 noah_select = random.randrange(0, 10)
                 if noah_select == 0:
-                    await await_message(message=message, content=request_youtube_video("barbie girl"))
+                    play_url = request_youtube_video("barbie girl")
+                    await await_message(message=message, content=play_url)
                 else:
-                    await await_message(message=message, content=request_youtube_video(
-                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
+                    play_url = request_youtube_video(
+                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
+                    await await_message(message=message, content=play_url)
 
             else:
-                await await_message(message=message, content=request_youtube_video(
-                    message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):]))
+                play_url = request_youtube_video(
+                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
+                await await_message(message=message, content=play_url)
+
+
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
             if message.author.id == noah:
