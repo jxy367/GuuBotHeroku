@@ -130,7 +130,7 @@ esther = 145075344095969281
 noah = 165481032043331584
 
 # Voice stuff
-discord.opus.load_opus('libopus-0.dll')
+#discord.opus.load_opus('libopus-0.dll')
 #with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
 
