@@ -8,7 +8,7 @@ import urllib
 from urllib import request
 from urllib import parse
 from bs4 import BeautifulSoup
-import youtube_dl
+#import youtube_dl
 import time
 import re
 
