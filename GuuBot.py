@@ -13,8 +13,8 @@ import time
 import re
 
 #API_KEY = os.environ.get('API_KEY')
-TOKEN = os.environ.get('TOKEN')
-#TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
+#TOKEN = os.environ.get('TOKEN')
+TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
 client = discord.Client()
 
@@ -184,6 +184,33 @@ def str1_star_str2(str1: str, str2: str, str3: str):
         return exactly_in(str2, str3[index+len_str1:])
 
 
+def get_cooldown_key(message_or_channel):
+    global on_cooldown
+    key = message_or_channel.guild
+    if key is None:
+        if isinstance(message_or_channel, discord.Message):
+            key = message_or_channel.channel.id
+        elif isinstance(message_or_channel, discord.TextChannel):
+            key = message_or_channel.id
+        else:
+            key = "unforunate"
+    if key not in on_cooldown:
+        on_cooldown[key] = 0
+    return key
+
+
+def get_current_cooldown(message_or_channel):
+    key = get_cooldown_key(message_or_channel)
+    return on_cooldown[key]
+
+
+def reset_cooldown(message_or_channel):
+    global on_cooldown
+    global cooldown_time
+    key = get_cooldown_key(message_or_channel)
+    on_cooldown[key] = cooldown_time
+
+
 def request_youtube_video(keyword: str):
     start = time.time()
     query = urllib.parse.quote(keyword)
@@ -243,26 +270,18 @@ async def cooldown():
         await asyncio.sleep(1)
 
 
-async def await_message(message, content=None, embed=None):
-    global on_cooldown
-    global cooldown_time
-
+async def await_message(message: discord.Message, content=None, embed=None):
     if content is None:
         await message.channel.send(embed=embed)
     elif embed is None:
         await message.channel.send(content=content)
     else:
-        await message.channel.send(content=content, embed=embed)
+        await message.channel.send(content=content+"!!", embed=embed)
 
-    if message.guild is not None:
-        guild_id = message.guild
-    else:
-        guild_id = message.channel.id
-    on_cooldown[guild_id] = cooldown_time
+    reset_cooldown(message)
 
 
-async def await_channel(channel, content=None, embed=None):
-    global on_cooldown
+async def await_channel(channel: discord.TextChannel, content=None, embed=None):
     if channel is not None:
         if content is None:
             await channel.send(embed=embed)
@@ -270,21 +289,15 @@ async def await_channel(channel, content=None, embed=None):
             await channel.send(content=content)
         else:
             await channel.send(content=content, embed=embed)
-        if channel.guild is not None:
-            on_cooldown[channel.guild] = True
-        else:
-            on_cooldown[channel.id] = True
+
+    reset_cooldown(channel)
+
 
 @client.event
 async def on_message(message):
     global mr_dictionary
-    global on_cooldown
 
-    guild_id = message.guild
-    if guild_id is None:
-        guild_id = message.channel.id
-    if guild_id not in on_cooldown:
-        on_cooldown[guild_id] = 0
+    cd = get_current_cooldown(message)
 
     # we do not want the bot to reply to itself
     if message.author == client.user:
@@ -311,7 +324,7 @@ async def on_message(message):
     except AttributeError:
         pass
 
-    guild_cooldown = on_cooldown[guild_id] <= 0
+    guild_cooldown = cd <= 0
     if not guild_cooldown:
         return
 
