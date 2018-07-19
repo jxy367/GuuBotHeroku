@@ -8,6 +8,7 @@ import urllib
 from urllib import request
 from urllib import parse
 from bs4 import BeautifulSoup
+import youtube_dl
 import time
 import re
 
@@ -96,6 +97,7 @@ for url in fair_urls:
     fair_embeds.append(new_embed)
 
 mr_dictionary = {}
+playlist_dictionary = {}
 
 on_cooldown = {}
 cooldown_time = 10
@@ -127,6 +129,10 @@ danny = 191426236935831552
 esther = 145075344095969281
 noah = 165481032043331584
 
+# Voice stuff
+discord.opus.load_opus('libopus-0.dll')
+#with youtube_dl.YoutubeDL() as ydl:
+#    ydl.download()
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     index = str2.find(str1)
@@ -248,7 +254,10 @@ async def await_message(message, content=None, embed=None):
     else:
         await message.channel.send(content=content, embed=embed)
 
-    guild_id = message.guild
+    if message.guild is not None:
+        guild_id = message.guild
+    else:
+        guild_id = message.channel.id
     on_cooldown[guild_id] = cooldown_time
 
 
@@ -261,7 +270,10 @@ async def await_channel(channel, content=None, embed=None):
             await channel.send(content=content)
         else:
             await channel.send(content=content, embed=embed)
-        on_cooldown = True
+        if channel.guild is not None:
+            on_cooldown[channel.guild] = True
+        else:
+            on_cooldown[channel.id] = True
 
 @client.event
 async def on_message(message):
@@ -269,6 +281,8 @@ async def on_message(message):
     global on_cooldown
 
     guild_id = message.guild
+    if guild_id is None:
+        guild_id = message.channel.id
     if guild_id not in on_cooldown:
         on_cooldown[guild_id] = 0
 
@@ -425,6 +439,7 @@ async def on_message(message):
                         message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
                 await await_message(message=message, content=play_url)
 
+            #if message.channel.id == TS_channel:
 
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
