@@ -546,8 +546,9 @@ async def on_member_update(before, after):
                 dm_channel = noah_user.dm_channel
                 if dm_channel is None:
                     dm_channel = await noah_user.create_dm()
-                await await_channel(channel=dm_channel, embed=noah_morning_embed)
                 noah_cooldown = False
+                await await_channel(channel=dm_channel, embed=noah_morning_embed)
+
 
 
 @client.event
