@@ -13,8 +13,8 @@ import time
 import re
 
 #API_KEY = os.environ.get('API_KEY')
-#TOKEN = os.environ.get('TOKEN')
-TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
+TOKEN = os.environ.get('TOKEN')
+#TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
 
 client = discord.Client()
 
