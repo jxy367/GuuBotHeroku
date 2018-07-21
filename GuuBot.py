@@ -14,7 +14,7 @@ import re
 
 #API_KEY = os.environ.get('API_KEY')
 TOKEN = os.environ.get('TOKEN')
-#TOKEN = 'NDM4ODkyMDQ3MDM5MDcwMjE4.DcLNng.AbGD6jAOyNo5JIgadsgR3rI_3Wc'
+
 
 client = discord.Client()
 
@@ -548,7 +548,6 @@ async def on_member_update(before, after):
                     dm_channel = await noah_user.create_dm()
                 noah_cooldown = False
                 await await_channel(channel=dm_channel, embed=noah_morning_embed)
-
 
 
 @client.event
