@@ -186,8 +186,9 @@ def str1_star_str2(str1: str, str2: str, str3: str):
 
 def get_cooldown_key(message_or_channel):
     global on_cooldown
-    key = message_or_channel.guild
-    if key is None:
+    try:
+        key = message_or_channel.guild
+    except AttributeError:
         if isinstance(message_or_channel, discord.Message):
             key = message_or_channel.channel.id
         elif isinstance(message_or_channel, discord.TextChannel):
