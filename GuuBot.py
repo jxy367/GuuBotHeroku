@@ -246,7 +246,7 @@ async def reset_display_name():
 
 async def reset_noah_cooldown():
     global noah_cooldown
-    est = timezone('EST')
+    est = timezone('US/Eastern')
     today = datetime.now().astimezone(est)
     if today.hour == 5 and today.minute == 0:
         noah_cooldown = True
@@ -428,8 +428,8 @@ async def on_message(message):
             await await_message(message=message, content=fire, embed=fire_embed)
 
         elif "nora" in message.content.lower():
-            est = timezone('EST')
-            today = datetime.now().astimezone(est)
+            et = timezone('US/Eastern')
+            today = datetime.now().astimezone(et)
             if today.hour < 12:
                 await await_message(message=message, content=morning, embed=nora_morning)
 
