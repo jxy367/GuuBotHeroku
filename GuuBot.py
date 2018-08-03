@@ -213,17 +213,11 @@ def reset_cooldown(message_or_channel):
 
 
 def request_youtube_video(keyword: str):
-    start = time.time()
     query = urllib.parse.quote(keyword)
-    quote_finished = time.time()
     url = "https://www.youtube.com/results?search_query=" + query
-    url_made = time.time()
     response = urllib.request.urlopen(url)
-    response_received = time.time()
     html = response.read()
-    response_read = time.time()
     soup = BeautifulSoup(html, 'html.parser')
-    soup_made = time.time()
 
     for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
         video_url = 'https://www.youtube.com' + vid['href']
@@ -233,6 +227,13 @@ def request_youtube_video(keyword: str):
 
     print("Returning despacito")
     return despacito
+
+
+def regex_fair(message: str):
+    assert message.islower()
+    fair_regex = re.compile('(.* )*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *.*')
+    result = fair_regex.search(message)
+    return len(message) == result.end() - result.start()
 
 
 async def reset_display_name():
@@ -343,7 +344,7 @@ async def on_message(message):
                     lets_go_found = True
 
         # Check if "fair" appears in message
-        exact_fair = exactly_in("fair", message.content.lower())
+        exact_fair = regex_fair(message.content.lower())
 
         if "awoo" in message.content.lower():
 
@@ -452,8 +453,6 @@ async def on_message(message):
                 play_url = request_youtube_video(
                         message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
                 await await_message(message=message, content=play_url)
-
-            #if message.channel.id == TS_channel:
 
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
