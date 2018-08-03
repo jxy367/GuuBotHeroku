@@ -10,4 +10,4 @@ idna==2.7
 async-timeout==3.0.0
 pytz==2018.5
 bs4
-discord.py==1.0.0a1504+gf06563c
+#discord.py==1.0.0a1504+gf06563c
