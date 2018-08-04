@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup
 import time
 import re
 
-#API_KEY = os.environ.get('API_KEY')
 TOKEN = os.environ.get('TOKEN')
 
 
@@ -233,8 +232,9 @@ def regex_fair(message: str):
     assert message.islower()
     fair_regex = re.compile('(.* )*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *.*')
     result = fair_regex.search(message)
-    return len(message) == result.end() - result.start()
-
+    if result is not None:
+        return len(message) == result.end() - result.start()
+    return False
 
 async def reset_display_name():
     for changed_guild in client.guilds:
