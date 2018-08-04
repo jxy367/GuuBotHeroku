@@ -237,23 +237,22 @@ def regex_fair(message: str):
 def roll_function(message: str, roll_type: str):
     danny_roll = (roll_type == 'dannyroll ')
     roll_string = "Input was not acceptable"
-    message_string = message.content
     modifier_matching = re.compile(roll_type + '\d+d\d+ *[-+] *\d* *', re.IGNORECASE)
-    modifier_match = modifier_matching.match(message_string)
+    modifier_match = modifier_matching.match(message)
     find_digits = re.compile('\d+')
     if modifier_match is None:
         # Try basic matching
         basic_matching = re.compile(roll_type + '\d+d\d+ *', re.IGNORECASE)
-        basic_match = basic_matching.match(message_string)
+        basic_match = basic_matching.match(message)
         if basic_match is None:
             x = 0
 
-        elif basic_match.end() != len(message_string):
-            print(str(basic_match.end()) + "," + str(len(message_string)))
+        elif basic_match.end() != len(message):
+            print(str(basic_match.end()) + "," + str(len(message)))
 
         else:
             # continue with basic matching
-            numeric_values = find_digits.findall(message_string)
+            numeric_values = find_digits.findall(message)
             assert len(numeric_values) == 2
             number_of_rolls = int(numeric_values[0])
             number_of_sides = int(numeric_values[1])
@@ -274,17 +273,17 @@ def roll_function(message: str, roll_type: str):
 
                 roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
 
-    elif modifier_match.end() != len(message_string):
-        print(str(modifier_match.end()) + "," + str(len(message_string)))
+    elif modifier_match.end() != len(message):
+        print(str(modifier_match.end()) + "," + str(len(message)))
 
     else:
         # continue with modifier matching
-        assert "+" in message_string or "-" in message_string
+        assert "+" in message or "-" in message
 
-        modifier_symbol = "+" in message_string
+        modifier_symbol = "+" in message
         modifier_as_multiplier = 2 * int(modifier_symbol) - 1
 
-        numeric_values = find_digits.findall(message_string)
+        numeric_values = find_digits.findall(message)
         assert len(numeric_values) == 3
         number_of_rolls = int(numeric_values[0])
         number_of_sides = int(numeric_values[1])
