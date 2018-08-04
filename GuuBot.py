@@ -234,6 +234,82 @@ def regex_fair(message: str):
     return result is not None
 
 
+def roll_function(message: str, roll_type: str):
+    danny_roll = (roll_type == 'dannyroll ')
+    roll_string = "Input was not acceptable"
+    message_string = message.content
+    modifier_matching = re.compile(roll_type + '\d+d\d+ *[-+] *\d* *', re.IGNORECASE)
+    modifier_match = modifier_matching.match(message_string)
+    find_digits = re.compile('\d+')
+    if modifier_match is None:
+        # Try basic matching
+        basic_matching = re.compile(roll_type + '\d+d\d+ *', re.IGNORECASE)
+        basic_match = basic_matching.match(message_string)
+        if basic_match is None:
+            x = 0
+
+        elif basic_match.end() != len(message_string):
+            print(str(basic_match.end()) + "," + str(len(message_string)))
+
+        else:
+            # continue with basic matching
+            numeric_values = find_digits.findall(message_string)
+            assert len(numeric_values) == 2
+            number_of_rolls = int(numeric_values[0])
+            number_of_sides = int(numeric_values[1])
+            if number_of_rolls < 1 or number_of_sides < 1:
+                roll_string = "At least one of the values is less than 1"
+
+            elif number_of_rolls > 100 or number_of_sides > 100:
+                roll_string = "At least one of the values is greater than 100"
+
+            else:
+                dice_list = []
+                for num in range(0, number_of_rolls):
+                    if danny_roll:
+                        dice_list.append(random.randrange(1, min(number_of_sides, 4) + 1))
+
+                    else:
+                        dice_list.append(random.randrange(1, number_of_sides + 1))
+
+                roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
+
+    elif modifier_match.end() != len(message_string):
+        print(str(modifier_match.end()) + "," + str(len(message_string)))
+
+    else:
+        # continue with modifier matching
+        assert "+" in message_string or "-" in message_string
+
+        modifier_symbol = "+" in message_string
+        modifier_as_multiplier = 2 * int(modifier_symbol) - 1
+
+        numeric_values = find_digits.findall(message_string)
+        assert len(numeric_values) == 3
+        number_of_rolls = int(numeric_values[0])
+        number_of_sides = int(numeric_values[1])
+        modifier = int(numeric_values[2])
+        if number_of_rolls < 1 or number_of_sides < 1:
+            roll_string = "At least one of the values is less than 1"
+
+        elif number_of_rolls > 100 or number_of_sides > 100:
+            roll_string = "At least one of the values is greater than 100"
+
+        else:
+            dice_list = []
+            for num in range(0, number_of_rolls):
+                if danny_roll:
+                    dice_list.append(random.randrange(1, min(number_of_sides, 4) + 1))
+                else:
+                    dice_list.append(random.randrange(1, number_of_sides + 1))
+
+            roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list)) \
+                          + "\nModifier: " + str(modifier_as_multiplier * modifier) + "\nFinal value: " \
+                          + str(sum(dice_list) + modifier * modifier_as_multiplier)
+
+    return roll_string
+
+
 async def reset_display_name():
     for changed_guild in client.guilds:
         if changed_guild.me.display_name != "GuuBot":
@@ -452,76 +528,16 @@ async def on_message(message):
                         message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
                 await await_message(message=message, content=play_url)
 
-
         elif "sad" == message.content.lower() or "sad!" == message.content.lower():
             if message.author.id == noah:
                 await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
 
         elif message.content.lower().find("roll ") == 0:
-            roll_string = "Input was not acceptable"
-            message_string = message.content
-            modifier_matching = re.compile('roll \d+d\d+ *[-+] *\d* *', re.IGNORECASE)
-            modifier_match = modifier_matching.match(message_string)
-            find_digits = re.compile('\d+')
-            if modifier_match is None:
-                # Try basic matching
-                basic_matching = re.compile('roll \d+d\d+ *', re.IGNORECASE)
-                basic_match = basic_matching.match(message_string)
-                if basic_match is None:
-                    x = 0
+            roll_string = roll_function(message.content.lower(), "roll ")
+            await await_message(message=message, content=roll_string)
 
-                elif basic_match.end() != len(message_string):
-                    print(str(basic_match.end())+","+str(len(message_string)))
-
-                else:
-                    # continue with basic matching
-                    numeric_values = find_digits.findall(message_string)
-                    assert len(numeric_values) == 2
-                    number_of_rolls = int(numeric_values[0])
-                    number_of_sides = int(numeric_values[1])
-                    if number_of_rolls < 1 or number_of_sides < 1:
-                        roll_string = "At least one of the values is less than 1"
-
-                    elif number_of_rolls > 100 or number_of_sides > 100:
-                        roll_string = "At least one of the values is greater than 100"
-
-                    else:
-                        dice_list = []
-                        for num in range(0, number_of_rolls):
-                            dice_list.append(random.randrange(1, number_of_sides+1))
-
-                        roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list))
-
-            elif modifier_match.end() != len(message_string):
-                print(str(modifier_match.end()) + "," + str(len(message_string)))
-
-            else:
-                # continue with modifier matching
-                assert "+" in message_string or "-" in message_string
-
-                modifier_symbol = "+" in message_string
-                modifier_as_multiplier = 2 * int(modifier_symbol) - 1
-
-                numeric_values = find_digits.findall(message_string)
-                assert len(numeric_values) == 3
-                number_of_rolls = int(numeric_values[0])
-                number_of_sides = int(numeric_values[1])
-                modifier = int(numeric_values[2])
-                if number_of_rolls < 1 or number_of_sides < 1:
-                    roll_string = "At least one of the values is less than 1"
-
-                elif number_of_rolls > 100 or number_of_sides > 100:
-                    roll_string = "At least one of the values is greater than 100"
-
-                else:
-                    dice_list = []
-                    for num in range(0, number_of_rolls):
-                        dice_list.append(random.randrange(1, number_of_sides + 1))
-
-                    roll_string = "Dice values: " + str(dice_list)[1:-1] + "\nSum: " + str(sum(dice_list)) \
-                                  + "\nModifier: " + str(modifier_as_multiplier * modifier) + "\nFinal value: " \
-                                  + str(sum(dice_list) + modifier*modifier_as_multiplier)
-
+        elif message.content.lower().find("dannyroll ") == 0:
+            roll_string = roll_function(message.content.lower(), "dannyroll ")
             await await_message(message=message, content=roll_string)
 
         else:
