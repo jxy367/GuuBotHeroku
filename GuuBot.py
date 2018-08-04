@@ -229,12 +229,12 @@ def request_youtube_video(keyword: str):
 
 
 def regex_fair(message: str):
-    assert message.islower()
     fair_regex = re.compile('(.* )*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *.*')
     result = fair_regex.search(message)
     if result is not None:
         return len(message) == result.end() - result.start()
     return False
+
 
 async def reset_display_name():
     for changed_guild in client.guilds:
