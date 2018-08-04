@@ -10,7 +10,7 @@ from urllib import parse
 from bs4 import BeautifulSoup
 #import youtube_dl
 import time
-import re
+import regex
 
 TOKEN = os.environ.get('TOKEN')
 
@@ -229,11 +229,9 @@ def request_youtube_video(keyword: str):
 
 
 def regex_fair(message: str):
-    fair_regex = re.compile('(.* )*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *.*')
+    fair_regex = regex.compile('[^a-zA-Z0-9]*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *')
     result = fair_regex.search(message)
-    if result is not None:
-        return len(message) == result.end() - result.start()
-    return False
+    return result is not None
 
 
 async def reset_display_name():
