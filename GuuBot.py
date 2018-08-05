@@ -266,8 +266,11 @@ def roll_function(message: str, roll_type: str):
                 dice_list = []
                 for num in range(0, number_of_rolls):
                     if danny_roll:
-                        new_number_of_sides = (number_of_sides // 3) if (number_of_sides // 3) > 0 else 1
-                        dice_list.append(random.randrange(1, new_number_of_sides + 1))
+                        if number_of_sides == 1:
+                            dice_list.append(1-2)
+                        else:
+                            new_number_of_sides = (number_of_sides // 3) if (number_of_sides // 3) > 0 else 1
+                            dice_list.append(random.randrange(1, new_number_of_sides + 1))
 
                     else:
                         dice_list.append(random.randrange(1, number_of_sides + 1))
@@ -299,8 +302,11 @@ def roll_function(message: str, roll_type: str):
             dice_list = []
             for num in range(0, number_of_rolls):
                 if danny_roll:
-                    new_number_of_sides = (number_of_sides//3) if (number_of_sides//3) > 0 else 1
-                    dice_list.append(random.randrange(1, new_number_of_sides + 1))
+                    if number_of_sides == 1:
+                        dice_list.append(1 - 2)
+                    else:
+                        new_number_of_sides = (number_of_sides // 3) if (number_of_sides // 3) > 0 else 1
+                        dice_list.append(random.randrange(1, new_number_of_sides + 1))
                 else:
                     dice_list.append(random.randrange(1, number_of_sides + 1))
 
