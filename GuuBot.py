@@ -553,6 +553,9 @@ async def on_message(message):
 
 @client.event
 async def on_message_edit(before, after):
+    if before.channel.id == venting_channel:
+        return
+
     if not exactly_in("fair", before.content.lower()) and exactly_in("fair", after.content.lower()):
         index = random.randrange(0, len(fair_embeds))
         await await_message(message=after, embed=fair_embeds[index])
