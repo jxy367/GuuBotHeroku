@@ -406,10 +406,13 @@ async def play(ctx: discord.ext.commands.Context, *, value):
     print(value)
     value = value.strip()
     noah_select = random.randrange(0, 11)
+    youtube_embed = discord.Embed()
     if ctx.author.id == noah and noah_select == 0:
-        await await_ctx(ctx, embed=discord.Embed(url=request_youtube_video("Barbie girl")))
+        youtube_embed.set_image(url=request_youtube_video("Barbie girl"))
+        await await_ctx(ctx, embed=youtube_embed)
     else:
-        await await_ctx(ctx, embed=discord.Embed(url=request_youtube_video(value)))
+        youtube_embed.set_image(url=request_youtube_video(value))
+        await await_ctx(ctx, embed=youtube_embed)
 
 
 @client.command()
