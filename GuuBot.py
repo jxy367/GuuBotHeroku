@@ -215,6 +215,7 @@ def reset_cooldown(message_or_channel):
 
 def request_youtube_video(keyword: str):
     print("Youtube video requested: ", keyword)
+    keyword = keyword.strip()
     query = urllib.parse.quote(keyword)
     url = "https://www.youtube.com/results?search_query=" + query
     response = urllib.request.urlopen(url)
