@@ -403,6 +403,7 @@ async def dannyroll(ctx, value):
 
 @client.command()
 async def play(ctx: discord.ext.commands.Context, value: str):
+    print(value)
     value = value.strip()
     noah_select = random.randrange(0, 11)
     if ctx.author.id == noah and noah_select == 0:
@@ -416,6 +417,7 @@ async def echo(ctx, phrase):
     await ctx.send(phrase)
 
 client.remove_command('help')
+
 
 @client.command()
 async def help(ctx):
