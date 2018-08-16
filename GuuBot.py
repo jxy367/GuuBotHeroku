@@ -214,6 +214,7 @@ def reset_cooldown(message_or_channel):
 
 
 def request_youtube_video(keyword: str):
+    print("Youtube video requested: ", keyword)
     query = urllib.parse.quote(keyword)
     url = "https://www.youtube.com/results?search_query=" + query
     response = urllib.request.urlopen(url)
@@ -224,6 +225,7 @@ def request_youtube_video(keyword: str):
         video_url = 'https://www.youtube.com' + vid['href']
         find_index = video_url.find('https://www.youtube.com/watch')
         if find_index == 0:
+            print(video_url)
             return video_url
 
     print("Returning despacito")
@@ -403,15 +405,16 @@ async def dannyroll(ctx, *, value):
 
 @client.command()
 async def play(ctx: discord.ext.commands.Context, *, value):
-    print(value)
     value = value.strip()
     noah_select = random.randrange(0, 11)
     youtube_embed = discord.Embed()
     if ctx.author.id == noah and noah_select == 0:
-        youtube_embed.set_image(url=request_youtube_video("Barbie girl"))
+        video = request_youtube_video("Barbie girl")
+        youtube_embed.set_image(url=video)
         await await_ctx(ctx, embed=youtube_embed)
     else:
-        youtube_embed.set_image(url=request_youtube_video(value))
+        video = request_youtube_video(value)
+        youtube_embed.set_image(url=video)
         await await_ctx(ctx, embed=youtube_embed)
 
 
