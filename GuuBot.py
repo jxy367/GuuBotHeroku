@@ -393,12 +393,12 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
 @client.command()
 async def roll(ctx, value):
-    await_ctx(ctx, roll_function(value, "roll"))
+    await await_ctx(ctx, roll_function(value, "roll"))
 
 
 @client.command()
 async def dannyroll(ctx, value):
-    await_ctx(ctx, roll_function(value, "dannyroll"))
+    await await_ctx(ctx, roll_function(value, "dannyroll"))
 
 
 @client.command()
@@ -407,9 +407,9 @@ async def play(ctx: discord.ext.commands.Context, value: str):
     value = value.strip()
     noah_select = random.randrange(0, 11)
     if ctx.author.id == noah and noah_select == 0:
-        await_ctx(ctx, embed=discord.Embed(url=request_youtube_video("Barbie girl")))
+        await await_ctx(ctx, embed=discord.Embed(url=request_youtube_video("Barbie girl")))
     else:
-        await_ctx(ctx, embed=discord.Embed(url=request_youtube_video(value)))
+        await await_ctx(ctx, embed=discord.Embed(url=request_youtube_video(value)))
 
 
 @client.command()
