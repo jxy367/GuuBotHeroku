@@ -392,17 +392,17 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
 
 @client.command()
-async def roll(ctx, value):
+async def roll(ctx, *, value):
     await await_ctx(ctx, roll_function(value, "roll"))
 
 
 @client.command()
-async def dannyroll(ctx, value):
+async def dannyroll(ctx, *, value):
     await await_ctx(ctx, roll_function(value, "dannyroll"))
 
 
 @client.command()
-async def play(ctx: discord.ext.commands.Context, value: str):
+async def play(ctx: discord.ext.commands.Context, *, value):
     print(value)
     value = value.strip()
     noah_select = random.randrange(0, 11)
