@@ -16,7 +16,7 @@ import re
 TOKEN = os.environ.get('TOKEN')
 
 
-client = commands.Bot(command_prefix="guubot")
+client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 
 # Guu Messages #
 woo = 'Woo'
