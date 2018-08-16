@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 import asyncio
 import random
 from datetime import datetime
@@ -15,7 +16,7 @@ import re
 TOKEN = os.environ.get('TOKEN')
 
 
-client = discord.Client()
+client = commands.Bot(command_prefix="guubot")
 
 # Guu Messages #
 woo = 'Woo'
@@ -133,6 +134,7 @@ noah = 165481032043331584
 #with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
 
+
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
     index = str2.find(str1)
     len_str1 = len(str1)
@@ -234,15 +236,17 @@ def regex_fair(message: str):
     return result is not None
 
 
+#Roll function designed for command usage
 def roll_function(message: str, roll_type: str):
-    danny_roll = (roll_type == 'dannyroll ')
+    message = message.strip()
+    danny_roll = (roll_type == 'dannyroll')
     roll_string = "Input was not acceptable"
-    modifier_matching = re.compile(roll_type + '\d+d\d+ *[-+] *\d* *', re.IGNORECASE)
+    modifier_matching = re.compile('\d+d\d+ *[-+] *\d* *', re.IGNORECASE)
     modifier_match = modifier_matching.match(message)
     find_digits = re.compile('\d+')
     if modifier_match is None:
         # Try basic matching
-        basic_matching = re.compile(roll_type + '\d+d\d+ *', re.IGNORECASE)
+        basic_matching = re.compile('\d+d\d+ *', re.IGNORECASE)
         basic_match = basic_matching.match(message)
         if basic_match is None:
             x = 0
@@ -376,6 +380,55 @@ async def await_channel(channel: discord.TextChannel, content=None, embed=None):
     reset_cooldown(channel)
 
 
+async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None):
+    if content is None:
+        await ctx.send(embed=embed)
+    elif embed is None:
+        await ctx.send(content=content)
+    else:
+        await ctx.send(content=content, embed=embed)
+
+    reset_cooldown(ctx.channel)
+
+
+@client.command()
+async def roll(ctx, value):
+    await_ctx(ctx, roll_function(value, "roll"))
+
+
+@client.command()
+async def dannyroll(ctx, value):
+    await_ctx(ctx, roll_function(value, "dannyroll"))
+
+
+@client.command()
+async def play(ctx: discord.ext.commands.Context, value: str):
+    value = value.strip()
+    noah_select = random.randrange(0, 11)
+    if ctx.author.id == noah and noah_select == 0:
+        await_ctx(ctx, embed=discord.Embed(url=request_youtube_video("Barbie girl")))
+    else:
+        await_ctx(ctx, embed=discord.Embed(url=request_youtube_video(value)))
+
+
+@client.command()
+async def echo(ctx, phrase):
+    await ctx.send(phrase)
+
+
+@client.command()
+async def help(ctx):
+    embed = discord.Embed(title="Guubot", description="List of commands:", color=0xeee657)
+
+    embed.add_field(name="guubot play *phrase* (Ex: 'guubot play barbie doll')", value="Searches for a youtube video", inline=False)
+    embed.add_field(name="guubot roll #d# +/- # (Ex: 'guubot roll 4d20 + 4' or 'guubot roll 10d15')", value="Rolls dice with optional modifier", inline=False)
+    embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')", value="Rolls dice with optional modifier as if it were Danny", inline=False)
+    embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
+    embed.add_field(name="guubot help", value="Gives this message", inline=False)
+
+    await ctx.send(embed=embed)
+
+
 @client.event
 async def on_message(message):
     global mr_dictionary
@@ -405,6 +458,7 @@ async def on_message(message):
     try:
         mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
     except AttributeError:
+        print("uh oh")
         pass
 
     guild_cooldown = cd <= 0
@@ -414,141 +468,110 @@ async def on_message(message):
     if message.channel.id == venting_channel:
         return
 
-    guu_bot_select = 0
-    if guu_bot_select == 0:
-        # Figure out if version of "let's go" is in the message
-        lets_go_found = False
-        for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
-            if not lets_go_found:
-                if str1_star_str2(lets, "go", message.content.lower()):
-                    #await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
-                    lets_go_found = True
+    # Figure out if version of "let's go" is in the message
+    lets_go_found = False
+    for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
+        if not lets_go_found:
+            if str1_star_str2(lets, "go", message.content.lower()):
+                lets_go_found = True
 
-        # Check if "fair" appears in message
-        exact_fair = regex_fair(message.content.lower())
+    # Check if "fair" appears in message
+    exact_fair = regex_fair(message.content.lower())
 
-        if "awoo" in message.content.lower():
+    if "awoo" in message.content.lower():
 
-            awoo_select = random.randrange(0, 4)
+        awoo_select = random.randrange(0, 4)
 
-            if awoo_select < 3:
-                await await_message(message=message, content=awoo, embed=awoo_embed1)
-            elif awoo_select == 4:
-                await await_message(message=message, content=awoo, embed=awoo_embed2)
-            else:
-                await await_message(message=message, content=awoo, embed=awoo_embed1)
+        if awoo_select == 0:
+            await await_message(message=message, content=awoo, embed=awoo_embed2)
+        else:
+            await await_message(message=message, content=awoo, embed=awoo_embed1)
 
-        elif "woo" in message.content.lower():
+    elif "woo" in message.content.lower():
 
-            exact_woo = exactly_in("woo", message.content.lower())
+        exact_woo = exactly_in("woo", message.content.lower())
 
-            if exact_woo:
-                if message.author.id == me:
-                    await await_message(message=message, content=my_woo, embed=woo_embed)
+        if exact_woo:
+            if message.author.id == me:
+                await await_message(message=message, content=my_woo, embed=woo_embed)
 
-                elif message.author.id == julian:
-                    wu_option_select = random.randrange(0, 6)
-                    if wu_option_select == 0:
-                        await  await_message(message=message, content=wu, embed=wu_embed1)
-                    elif wu_option_select == 1:
-                        await  await_message(message=message, content=wu, embed=wu_embed2)
-                    elif wu_option_select == 2:
-                        await  await_message(message=message, content=wu, embed=wu_embed3)
-                    else:
-                        await  await_message(message=message, content=multi_woo, embed=woo_embed)
+            elif message.author.id == julian:
+                wu_option_select = random.randrange(0, 6)
+                if wu_option_select == 0:
+                    await  await_message(message=message, content=wu, embed=wu_embed1)
+                elif wu_option_select == 1:
+                    await  await_message(message=message, content=wu, embed=wu_embed2)
+                elif wu_option_select == 2:
+                    await  await_message(message=message, content=wu, embed=wu_embed3)
+                else:
+                    await  await_message(message=message, content=multi_woo, embed=woo_embed)
 
-                elif message.author.id == kaius:
-                    kaius_select = random.randrange(0, 2)
-                    if kaius_select == 0:
-                        await await_message(message=message, content=woop, embed=woop_embed)
-                    else:
-                        await await_message(message=message, content=multi_woo, embed=woo_embed)
+            elif message.author.id == kaius:
+                kaius_select = random.randrange(0, 2)
+                if kaius_select == 0:
+                    await await_message(message=message, content=woop, embed=woop_embed)
+                else:
+                    await await_message(message=message, content=multi_woo, embed=woo_embed)
 
-                elif message.author.id == riley:
-                    riley_select = random.randrange(0, 2)
-                    if riley_select == 0:
-                        await await_message(message=message, content=woop, embed=woop_embed)
-                    else:
-                        await await_message(message=message, content=multi_woo, embed=woo_embed)
-
+            elif message.author.id == riley:
+                riley_select = random.randrange(0, 2)
+                if riley_select == 0:
+                    await await_message(message=message, content=woop, embed=woop_embed)
                 else:
                     await await_message(message=message, content=multi_woo, embed=woo_embed)
 
             else:
-                await await_message(message=message, content=woo, embed=woo_embed)
-
-        elif exact_fair:
-            index = random.randrange(0, len(fair_embeds))
-            if message.author.id == danny:  # Danny
-                danny_select = random.randrange(0, 2)
-                if danny_select == 0:
-                    await await_message(message=message, embed=sheik_embed)
-                else:
-                    await await_message(message=message, embed=fair_embeds[index])
-            else:
-                await await_message(message=message, embed=fair_embeds[index])
-
-        elif "pasta" in message.content.lower():
-            if message.author.id == kolson:
-                new_invite = await message.channel.create_invite(max_uses=1)
-                user = client.get_user(message.author.id)
-                await user.send(content=new_invite)
-                await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
-                await message.guild.kick(message.author)
-                await await_message(message=message, content='Fine. Just the kick hammer...')
-
-        elif "nico" in message.content.lower():
-            await await_message(message=message, content=nico, embed=nico_embed)
-
-        elif "secret" in message.content.lower() and "woman" in message.content.lower():
-            await await_message(message=message, content=conan, embed=conan_embed)
-
-        elif lets_go_found:
-            await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
-
-        elif "freaked it" in message.content.lower():
-            await await_message(message=message, content=fire, embed=fire_embed)
-
-        elif "nora" in message.content.lower():
-            et = timezone('US/Eastern')
-            today = datetime.now().astimezone(et)
-            if today.hour < 12:
-                await await_message(message=message, content=morning, embed=nora_morning)
-
-        elif "@someone" in message.content.lower():
-            await await_message(message=message, content="^ "+message.author.mention)
-
-        elif "guubot play " in message.content.lower():
-            play_url = ""
-            if message.author.id == noah:
-                noah_select = random.randrange(0, 10)
-                if noah_select == 0:
-                    play_url = request_youtube_video("barbie girl")
-                    await await_message(message=message, content=play_url)
-                else:
-                    play_url = request_youtube_video(
-                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
-                    await await_message(message=message, content=play_url)
-
-            else:
-                play_url = request_youtube_video(
-                        message.content.lower()[message.content.lower().find("guubot play ") + len("guubot play "):])
-                await await_message(message=message, content=play_url)
-
-        elif "sad" == message.content.lower() or "sad!" == message.content.lower():
-            if message.author.id == noah:
-                await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
-
-        elif message.content.lower().find("roll ") == 0:
-            roll_string = roll_function(message.content.lower(), "roll ")
-            await await_message(message=message, content=roll_string)
-
-        elif message.content.lower().find("dannyroll ") == 0:
-            roll_string = roll_function(message.content.lower(), "dannyroll ")
-            await await_message(message=message, content=roll_string)
+                await await_message(message=message, content=multi_woo, embed=woo_embed)
 
         else:
-            x = 0
+            await await_message(message=message, content=woo, embed=woo_embed)
+
+    elif exact_fair:
+        index = random.randrange(0, len(fair_embeds))
+        if message.author.id == danny:  # Danny
+            danny_select = random.randrange(0, 2)
+            if danny_select == 0:
+                await await_message(message=message, embed=sheik_embed)
+            else:
+                await await_message(message=message, embed=fair_embeds[index])
+        else:
+            await await_message(message=message, embed=fair_embeds[index])
+
+    elif "pasta" in message.content.lower():
+        if message.author.id == kolson:
+            new_invite = await message.channel.create_invite(max_uses=1)
+            user = client.get_user(message.author.id)
+            await user.send(content=new_invite)
+            await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
+            await message.guild.kick(message.author)
+            await await_message(message=message, content='Fine. Just the kick hammer...')
+
+    elif "nico" in message.content.lower():
+        await await_message(message=message, content=nico, embed=nico_embed)
+
+    elif "secret" in message.content.lower() and "woman" in message.content.lower():
+        await await_message(message=message, content=conan, embed=conan_embed)
+
+    elif lets_go_found:
+        await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
+
+    elif "freaked it" in message.content.lower():
+        await await_message(message=message, content=fire, embed=fire_embed)
+
+    elif "nora" in message.content.lower():
+        et = timezone('US/Eastern')
+        today = datetime.now().astimezone(et)
+        if today.hour < 12:
+            await await_message(message=message, content=morning, embed=nora_morning)
+
+    elif "sad" == message.content.lower() or "sad!" == message.content.lower():
+        if message.author.id == noah:
+            await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
+
+    else:
+        x = 0
+
+    await client.process_commands(message)
 
 
 @client.event
@@ -559,6 +582,7 @@ async def on_message_edit(before, after):
     if not exactly_in("fair", before.content.lower()) and exactly_in("fair", after.content.lower()):
         index = random.randrange(0, len(fair_embeds))
         await await_message(message=after, embed=fair_embeds[index])
+
 
 @client.event
 async def on_member_update(before, after):
@@ -599,6 +623,7 @@ async def on_reaction_add(reaction, user):
 
     else:
         pass
+
 
 @client.event
 async def on_member_join(member):
