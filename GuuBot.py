@@ -408,14 +408,11 @@ async def dannyroll(ctx, *, value):
 async def play(ctx: discord.ext.commands.Context, *, value):
     value = value.strip()
     noah_select = random.randrange(0, 11)
-    youtube_embed = discord.Embed()
     if ctx.author.id == noah and noah_select == 0:
         video = request_youtube_video("Barbie girl")
-        youtube_embed.set_image(url=video)
-        await await_ctx(ctx, content=youtube_embed)
+        await await_ctx(ctx, content=video)
     else:
         video = request_youtube_video(value)
-        youtube_embed.set_image(url=video)
         await await_ctx(ctx, content=video)
 
 
