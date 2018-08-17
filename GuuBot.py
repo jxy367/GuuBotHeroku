@@ -234,8 +234,22 @@ def request_youtube_video(keyword: str):
 
 
 def regex_fair(message: str):
-    fair_regex = re.compile('[^a-zA-Z0-9]*f[^a-zA-Z0-9]*a[^a-zA-Z0-9]*i[^a-zA-Z0-9]*r[^a-zA-Z0-9]* *')
-    result = fair_regex.search(message)
+    list_of_fairs = ["fair", "fare", "forward air"]
+    for word in list_of_fairs:
+        if generic_regex(message, word):
+            return True
+    return False
+
+def generic_regex(message: str, phrase: str):
+    ending = '[^a-zA-Z0-9]* *'
+    start = '[^a-zA-Z0-9]*'
+    regex = ''
+    for character in phrase:
+        regex += start
+        regex += character
+    regex += ending
+    compiler = re.compile(regex)
+    result = compiler.search(message)
     return result is not None
 
 
