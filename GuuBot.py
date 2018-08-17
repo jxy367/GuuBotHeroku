@@ -602,6 +602,9 @@ async def on_message(message):
         if message.author.id == noah:
             await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
 
+    elif "barbie girl" in message.content.lower():
+        await await_message(message=message, content="https://www.youtube.com/watch?v=ZyhrYis509A")
+
     else:
         x = 0
 
