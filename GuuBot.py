@@ -412,11 +412,11 @@ async def play(ctx: discord.ext.commands.Context, *, value):
     if ctx.author.id == noah and noah_select == 0:
         video = request_youtube_video("Barbie girl")
         youtube_embed.set_image(url=video)
-        await await_ctx(ctx, embed=youtube_embed)
+        await await_ctx(ctx, content=youtube_embed)
     else:
         video = request_youtube_video(value)
         youtube_embed.set_image(url=video)
-        await await_ctx(ctx, embed=youtube_embed)
+        await await_ctx(ctx, content=video)
 
 
 @client.command()
