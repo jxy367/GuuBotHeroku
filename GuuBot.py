@@ -234,11 +234,12 @@ def request_youtube_video(keyword: str):
 
 
 def regex_fair(message: str):
-    list_of_fairs = ["fair", "fare", "forward air"]
+    list_of_fairs = ["fair", "fare", "forward air", "f aerial", "forward aerial"]
     for word in list_of_fairs:
         if generic_regex(message, word):
             return True
     return False
+
 
 def generic_regex(message: str, phrase: str):
     ending = '[^a-zA-Z0-9]* *'
