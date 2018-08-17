@@ -233,8 +233,16 @@ def request_youtube_video(keyword: str):
     return despacito
 
 
+def regex_f_air(message: str):
+    list_of_fairs = ["fare", "forward air", "f aerial", "forward aerial"]
+    for word in list_of_fairs:
+        if generic_regex(message, word):
+            return True
+    return False
+
+
 def regex_fair(message: str):
-    list_of_fairs = ["fair", "fare", "forward air", "f aerial", "forward aerial"]
+    list_of_fairs = ["fair"]
     for word in list_of_fairs:
         if generic_regex(message, word):
             return True
@@ -499,6 +507,7 @@ async def on_message(message):
 
     # Check if "fair" appears in message
     exact_fair = regex_fair(message.content.lower())
+    exact_f_air = regex_f_air(message.content.lower())
 
     if "awoo" in message.content.lower():
 
@@ -558,6 +567,9 @@ async def on_message(message):
                 await await_message(message=message, embed=fair_embeds[index])
         else:
             await await_message(message=message, embed=fair_embeds[index])
+
+    elif exact_f_air:
+        await await_message(message=message, embed=sheik_embed)
 
     elif "pasta" in message.content.lower():
         if message.author.id == kolson:
