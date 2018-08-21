@@ -440,7 +440,7 @@ async def play(ctx: discord.ext.commands.Context, *, value):
 
 
 @client.command()
-async def echo(ctx, phrase):
+async def echo(ctx, *, phrase):
     await ctx.send(phrase)
 
 client.remove_command('help')
