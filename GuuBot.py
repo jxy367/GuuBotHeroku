@@ -469,8 +469,9 @@ async def fetch(ctx):
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
         attachment = previous_message.attachments[0]
-        attachment.save(attachment.filename)
         file = open(attachment.filename)
+        attachment.save(file)
+
     await await_fetch(author, content, embed, file)
 
 client.remove_command('help')
