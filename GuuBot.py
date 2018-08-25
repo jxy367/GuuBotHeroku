@@ -468,12 +468,10 @@ async def fetch(ctx):
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
-        file = previous_message.attachments
-        #attachment = previous_message.attachments[0]
-        #embed = discord.Embed()
-        #embed.set_image(url=attachment.url)
+        attachment = previous_message.attachments[0]
+        attachment.save(attachment.filename)
+        file = open(attachment.filename)
     await await_fetch(author, content, embed, file)
-
 
 client.remove_command('help')
 
