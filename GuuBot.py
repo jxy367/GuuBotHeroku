@@ -468,8 +468,10 @@ async def fetch(ctx):
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
-        file = Union[BinaryIO, str]
-        await previous_message.attachments[0].save(file)
+        if embed is None:
+            attachment = previous_message.attachments[0]
+            embed = discord.Embed()
+            embed.set_image(url=attachment.url)
     await await_fetch(author, content, embed)
 
 
