@@ -489,7 +489,7 @@ async def fetch(ctx):
         await attachment.save(f)
         file = discord.File(f, attachment.filename)
         files.append(file)
-    previous_message.delete()
+    await previous_message.delete()
     await await_fetch(ctx, author_dm, content, embed, files)
 
 client.remove_command('help')
