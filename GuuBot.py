@@ -419,6 +419,7 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
 
 async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, embed=None, file=None):
+    print(file.__class__)
     await author_dm_channel.send(content=content, embed=embed, file=file)
     reset_cooldown(ctx.channel)
 
@@ -473,7 +474,9 @@ async def fetch(ctx):
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
         attachment = previous_message.attachments[0]
-        file = NamedTemporaryFile(mode='w+b')
+        file = open(attachment.filename, mode='w+b')
+        #file = NamedTemporaryFile(mode='w+b')
+        print(file.__class__)
         attachment.save(file)
 
     await await_fetch(ctx, author_dm, content, embed, file)
