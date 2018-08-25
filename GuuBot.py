@@ -469,7 +469,7 @@ async def fetch(ctx):
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
         attachment = previous_message.attachments[0]
-        file = open(attachment.filename, 'rwb')
+        file = open(attachment.filename, 'wb+')
         attachment.save(file)
 
     await await_fetch(author, content, embed, file)
