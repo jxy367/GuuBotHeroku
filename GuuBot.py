@@ -476,7 +476,7 @@ async def fetch(ctx):
         file = NamedTemporaryFile(mode='w+b')
         attachment.save(file)
 
-    await await_fetch(ctx, author.dm, content, embed, file)
+    await await_fetch(ctx, author_dm, content, embed, file)
 
 client.remove_command('help')
 
