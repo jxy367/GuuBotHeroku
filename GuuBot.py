@@ -446,7 +446,7 @@ async def echo(ctx, *, phrase):
 
 @client.command()
 async def fetch(ctx):
-    previous_message = ctx.channel.history(limit=1, before=ctx.message).flatten()[0]
+    previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()[0]
     content = previous_message.content
     embed = previous_message.embeds[0]
     author = previous_message.author
