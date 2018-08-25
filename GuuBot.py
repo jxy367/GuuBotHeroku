@@ -12,8 +12,7 @@ from bs4 import BeautifulSoup
 #import youtube_dl
 import time
 import re
-from typing import BinaryIO
-from typing import Union
+from tempfile import NamedTemporaryFile
 
 TOKEN = os.environ.get('TOKEN')
 
@@ -419,8 +418,8 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
     reset_cooldown(ctx.channel)
 
 
-async def await_fetch(ctx: discord.ext.commands.Context, content=None, embed=None, file=None):
-    await ctx.send(content=content, embed=embed, file=file)
+async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, embed=None, file=None):
+    await author_dm_channel.send(content=content, embed=embed, file=file)
     reset_cooldown(ctx.channel)
 
 
@@ -469,10 +468,10 @@ async def fetch(ctx):
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
         attachment = previous_message.attachments[0]
-        file = open(attachment.filename, 'wb+')
+        file = NamedTemporaryFile(mode='w+b')
         attachment.save(file)
 
-    await await_fetch(author, content, embed, file)
+    await await_fetch(ctx, author.dm_channel, content, embed, file)
 
 client.remove_command('help')
 
