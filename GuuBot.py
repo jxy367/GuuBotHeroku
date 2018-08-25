@@ -443,6 +443,16 @@ async def play(ctx: discord.ext.commands.Context, *, value):
 async def echo(ctx, *, phrase):
     await ctx.send(phrase)
 
+
+@client.command()
+async def fetch(ctx):
+    previous_message = ctx.channel.history(limit=1, before=ctx.message).flatten()[0]
+    content = previous_message.content
+    embed = previous_message.embeds[0]
+    author = previous_message.author
+    await await_channel(author, content, embed)
+
+
 client.remove_command('help')
 
 
