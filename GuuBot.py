@@ -510,7 +510,7 @@ async def help(ctx):
     embed.add_field(name="guubot roll #d# +/- # (Ex: 'guubot roll 4d20 + 4' or 'guubot roll 10d15')", value="Rolls dice with optional modifier", inline=False)
     embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')", value="Rolls dice with optional modifier as if it were Danny", inline=False)
     embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
-    embed.add_field(name="guubot [REDACTED]", value="For when you receive a message you'd prefer never existed", inline=False)
+    embed.add_field(name="guubot [REDACTED]", value="For when someone sends something really dumb or not safe for life and you want them to be on the receiving end instead", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
