@@ -463,6 +463,11 @@ async def fetch(ctx):
     if author.bot:
         await await_ctx(ctx, "Author is bot")
         return
+    author_user = client.get_user(author.id)
+    author_dm = author_user.dm_channel
+    if author_dm is None:
+        await author_user.create_dm()
+        author_dm = author_user.dm_channel
     content = previous_message.content
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
@@ -471,7 +476,7 @@ async def fetch(ctx):
         file = NamedTemporaryFile(mode='w+b')
         attachment.save(file)
 
-    await await_fetch(ctx, author.dm_channel, content, embed, file)
+    await await_fetch(ctx, author.dm, content, embed, file)
 
 client.remove_command('help')
 
