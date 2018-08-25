@@ -12,7 +12,8 @@ from bs4 import BeautifulSoup
 #import youtube_dl
 import time
 import re
-from typing import *
+from typing import BinaryIO
+from typing import Union
 
 TOKEN = os.environ.get('TOKEN')
 
