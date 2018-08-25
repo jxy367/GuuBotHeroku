@@ -418,9 +418,8 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
     reset_cooldown(ctx.channel)
 
 
-async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, embed=None, file=None):
-    print(file.__class__)
-    await author_dm_channel.send(content=content, embed=embed, file=file)
+async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, embed=None, files=None):
+    await author_dm_channel.send(content=content, embed=embed, files=files)
     reset_cooldown(ctx.channel)
 
 
@@ -454,7 +453,7 @@ async def echo(ctx, *, phrase):
 @client.command()
 async def fetch(ctx):
     embed = None
-    file = None
+    files = None
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
     if len(previous_message) == 0:
         await await_ctx(ctx, "Message could not be found")
@@ -473,12 +472,14 @@ async def fetch(ctx):
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
-        attachment = previous_message.attachments[0]
-        f = open(attachment.filename, mode='w+b')
-        await attachment.save(f)
-        file = discord.File(f, attachment.filename)
+        files = []
+        for attachment in previous_message.attachments:
+            f = open(attachment.filename, mode='w+b')
+            await attachment.save(f)
+            file = discord.File(f, attachment.filename)
+            files.append(file)
 
-    await await_fetch(ctx, author_dm, content, embed, file)
+    await await_fetch(ctx, author_dm, content, embed, files)
 
 client.remove_command('help')
 
