@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 #import youtube_dl
 import time
 import re
+from typing import *
 
 TOKEN = os.environ.get('TOKEN')
 
@@ -466,6 +467,7 @@ async def fetch(ctx):
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
+        file = Union[BinaryIO, str]
         await previous_message.attachments[0].save(file)
     await await_fetch(author, content, embed)
 
