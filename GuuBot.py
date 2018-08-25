@@ -496,6 +496,9 @@ async def fetch(ctx):
     # Deliver message back to owner
     await await_fetch(ctx, author_dm, content, embed, files)
 
+    # Delete the command
+    await ctx.message.delete()
+
 client.remove_command('help')
 
 
