@@ -418,8 +418,8 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
     reset_cooldown(ctx.channel)
 
 
-async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, embed=None, files=None):
-    await author_dm_channel.send(content=content, embed=embed, files=files)
+async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, files=None):
+    await author_dm_channel.send(content=content, files=files)
     reset_cooldown(ctx.channel)
 
 
@@ -452,7 +452,6 @@ async def echo(ctx, *, phrase):
 
 @client.command()
 async def fetch(ctx):
-    embed = None
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
     # Weird situation where there is no previous message
     if len(previous_message) == 0:
@@ -496,7 +495,7 @@ async def fetch(ctx):
     await previous_message.delete()
 
     # Deliver message back to owner
-    await await_fetch(ctx, author_dm, content, embed, files)
+    await await_fetch(ctx, author_dm, content, files)
 
     # Delete the command
     await ctx.message.delete()
