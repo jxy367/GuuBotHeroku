@@ -479,14 +479,14 @@ async def fetch(ctx):
     content = previous_message.content
 
     # Get embed
-    if len(previous_message.embeds) > 0:
-        print("There was embed")
+    # All embeds by users are either self.bots or auto embeds
+    #if len(previous_message.embeds) > 0:
+        #print("[Redacted] command encount embed")
         #embed = previous_message.embeds[0]
 
     # Get all file objects
     files = []
     for attachment in previous_message.attachments:
-        print("There was file")
         f = open(attachment.filename, mode='w+b')
         await attachment.save(f)
         file = discord.File(f, attachment.filename)
