@@ -453,31 +453,42 @@ async def echo(ctx, *, phrase):
 @client.command()
 async def fetch(ctx):
     embed = None
-    files = None
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
+    # Weird situation where there is no previous message
     if len(previous_message) == 0:
         await await_ctx(ctx, "Message could not be found")
         return
+
+    # Get previous message
     previous_message = previous_message[0]
+
+    # Don't send a message to another bot
     author = previous_message.author
     if author.bot:
         await await_ctx(ctx, "Author is bot")
         return
+
+    # Get dm_channel with author
     author_user = client.get_user(author.id)
     author_dm = author_user.dm_channel
     if author_dm is None:
         await author_user.create_dm()
         author_dm = author_user.dm_channel
+
+    # Get string content
     content = previous_message.content
+
+    # Get embed
     if len(previous_message.embeds) > 0:
         embed = previous_message.embeds[0]
-    if len(previous_message.attachments) > 0:
-        files = []
-        for attachment in previous_message.attachments:
-            f = open(attachment.filename, mode='w+b')
-            await attachment.save(f)
-            file = discord.File(f, attachment.filename)
-            files.append(file)
+
+    # Get all file objects
+    files = []
+    for attachment in previous_message.attachments:
+        f = open(attachment.filename, mode='w+b')
+        await attachment.save(f)
+        file = discord.File(f, attachment.filename)
+        files.append(file)
 
     await await_fetch(ctx, author_dm, content, embed, files)
 
