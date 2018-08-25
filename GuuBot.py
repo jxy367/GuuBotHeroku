@@ -480,11 +480,13 @@ async def fetch(ctx):
 
     # Get embed
     if len(previous_message.embeds) > 0:
-        embed = previous_message.embeds[0]
+        print("There was embed")
+        #embed = previous_message.embeds[0]
 
     # Get all file objects
     files = []
     for attachment in previous_message.attachments:
+        print("There was file")
         f = open(attachment.filename, mode='w+b')
         await attachment.save(f)
         file = discord.File(f, attachment.filename)
