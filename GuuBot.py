@@ -474,10 +474,9 @@ async def fetch(ctx):
         embed = previous_message.embeds[0]
     if len(previous_message.attachments) > 0:
         attachment = previous_message.attachments[0]
-        file = open(attachment.filename, mode='w+b')
-        #file = NamedTemporaryFile(mode='w+b')
-        print(file.__class__)
-        attachment.save(file)
+        f = open(attachment.filename, mode='w+b')
+        attachment.save(f)
+        file = discord.File(f, attachment.filename)
 
     await await_fetch(ctx, author_dm, content, embed, file)
 
