@@ -417,6 +417,11 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
     reset_cooldown(ctx.channel)
 
 
+async def await_fetch(ctx: discord.ext.commands.Context, content=None, embed=None, file=None):
+    await ctx.send(content=content, embed=embed, file=file)
+    reset_cooldown(ctx.channel)
+
+
 @client.command()
 async def roll(ctx, *, value):
     await await_ctx(ctx, roll_function(value, "roll"))
@@ -446,12 +451,23 @@ async def echo(ctx, *, phrase):
 
 @client.command()
 async def fetch(ctx):
+    embed = None
+    file = None
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
+    if len(previous_message) == 0:
+        await await_ctx(ctx, "Message could not be found")
+        return
     previous_message = previous_message[0]
-    content = previous_message.content
-    embed = previous_message.embeds[0]
     author = previous_message.author
-    await await_channel(author, content, embed)
+    if author.bot:
+        await await_ctx(ctx, "Author is bot")
+        return
+    content = previous_message.content
+    if len(previous_message.embeds) > 0:
+        embed = previous_message.embeds[0]
+    if len(previous_message.attachments) > 0:
+        await previous_message.attachments[0].save(file)
+    await await_fetch(author, content, embed)
 
 
 client.remove_command('help')
