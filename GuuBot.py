@@ -17,7 +17,7 @@ from tempfile import NamedTemporaryFile
 TOKEN = os.environ.get('TOKEN')
 
 
-client = commands.Bot(command_prefix="guubot ", case_insensitive=False)
+client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 
 # Guu Messages #
 woo = 'Woo'
