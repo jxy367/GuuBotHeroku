@@ -666,6 +666,7 @@ async def on_message(message):
     else:
         x = 0
 
+    message.content = message.content.lower()
     await client.process_commands(message)
 
 
