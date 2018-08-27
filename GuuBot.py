@@ -467,6 +467,16 @@ async def fetch(ctx):
         await await_ctx(ctx, "Author is bot")
         return
 
+    if ctx.author.id == noah:
+        x = random.randrange(0, 10)
+        if x == 0:
+            noah_user = client.get_user(noah)
+            noah_dm = noah_user.dm_channel
+            if noah_dm is None:
+                await noah_user.create_dm()
+                noah_dm = noah_user.dm_channel
+                await await_channel(noah_dm, content="https://www.youtube.com/watch?v=ZyhrYis509A")
+
     # Get dm_channel with author
     author_user = client.get_user(author.id)
     author_dm = author_user.dm_channel
