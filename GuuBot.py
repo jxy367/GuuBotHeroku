@@ -505,7 +505,10 @@ async def fetch(ctx):
     await previous_message.delete()
 
     # Deliver message back to owner
-    await await_fetch(ctx, author_dm, content, files)
+    try:
+        await await_fetch(ctx, author_dm, content, files)
+    except discord.HTTPException:
+        pass
 
     # Delete the command
     await ctx.message.delete()
