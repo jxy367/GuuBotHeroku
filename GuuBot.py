@@ -676,7 +676,7 @@ async def on_message(message):
     elif "barbie girl" in message.content.lower():
         await await_message(message=message, content="https://www.youtube.com/watch?v=ZyhrYis509A")
 
-    elif "guubot play" in message.content.lower():
+    elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
         annoying = message.content.lower().split("guubot play", 1)
         video = request_youtube_video(annoying[1])
         await await_message(message=message, content=video)
