@@ -682,10 +682,8 @@ async def on_message(message):
         await await_message(message=message, content=video)
 
     else:
-        x = 0
-
-    message.content = message.content.lower()
-    await client.process_commands(message)
+        message.content = message.content.lower()
+        await client.process_commands(message)
 
 
 @client.event
