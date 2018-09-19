@@ -89,9 +89,6 @@ fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/sc
         'https://i.ytimg.com/vi/2yVeQRcOTi4/maxresdefault.jpg',
         'http://www.lancasterfair.com/wp-content/uploads/2017/01/44.jpg']
 
-noah_morning_embed = discord.Embed()
-noah_morning_embed.set_image(url='https://cdn.discordapp.com/attachments/239214414132281344/468755357200809984/image.jpg')
-
 for url in fair_urls:
     new_embed = discord.Embed()
     new_embed.set_image(url=url)
@@ -234,24 +231,18 @@ def request_youtube_video(keyword: str):
     return despacito
 
 
-def regex_f_air(message: str):
-    list_of_fairs = ["fare", "forward air", "f aerial", "forward aerial"]
-    for word in list_of_fairs:
-        if generic_regex(message, word):
-            return True
-    return False
-
-
 def regex_fair(message: str):
     list_of_fairs = ["fair"]
     for word in list_of_fairs:
-        if generic_regex(message, word):
+        #if generic_regex(message, word):
+            #return True
+        if word in message:
             return True
     return False
 
 
 def generic_regex(message: str, phrase: str):
-    ending = '[^a-zA-Z0-9]* *'
+    ending = '[^a-zA-Z0-9]*'
     start = '[^a-zA-Z0-9]*'
     regex = ''
     for character in phrase:
@@ -357,19 +348,10 @@ async def reset_display_name():
             await changed_guild.me.edit(nick=None)
 
 
-async def reset_noah_cooldown():
-    global noah_cooldown
-    est = timezone('US/Eastern')
-    today = datetime.now().astimezone(est)
-    if today.hour == 5 and today.minute == 0:
-        noah_cooldown = True
-
-
 async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
         await reset_display_name()
-        await reset_noah_cooldown()
         await asyncio.sleep(60)
 
 
@@ -467,22 +449,14 @@ async def fetch(ctx):
         await await_ctx(ctx, "Author is bot")
         return
 
-    if ctx.author.id == noah:
-        x = random.randrange(0, 10)
-        if x == 0:
-            noah_user = client.get_user(noah)
+    # Occasionally send Noah Barbie Girl
+    if ctx.author.id == noah and random.randrange(0, 10) == 0:
+        noah_user = client.get_user(noah)
+        noah_dm = noah_user.dm_channel
+        if noah_dm is None:
+            await noah_user.create_dm()
             noah_dm = noah_user.dm_channel
-            if noah_dm is None:
-                await noah_user.create_dm()
-                noah_dm = noah_user.dm_channel
-                await await_channel(noah_dm, content="https://www.youtube.com/watch?v=ZyhrYis509A")
-
-    # Get dm_channel with author
-    author_user = client.get_user(author.id)
-    author_dm = author_user.dm_channel
-    if author_dm is None:
-        await author_user.create_dm()
-        author_dm = author_user.dm_channel
+        await await_channel(noah_dm, content="https://www.youtube.com/watch?v=ZyhrYis509A")
 
     # Get string content
     content = previous_message.content
@@ -501,14 +475,37 @@ async def fetch(ctx):
         file = discord.File(f, attachment.filename)
         files.append(file)
 
-    # Delete message being fetched
-    await previous_message.delete()
+    # If Noah wants to fetch the message
+    if ctx.author.id == noah:
+        # Get DM_channel with Noah
+        noah_user = client.get_user(noah)
+        noah_dm = noah_user.dm_channel
+        if noah_dm is None:
+            await noah_user.create_dm()
+            noah_dm = noah_user.dm_channel
+        # Deliver message to Noah
 
-    # Deliver message back to owner
-    try:
-        await await_fetch(ctx, author_dm, content, files)
-    except discord.HTTPException:
-        pass
+        try:
+            await await_fetch(ctx, noah_dm, content, files)
+        except discord.HTTPException:
+            pass
+
+    else:
+        # Get dm_channel with author
+        author_user = client.get_user(author.id)
+        author_dm = author_user.dm_channel
+        if author_dm is None:
+            await author_user.create_dm()
+            author_dm = author_user.dm_channel
+
+        # Delete message being fetched
+        await previous_message.delete()
+
+        # Deliver message back to owner
+        try:
+            await await_fetch(ctx, author_dm, content, files)
+        except discord.HTTPException:
+            pass
 
     # Delete the command
     await ctx.message.delete()
@@ -524,7 +521,7 @@ async def help(ctx):
     embed.add_field(name="guubot roll #d# +/- # (Ex: 'guubot roll 4d20 + 4' or 'guubot roll 10d15')", value="Rolls dice with optional modifier", inline=False)
     embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')", value="Rolls dice with optional modifier as if it were Danny", inline=False)
     embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
-    embed.add_field(name="guubot [REDACTED]", value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead", inline=False)
+    embed.add_field(name="guubot f#$%*", value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
@@ -578,7 +575,6 @@ async def on_message(message):
 
     # Check if "fair" appears in message
     exact_fair = regex_fair(message.content.lower())
-    exact_f_air = regex_f_air(message.content.lower())
 
     if "awoo" in message.content.lower():
 
@@ -639,9 +635,6 @@ async def on_message(message):
         else:
             await await_message(message=message, embed=fair_embeds[index])
 
-    elif exact_f_air:
-        await await_message(message=message, embed=sheik_embed)
-
     elif "pasta" in message.content.lower():
         if message.author.id == kolson:
             new_invite = await message.channel.create_invite(max_uses=1)
@@ -669,7 +662,7 @@ async def on_message(message):
         if today.hour < 12:
             await await_message(message=message, content=morning, embed=nora_morning)
 
-    elif "sad" == message.content.lower() or "sad!" == message.content.lower():
+    elif "sad" == message.content.lower() or "sad!" == message.content.lower() or "sad." == message.content.lower():
         if message.author.id == noah:
             await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
 
@@ -694,20 +687,6 @@ async def on_message_edit(before, after):
     if not exactly_in("fair", before.content.lower()) and exactly_in("fair", after.content.lower()):
         index = random.randrange(0, len(fair_embeds))
         await await_message(message=after, embed=fair_embeds[index])
-
-
-@client.event
-async def on_member_update(before, after):
-    global noah_cooldown
-    if before.id == noah:
-        if noah_cooldown:
-            if before.status != after.status and after.status == discord.Status.online:
-                noah_user = client.get_user(noah)
-                dm_channel = noah_user.dm_channel
-                if dm_channel is None:
-                    dm_channel = await noah_user.create_dm()
-                noah_cooldown = False
-                await await_channel(channel=dm_channel, embed=noah_morning_embed)
 
 
 @client.event
