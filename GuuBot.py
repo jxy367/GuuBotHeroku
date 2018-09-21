@@ -706,12 +706,7 @@ async def on_message(message):
 
     elif exactly_in("hot take", message.content.lower()):
         index = random.randrange(0, len(take_embeds))
-        print(index)
         await await_message(message=message, embed=take_embeds[index])
-
-        for i in range(0, len(take_embeds)):
-            print(i)
-            await await_message(message=message, embed=take_embeds[i])
 
     else:
         message.content = message.content.lower()
