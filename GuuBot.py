@@ -709,6 +709,10 @@ async def on_message(message):
         print(index)
         await await_message(message=message, embed=take_embeds[index])
 
+        for i in range(0, len(take_embeds)):
+            print(i)
+            await await_message(message=message, embed=take_embeds[i])
+
     else:
         message.content = message.content.lower()
         await client.process_commands(message)
