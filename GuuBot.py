@@ -103,7 +103,6 @@ take_urls = ['https://i.ytimg.com/vi/xvXh2NDE6iM/maxresdefault.jpg', # hot shake
              'http://www.hummingbrew.com/uploads/7/6/4/7/7647871/5739699_orig.jpg', # hot break
              'https://www.japanesecooking101.com/wp-content/uploads/2017/08/DSC00083-copy.jpg', # hot cake
              'https://i.pinimg.com/originals/32/a0/c2/32a0c2830e93f3d57cb302884e096288.jpg', # hot drake
-             'https://fakegirlboyfriend.files.wordpress.com/2013/07/fake-girlfriend.jpg', # hot fake
              'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF', # hot flake
              'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg', # hot hake
              'https://i.ytimg.com/vi/NeW6MQ0bIRQ/maxresdefault.jpg', # hot jake
@@ -707,6 +706,7 @@ async def on_message(message):
 
     elif exactly_in("hot take", message.content.lower()):
         index = random.randrange(0, len(take_embeds))
+        print(index)
         await await_message(message=message, embed=take_embeds[index])
 
     else:
