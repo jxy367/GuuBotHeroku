@@ -704,6 +704,7 @@ async def on_message(message):
         else:
             index = random.randrange(0, len(fair_embeds))
             await await_message(message=message, embed=fair_embeds[index])
+
     elif exactly_in("hot take", message.content.lower()):
         index = random.randrange(0, len(take_embeds))
         await await_message(message=message, embed=take_embeds[index])
@@ -712,6 +713,7 @@ async def on_message(message):
         message.content = message.content.lower()
         await client.process_commands(message)
 
+    print(message.content.lower())
 
 @client.event
 async def on_message_edit(before, after):
