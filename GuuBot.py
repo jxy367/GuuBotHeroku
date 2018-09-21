@@ -94,6 +94,33 @@ for url in fair_urls:
     new_embed.set_image(url=url)
     fair_embeds.append(new_embed)
 
+take_embeds = []
+take_urls = ['https://i.ytimg.com/vi/xvXh2NDE6iM/maxresdefault.jpg', # hot shake
+             'http://cdn-webimages.wimages.net/05154eed87de00290048db240e69fe77b94fda-wm.jpg?v=3', # hot ache
+             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTB9Jz6gSPri9l7bJ23fjCE6AYU9vOtqnuAlaY99uLuV-6okU', # hot bake
+             'http://i00.i.aliimg.com/wsphoto/v0/32283886162_1/-font-b-Hot-b-font-Sale-font-b-Blake-b-font-font-b-Lively-b.jpg', # hot blake
+             'http://carphotos.cardomain.com/story_images/1/1955/3521/4886760001_large.jpg', # hot break
+             'http://www.hummingbrew.com/uploads/7/6/4/7/7647871/5739699_orig.jpg', # hot break
+             'https://www.japanesecooking101.com/wp-content/uploads/2017/08/DSC00083-copy.jpg', # hot cake
+             'https://i.pinimg.com/originals/32/a0/c2/32a0c2830e93f3d57cb302884e096288.jpg', # hot drake
+             'https://fakegirlboyfriend.files.wordpress.com/2013/07/fake-girlfriend.jpg', # hot fake
+             'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF', # hot flake
+             'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg', # hot hake
+             'https://i.ytimg.com/vi/NeW6MQ0bIRQ/maxresdefault.jpg', # hot jake
+             'https://i.ytimg.com/vi/3qGxG5P1-Ro/maxresdefault.jpg', # hot lake
+             'http://www.sciencemag.org/sites/default/files/styles/article_main_large/public/images/sn-seismicH.jpg?itok=I-6a0Sri', # hot quake
+             'http://www.doityourselfrv.com/wp-content/uploads/2013/07/campfire-hotdogs-rake.jpg', # hot rake
+             'https://images.reverb.com/image/upload/s--up0dQ8AK--/a_exif,c_limit,e_unsharp_mask:80,f_auto,fl_progressive,g_south,h_620,q_90,w_620/v1490375727/tzc0ozcn2pmkcwyii6qj.jpg', # hot sake
+             'https://www.detectiveconanworld.com/wiki/images/thumb/2/20/EP106_Case.jpg/290px-EP106_Case.jpg', # hot slake
+             'https://subpop-img.s3.amazonaws.com/asset/artist_images/attachments/000/007/225/max_960/hotsnakes-2017-promo-02-courtesyoftheartist-2667x1500-300.jpg?1516298549', # hot snake
+             'http://1000awesomethings.com/wp-content/uploads/2009/11/grilled-steak.jpg', # hot steak
+             ]
+
+for url in take_urls:
+    new_embed = discord.Embed()
+    new_embed.set_image(url=url)
+    take_embeds.append(new_embed)
+
 mr_dictionary = {}
 playlist_dictionary = {}
 
@@ -161,11 +188,8 @@ def at_end_of(str1: str, str2: str):
         return False
 
     if index + len_str1 < len(str2):  # str1 is in str2 but not necessarily at end
-        next_char_index = index + len_str1
-        while next_char_index < len(str2):
-            if str2[next_char_index].isalnum():
-                return False
-            next_char_index += 1
+        if str2[index + len_str1].isalnum():
+            return False
 
     if index > 0:
         if str2[index - 1].isalnum():
@@ -236,7 +260,7 @@ def regex_fair(message: str):
     for word in list_of_fairs:
         #if generic_regex(message, word):
             #return True
-        if word in message:
+        if exactly_in(word, message):
             return True
     return False
 
@@ -673,6 +697,16 @@ async def on_message(message):
         annoying = message.content.lower().split("guubot play", 1)
         video = request_youtube_video(annoying[1])
         await await_message(message=message, content=video)
+
+    elif exactly_in("@guubot do your thing", message.content.lower()) and (message.author.id == julian or message.author.id == me):
+        if 0 == random.randrange(0, 2):
+            await await_message(message=message, embed=sheik_embed)
+        else:
+            index = random.randrange(0, len(fair_embeds))
+            await await_message(message=message, embed=fair_embeds[index])
+    elif exactly_in("hot take", message.content.lower()):
+        index = random.randrange(0, len(take_embeds))
+        await await_message(message=message, embed=take_embeds[index])
 
     else:
         message.content = message.content.lower()
