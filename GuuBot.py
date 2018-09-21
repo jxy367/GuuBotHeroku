@@ -698,7 +698,7 @@ async def on_message(message):
         video = request_youtube_video(annoying[1])
         await await_message(message=message, content=video)
 
-    elif exactly_in("@guubot do your thing", message.content.lower()) and (message.author.id == julian or message.author.id == me):
+    elif exactly_in("<@438892047039070218> do your thing", message.content.lower()) and (message.author.id == julian or message.author.id == me):
         if 0 == random.randrange(0, 2):
             await await_message(message=message, embed=sheik_embed)
         else:
@@ -713,7 +713,6 @@ async def on_message(message):
         message.content = message.content.lower()
         await client.process_commands(message)
 
-    print(message.content.lower())
 
 @client.event
 async def on_message_edit(before, after):
