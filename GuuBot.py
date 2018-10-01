@@ -757,14 +757,12 @@ async def on_reaction_add(reaction, user):
         expand3 = client.get_emoji(459124362004529173)
         expand4 = client.get_emoji(459124361698213890)
 
-    if isinstance(reaction.emoji, str):
-        pass
-
-    elif reaction.emoji.id == expand1_id:
-        await message.add_reaction(expand1)
-        await message.add_reaction(expand2)
-        await message.add_reaction(expand3)
-        await message.add_reaction(expand4)
+    if not isinstance(reaction.emoji, str):
+        if reaction.emoji.id == expand1_id:
+            await message.add_reaction(expand1)
+            await message.add_reaction(expand2)
+            await message.add_reaction(expand3)
+            await message.add_reaction(expand4)
 
     elif reaction.emoji == "tennis":
         print("ajehgkajerhg")
