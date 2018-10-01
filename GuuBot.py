@@ -437,8 +437,9 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
     reset_cooldown(ctx.channel)
 
+
 async def await_fetch_message(channel, author_channel, content=None, files=None):
-    await author_channel.send(content, files)
+    await author_channel.send(content=content, files=files)
 
     reset_cooldown(channel)
 
