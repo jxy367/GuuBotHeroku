@@ -769,6 +769,9 @@ async def on_reaction_add(reaction, user):
     elif reaction.emoji == "tennis":
         print("ajehgkajerhg")
 
+    elif reaction.emoji == u'1F3BE':
+        print("ghjkl")
+
     elif reaction.emoji == ":tennis:":
         author = message.author
         if author.bot:
