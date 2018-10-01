@@ -751,7 +751,7 @@ async def on_reaction_add(reaction, user):
     global expand4
     message = reaction.message
     expand1_id = 459124362075832320
-    print("?" + "+".join(reaction.emoji) + "?")
+    print(reaction.emoji.name)
     if expand1 is None:
         expand1 = client.get_emoji(459124362075832320)
         expand2 = client.get_emoji(459124362063118336)
@@ -767,7 +767,13 @@ async def on_reaction_add(reaction, user):
         await message.add_reaction(expand3)
         await message.add_reaction(expand4)
 
-    elif reaction.emoji == ":tennis:":
+    elif reaction.emoji == "tennis":
+        print("ajehgkajerhg")
+
+    elif reaction.emoji.name == "tennis":
+        print("tyuio")
+
+    elif reaction.emoji.name == ":tennis:":
         print("ugh")
         author = message.author
         if author.bot:
