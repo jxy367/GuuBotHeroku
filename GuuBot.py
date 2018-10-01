@@ -1,18 +1,16 @@
-import discord
-from discord.ext import commands
 import asyncio
-import random
-from datetime import datetime
-from pytz import timezone
 import os
-import urllib
-from urllib import request
-from urllib import parse
-from bs4 import BeautifulSoup
-#import youtube_dl
-import time
+import random
 import re
-from tempfile import NamedTemporaryFile
+import urllib
+from datetime import datetime
+from urllib import parse
+from urllib import request
+
+import discord
+from bs4 import BeautifulSoup
+from discord.ext import commands
+from pytz import timezone
 
 TOKEN = os.environ.get('TOKEN')
 
@@ -599,10 +597,8 @@ async def on_message(message):
 
     try:
         mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
-        print(mr_dictionary)
 
     except AttributeError:
-        print("uh oh")
         pass
 
     guild_cooldown = cd <= 0
@@ -787,12 +783,15 @@ async def on_reaction_add(reaction, user):
 
             content, files = await get_message_data(message)
 
-            # Delete message being fetched
-            await message.delete()
-
-            # Deliver message back to owner
             try:
+                # Delete message being fetched
+                await message.delete()
+
+                # Deliver message back to owner
                 await await_fetch_message(message.channel, author_dm, content, files)
+            except discord.errors.Forbidden:
+                pass
+
             except discord.HTTPException:
                 pass
 
