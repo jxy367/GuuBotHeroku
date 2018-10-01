@@ -599,6 +599,8 @@ async def on_message(message):
 
     try:
         mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
+        print(mr_dictionary)
+
     except AttributeError:
         print("uh oh")
         pass
@@ -751,6 +753,12 @@ async def on_reaction_add(reaction, user):
     global expand3
     global expand4
     message = reaction.message
+
+    cd = get_current_cooldown(message)
+    guild_cooldown = cd <= 0
+    if not guild_cooldown:
+        return
+
     expand1_id = 459124362075832320
     if expand1 is None:
         expand1 = client.get_emoji(459124362075832320)
@@ -796,7 +804,7 @@ async def on_reaction_add(reaction, user):
 async def on_member_join(member):
     global client
     global mr_dictionary
-    if member.id in mr_dictionary.keys():
+    if member.id in mr_dictionary:
         roles, nickname = mr_dictionary[member.id]
         await member.edit(nick=nickname, roles=roles)
 
