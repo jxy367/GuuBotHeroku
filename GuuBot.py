@@ -362,6 +362,21 @@ def roll_function(message: str, roll_type: str):
     return roll_string
 
 
+# Get information of message for fetching
+async def get_message_data(msg):
+    # Get string content
+    content = msg.content
+
+    # Get all file objects
+    files = []
+    for attachment in msg.attachments:
+        f = open(attachment.filename, mode='w+b')
+        await attachment.save(f)
+        file = discord.File(f, attachment.filename)
+        files.append(file)
+
+    return content, files
+
 async def reset_display_name():
     for changed_guild in client.guilds:
         if changed_guild.me.display_name != "GuuBot":
@@ -421,6 +436,11 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
         await ctx.send(content=content, embed=embed)
 
     reset_cooldown(ctx.channel)
+
+async def await_fetch_message(channel, author_channel, content=None, files=None):
+    await author_channel.send(content, files)
+
+    reset_cooldown(channel)
 
 
 async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, files=None):
@@ -746,6 +766,30 @@ async def on_reaction_add(reaction, user):
         await message.add_reaction(expand2)
         await message.add_reaction(expand3)
         await message.add_reaction(expand4)
+
+    elif reaction.emoji == ":tennis:":
+        print("ugh")
+        author = message.author
+        if author.bot:
+            await message.channel.send("Author is bot")
+        else:
+            # Get dm_channel with author
+            author_user = client.get_user(author.id)
+            author_dm = author_user.dm_channel
+            if author_dm is None:
+                await author_user.create_dm()
+                author_dm = author_user.dm_channel
+
+            content, files = await get_message_data(message)
+
+            # Delete message being fetched
+            await message.delete()
+
+            # Deliver message back to owner
+            try:
+                await await_fetch_message(message.channel, author_dm, content, files)
+            except discord.HTTPException:
+                pass
 
     else:
         pass
