@@ -765,7 +765,7 @@ async def on_reaction_add(reaction, user):
             await message.add_reaction(expand3)
             await message.add_reaction(expand4)
 
-    elif reaction.emoji == "\u1F3BE":
+    elif reaction.emoji == u"\U0001F3BE":
         print("ajehgkajerhg")
 
     elif reaction.emoji == '\x01F3BE':
