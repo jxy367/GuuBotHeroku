@@ -14,7 +14,6 @@ from pytz import timezone
 
 TOKEN = os.environ.get('TOKEN')
 
-
 client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 
 # Guu Messages #
@@ -491,23 +490,8 @@ async def fetch(ctx):
         await await_ctx(ctx, "Author is bot")
         return
 
-    # Occasionally send Noah Barbie Girl
-    if ctx.author.id == noah and random.randrange(0, 10) == 0:
-        noah_user = client.get_user(noah)
-        noah_dm = noah_user.dm_channel
-        if noah_dm is None:
-            await noah_user.create_dm()
-            noah_dm = noah_user.dm_channel
-        await await_channel(noah_dm, content="https://www.youtube.com/watch?v=ZyhrYis509A")
-
     # Get string content
     content = previous_message.content
-
-    # Get embed
-    # All embeds by users are either self.bots or auto embeds
-    #if len(previous_message.embeds) > 0:
-        #print("[Redacted] command encount embed")
-        #embed = previous_message.embeds[0]
 
     # Get all file objects
     files = []
@@ -517,37 +501,21 @@ async def fetch(ctx):
         file = discord.File(f, attachment.filename)
         files.append(file)
 
-    # If Noah wants to fetch the message
-    if ctx.author.id == noah:
-        # Get DM_channel with Noah
-        noah_user = client.get_user(noah)
-        noah_dm = noah_user.dm_channel
-        if noah_dm is None:
-            await noah_user.create_dm()
-            noah_dm = noah_user.dm_channel
-        # Deliver message to Noah
-
-        try:
-            await await_fetch(ctx, noah_dm, content, files)
-        except discord.HTTPException:
-            pass
-
-    else:
-        # Get dm_channel with author
-        author_user = client.get_user(author.id)
+    # Get dm_channel with author
+    author_user = client.get_user(author.id)
+    author_dm = author_user.dm_channel
+    if author_dm is None:
+        await author_user.create_dm()
         author_dm = author_user.dm_channel
-        if author_dm is None:
-            await author_user.create_dm()
-            author_dm = author_user.dm_channel
 
-        # Delete message being fetched
-        await previous_message.delete()
+    # Delete message being fetched
+    await previous_message.delete()
 
-        # Deliver message back to owner
-        try:
-            await await_fetch(ctx, author_dm, content, files)
-        except discord.HTTPException:
-            pass
+    # Deliver message back to owner
+    try:
+        await await_fetch(ctx, author_dm, content, files)
+    except discord.HTTPException:
+        pass
 
     # Delete the command
     await ctx.message.delete()
