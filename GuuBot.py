@@ -67,7 +67,7 @@ malt_shop_embed = discord.Embed()
 malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
 
 fire_embed = discord.Embed()
-fire_embed.set_image(url='https://i.gifer.com/MRnP.gif')
+fire_embed.set_image(url='https://giphy.com/gifs/fire-comedian-5a6Y7Fe0TT50Q')
 
 sheik_embed = discord.Embed()
 sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
