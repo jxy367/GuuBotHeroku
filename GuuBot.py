@@ -26,7 +26,7 @@ woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
-malt_shop = "To the malt shop,!!"
+malt_shop = "To the malt shop PERIOD!!"
 fire = 'We should have guubot fire on "freaked it" - Danny Miles'
 despacito = 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
 
@@ -693,6 +693,7 @@ async def on_message(message):
 
     elif exactly_in("hot take", message.content.lower()):
         index = random.randrange(0, len(take_embeds))
+        print(index, take_embeds[index])
         await await_message(message=message, embed=take_embeds[index])
 
     else:
