@@ -92,24 +92,24 @@ for url in fair_urls:
     fair_embeds.append(new_embed)
 
 take_embeds = []
-take_urls = ['https://i.ytimg.com/vi/xvXh2NDE6iM/maxresdefault.jpg', # hot shake
-             'http://cdn-webimages.wimages.net/05154eed87de00290048db240e69fe77b94fda-wm.jpg?v=3', # hot ache
-             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTB9Jz6gSPri9l7bJ23fjCE6AYU9vOtqnuAlaY99uLuV-6okU', # hot bake
-             'http://i00.i.aliimg.com/wsphoto/v0/32283886162_1/-font-b-Hot-b-font-Sale-font-b-Blake-b-font-font-b-Lively-b.jpg', # hot blake
-             'http://carphotos.cardomain.com/story_images/1/1955/3521/4886760001_large.jpg', # hot break
-             'http://www.hummingbrew.com/uploads/7/6/4/7/7647871/5739699_orig.jpg', # hot break
-             'https://www.japanesecooking101.com/wp-content/uploads/2017/08/DSC00083-copy.jpg', # hot cake
-             'https://i.pinimg.com/originals/32/a0/c2/32a0c2830e93f3d57cb302884e096288.jpg', # hot drake
-             'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF', # hot flake
-             'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg', # hot hake
-             'https://i.ytimg.com/vi/NeW6MQ0bIRQ/maxresdefault.jpg', # hot jake
-             'https://i.ytimg.com/vi/3qGxG5P1-Ro/maxresdefault.jpg', # hot lake
-             'http://www.sciencemag.org/sites/default/files/styles/article_main_large/public/images/sn-seismicH.jpg?itok=I-6a0Sri', # hot quake
-             'http://www.doityourselfrv.com/wp-content/uploads/2013/07/campfire-hotdogs-rake.jpg', # hot rake
-             'https://images.reverb.com/image/upload/s--up0dQ8AK--/a_exif,c_limit,e_unsharp_mask:80,f_auto,fl_progressive,g_south,h_620,q_90,w_620/v1490375727/tzc0ozcn2pmkcwyii6qj.jpg', # hot sake
-             'https://www.detectiveconanworld.com/wiki/images/thumb/2/20/EP106_Case.jpg/290px-EP106_Case.jpg', # hot slake
-             'https://subpop-img.s3.amazonaws.com/asset/artist_images/attachments/000/007/225/max_960/hotsnakes-2017-promo-02-courtesyoftheartist-2667x1500-300.jpg?1516298549', # hot snake
-             'http://1000awesomethings.com/wp-content/uploads/2009/11/grilled-steak.jpg', # hot steak
+take_urls = ['https://i.ytimg.com/vi/xvXh2NDE6iM/maxresdefault.jpg',  # hot shake
+             'http://cdn-webimages.wimages.net/05154eed87de00290048db240e69fe77b94fda-wm.jpg?v=3',  # hot ache
+             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTB9Jz6gSPri9l7bJ23fjCE6AYU9vOtqnuAlaY99uLuV-6okU',  # hot bake
+             'https://i.ytimg.com/vi/7-kcnEPhJGY/maxresdefault.jpg',  # hot blake
+             'http://carphotos.cardomain.com/story_images/1/1955/3521/4886760001_large.jpg',  # hot break
+             'http://www.hummingbrew.com/uploads/7/6/4/7/7647871/5739699_orig.jpg',  # hot break
+             'https://www.japanesecooking101.com/wp-content/uploads/2017/08/DSC00083-copy.jpg',  # hot cake
+             'https://i.pinimg.com/originals/32/a0/c2/32a0c2830e93f3d57cb302884e096288.jpg',  # hot drake
+             'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF',  # hot flake
+             'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg',  # hot hake
+             'https://i.ytimg.com/vi/NeW6MQ0bIRQ/maxresdefault.jpg',  # hot jake
+             'https://i.ytimg.com/vi/3qGxG5P1-Ro/maxresdefault.jpg',  # hot lake
+             'http://www.sciencemag.org/sites/default/files/styles/article_main_large/public/images/sn-seismicH.jpg?itok=I-6a0Sri',  # hot quake
+             'http://www.doityourselfrv.com/wp-content/uploads/2013/07/campfire-hotdogs-rake.jpg',  # hot rake
+             'https://images.reverb.com/image/upload/s--up0dQ8AK--/a_exif,c_limit,e_unsharp_mask:80,f_auto,fl_progressive,g_south,h_620,q_90,w_620/v1490375727/tzc0ozcn2pmkcwyii6qj.jpg',  # hot sake
+             'https://www.detectiveconanworld.com/wiki/images/thumb/2/20/EP106_Case.jpg/290px-EP106_Case.jpg',  # hot slake
+             'https://subpop-img.s3.amazonaws.com/asset/artist_images/attachments/000/007/225/max_960/hotsnakes-2017-promo-02-courtesyoftheartist-2667x1500-300.jpg?1516298549',  # hot snake
+             'http://1000awesomethings.com/wp-content/uploads/2009/11/grilled-steak.jpg',  # hot steak
              ]
 
 for url in take_urls:
