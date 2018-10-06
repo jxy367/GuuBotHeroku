@@ -26,7 +26,7 @@ woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
-malt_shop = "To the malt shop PERIOD!!"
+malt_shop = "To the malt shop!!"
 fire = 'We should have guubot fire on "freaked it" - Danny Miles'
 despacito = 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
 
@@ -67,7 +67,7 @@ malt_shop_embed = discord.Embed()
 malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
 
 fire_embed = discord.Embed()
-fire_embed.set_image(url='https://giphy.com/gifs/fire-comedian-5a6Y7Fe0TT50Q')
+fire_embed.set_image(url='https://media.giphy.com/media/5a6Y7Fe0TT50Q/giphy.gif')
 
 sheik_embed = discord.Embed()
 sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
