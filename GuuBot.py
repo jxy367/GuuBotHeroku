@@ -26,7 +26,7 @@ woop = "Woop Woop, pull over that ass is too fat"
 nico = "Nico Nico No"
 morning = "It's morning!"
 conan = "At least the ice will melt..."
-malt_shop = "To the malt shop."
+malt_shop = "To the malt shop,!!"
 fire = 'We should have guubot fire on "freaked it" - Danny Miles'
 despacito = 'https://www.youtube.com/watch?v=kJQP7kiw5Fk'
 
@@ -407,7 +407,7 @@ async def await_message(message: discord.Message, content=None, embed=None):
     elif embed is None:
         await message.channel.send(content=content)
     else:
-        await message.channel.send(content=content+"!!", embed=embed)
+        await message.channel.send(content=content, embed=embed)
 
     reset_cooldown(message)
 
