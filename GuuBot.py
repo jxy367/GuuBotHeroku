@@ -195,13 +195,20 @@ def get_amiami_image(url):
         sleep(1)
         innerHTML = browser.execute_script("return document.body.innerHTML")
         print(len(innerHTML))
-    html = browser.page_source
+    # html = browser.page_source
     browser.close()
+    # start = html.find("https://img.amiami.com/images")
+    # print("start: ", start)
+    # end = html.find(".jpg")
+    # print("end: ", end)
+    # img_url = html[start:end] + ".jpg"
+    html = str(innerHTML)
     start = html.find("https://img.amiami.com/images")
     print("start: ", start)
     end = html.find(".jpg")
     print("end: ", end)
     img_url = html[start:end] + ".jpg"
+
     return img_url
 
 
