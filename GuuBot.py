@@ -197,6 +197,7 @@ def get_amiami_image(url):
 
     # html = browser.page_source
     browser.close()
+    print(innerHTML)
     # start = html.find("https://img.amiami.com/images")
     # print("start: ", start)
     # end = html.find(".jpg")
