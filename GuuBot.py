@@ -172,8 +172,8 @@ noah = 165481032043331584
 
 def find_amiami(string):
     urls = []
-    while string.find("https://www.amiami.com/eng/detail/") != -1:
-        start = string.find("https://www.amiami.com/eng/detail/")
+    while string.find("https://www.amiami.com/eng/detail") != -1:
+        start = string.find("https://www.amiami.com/eng/detail")
         string = string[start:]
         end = string.find(" ")
         if end == -1:
