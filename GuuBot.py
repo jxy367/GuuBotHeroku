@@ -11,6 +11,7 @@ import discord
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from pytz import timezone
+from selenium import webdriver
 
 TOKEN = os.environ.get('TOKEN')
 
@@ -154,6 +155,35 @@ noah = 165481032043331584
 #discord.opus.load_opus('libopus-0.dll')
 #with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
+
+
+def find_amiami(string):
+    urls = []
+    while string.find("https://www.amiami.com/eng/detail/") != -1:
+        start = string.find("https://www.amiami.com/eng/detail/")
+        string = string[start:]
+        end = string.find(" ")
+        if end == -1:
+            ur = string
+        else:
+            ur = string[:end]
+        urls.append(ur)
+        string = string[end:]
+    return urls
+
+
+def get_amiami_image(url):
+    browser = webdriver.Chrome()
+    browser.get(url)
+    innerHTML = ''
+    while (len(innerHTML) <= 50000):
+        innerHTML = browser.execute_script("return document.body.innerHTML")
+    html = browser.page_source
+    browser.close()
+    start = html.find("https://img.amiami.com/images")
+    end = html.find(".jpg")
+    img_url = html[start:end] + ".jpg"
+    return img_url
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
@@ -586,6 +616,9 @@ async def on_message(message):
     # Check if "fair" appears in message
     exact_fair = regex_fair(message.content.lower())
 
+    # Check if "amiami.com" in message
+    urls = find_amiami(message.content.lower())
+
     if "awoo" in message.content.lower():
 
         awoo_select = random.randrange(0, 4)
@@ -695,6 +728,13 @@ async def on_message(message):
         index = random.randrange(0, len(take_embeds))
         await await_message(message=message, embed=take_embeds[index])
 
+    elif len(urls) > 0:
+        for u in urls:
+            img = get_amiami_image(u)
+            e = discord.Embed()
+            e.set_image(url=img)
+            await await_message(message, embed=e)
+
     else:
         message.content = message.content.lower()
         await client.process_commands(message)
@@ -794,5 +834,3 @@ async def on_ready():
     expand4 = client.get_emoji(expand4)
 
 client.run(TOKEN)
-
-

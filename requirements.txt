@@ -12,3 +12,4 @@ pycparser==2.18
 pytz==2018.5
 bs4
 #discord.py==1.0.0a1504+gf06563c
+selenium==3.14.1
