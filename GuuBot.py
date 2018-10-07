@@ -190,27 +190,18 @@ def get_amiami_image(url):
     print("Finding amiami images", url)
     browser = webdriver.Chrome()
     browser.get(url)
-    innerHTML = ''
-    while (len(innerHTML) < 2000 or len(innerHTML) > 40000):
-        sleep(1)
-        innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
-    sleep(1)
+    sleep(7)
+    innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
     html = browser.page_source
     browser.close()
-    # print(html)
-    print(innerHTML)
-    # print(innerHTML)
-    # start = html.find("https://img.amiami.com/images")
-    # print("start: ", start)
-    # end = html.find(".jpg")
-    # print("end: ", end)
-    # img_url = html[start:end] + ".jpg"
+    print(html)
     html = str(innerHTML)
     start = html.find("https://img.amiami.com/images/product/main")
     print("start: ", start)
+    html = html[start:]
     end = html.find(".jpg")
     print("end: ", end)
-    img_url = html[start:end] + ".jpg"
+    img_url = html[0:end] + ".jpg"
     print(img_url)
     return img_url
 
@@ -863,4 +854,3 @@ async def on_ready():
     expand4 = client.get_emoji(expand4)
 
 client.run(TOKEN)
-
