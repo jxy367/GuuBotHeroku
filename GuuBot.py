@@ -190,7 +190,11 @@ def get_amiami_image(url):
     print("Finding amiami images", url)
     browser = webdriver.Chrome()
     browser.get(url)
-    sleep(3)
+    innerHTML = ''
+    while (len(innerHTML) <= 40000):
+        sleep(1)
+        innerHTML = browser.execute_script("return document.body.innerHTML")
+        print(len(innerHTML))
     html = browser.page_source
     browser.close()
     start = html.find("https://img.amiami.com/images")
