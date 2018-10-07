@@ -4,6 +4,7 @@ import random
 import re
 import urllib
 from datetime import datetime
+from time import sleep
 from urllib import parse
 from urllib import request
 
@@ -13,9 +14,6 @@ from discord.ext import commands
 from pytz import timezone
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 TOKEN = os.environ.get('TOKEN')
 GOOGLE_CHROME_BIN = os.environ.get('GOOGLE_CHROM_BIN')
@@ -192,15 +190,11 @@ def get_amiami_image(url):
     print("Finding amiami images", url)
     browser = webdriver.Chrome()
     browser.get(url)
-    out = ''
     innerHTML = ''
-    try:
-        element = WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.XPATH,
-                                                                                   '//*[@id="__layout"]/div/div[1]/div[2]/div/div/div/div/div/section[1]/div/div[2]/div[2]/ul/li/a/img')))
-        print("element: ", element)
+    while (len(innerHTML) <= 40000):
+        sleep(1)
+        innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
 
-    finally:
-        driver.quit()
     # html = browser.page_source
     browser.close()
     # start = html.find("https://img.amiami.com/images")
@@ -209,13 +203,13 @@ def get_amiami_image(url):
     # print("end: ", end)
     # img_url = html[start:end] + ".jpg"
     html = str(innerHTML)
-    start = html.find("https://img.amiami.com/images")
+    start = html.find("https://img.amiami.com/images/product/main")
     print("start: ", start)
     end = html.find(".jpg")
     print("end: ", end)
     img_url = html[start:end] + ".jpg"
-
-    return ''
+    print(img_url)
+    return img_url
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
