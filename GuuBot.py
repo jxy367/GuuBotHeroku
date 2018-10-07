@@ -194,10 +194,11 @@ def get_amiami_image(url):
     while (len(innerHTML) <= 40000):
         sleep(1)
         innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
-
-    # html = browser.page_source
+    sleep(1)
+    html = browser.page_source
     browser.close()
-    print(innerHTML)
+    print(html)
+    # print(innerHTML)
     # start = html.find("https://img.amiami.com/images")
     # print("start: ", start)
     # end = html.find(".jpg")
