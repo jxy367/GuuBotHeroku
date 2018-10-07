@@ -4,7 +4,7 @@ import random
 import re
 import urllib
 from datetime import datetime
-from time import sleep
+# from time import sleep
 from urllib import parse
 from urllib import request
 
@@ -13,21 +13,22 @@ import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from pytz import timezone
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 
 TOKEN = os.environ.get('TOKEN')
-GOOGLE_CHROME_BIN = os.environ.get('GOOGLE_CHROM_BIN')
-CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
+# GOOGLE_CHROME_BIN = os.environ.get('GOOGLE_CHROM_BIN')
+#CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
 
 client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 
 # Configure Chromedriver
-chrome_options = Options()
-chrome_options.binary_location = GOOGLE_CHROME_BIN
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
+# chrome_options = Options()
+# chrome_options.binary_location = GOOGLE_CHROME_BIN
+# chrome_options.add_argument('--disable-gpu')
+# chrome_options.add_argument('--no-sandbox')
+#driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
 
 # Guu Messages #
 woo = 'Woo'
@@ -186,22 +187,22 @@ def find_amiami(string):
     return urls
 
 
-def get_amiami_image(url):
-    print("Finding amiami images", url)
-    browser = webdriver.Chrome()
-    browser.get(url)
-    sleep(10)
-    innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
-    browser.close()
-    html = str(innerHTML)
-    start = html.find("https://img.amiami.com/images/product/main")
-    print("start: ", start)
-    html = html[start:]
-    end = html.find(".jpg")
-    print("end: ", end)
-    img_url = html[0:end] + ".jpg"
-    print(img_url)
-    return img_url
+# def get_amiami_image(url):
+#    print("Finding amiami images", url)
+#    browser = webdriver.Chrome()
+#    browser.get(url)
+#    sleep(10)
+#    innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
+#    browser.close()
+#    html = str(innerHTML)
+#    start = html.find("https://img.amiami.com/images/product/main")
+#    print("start: ", start)
+#    html = html[start:]
+#    end = html.find(".jpg")
+#    print("end: ", end)
+#    img_url = html[0:end] + ".jpg"
+#    print(img_url)
+#    return img_url
 
 
 def make_amiami_image(url):
