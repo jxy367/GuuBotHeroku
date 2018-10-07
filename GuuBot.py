@@ -4,6 +4,7 @@ import random
 import re
 import urllib
 from datetime import datetime
+from time import sleep
 from urllib import parse
 from urllib import request
 
@@ -191,6 +192,7 @@ def get_amiami_image(url):
     browser.get(url)
     innerHTML = ''
     while (len(innerHTML) <= 50000):
+        sleep(1)
         innerHTML = browser.execute_script("return document.body.innerHTML")
         print(len(innerHTML))
     html = browser.page_source
