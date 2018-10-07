@@ -25,7 +25,7 @@ chrome_options = Options()
 chrome_options.binary_location = GOOGLE_CHROME_BIN
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
 
 # Guu Messages #
 woo = 'Woo'
@@ -192,6 +192,7 @@ def get_amiami_image(url):
     innerHTML = ''
     while (len(innerHTML) <= 50000):
         innerHTML = browser.execute_script("return document.body.innerHTML")
+        print(len(innerHTML))
     html = browser.page_source
     browser.close()
     start = html.find("https://img.amiami.com/images")
