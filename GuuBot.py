@@ -216,11 +216,9 @@ def make_amiami_image(url):
             test_url = prefix + "00" + str(num) + suffix
         else:
             test_url = prefix + str(num) + suffix
-        print(test_url)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         result = requests.get(test_url, headers=headers)
-        print(result.status_code)
         if result.status_code == 200:
             print("amiami image: ", test_url)
             return test_url
@@ -658,7 +656,7 @@ async def on_message(message):
     exact_fair = regex_fair(message.content.lower())
 
     # Check if "amiami.com" in message
-    urls = find_amiami(message.content.lower())
+    urls = find_amiami(message.content)
 
     if "awoo" in message.content.lower():
 
@@ -771,13 +769,10 @@ async def on_message(message):
 
     elif len(urls) > 0:
         for u in urls:
-            print("Time to make amiami images")
-            print(u)
             img = make_amiami_image(u)
             e = discord.Embed()
-            print(img)
             e.set_image(url=img)
-            await await_message(message, embed=e)
+            await await_message(message, content=u, embed=e)
 
     else:
         message.content = message.content.lower()
