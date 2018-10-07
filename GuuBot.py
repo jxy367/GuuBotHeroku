@@ -220,6 +220,7 @@ def make_amiami_image(url):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         result = requests.get(test_url, headers=headers)
         if result.status_code == 200:
+            print("amiami image: ", test_url)
             return test_url
     return ""
 
@@ -770,6 +771,7 @@ async def on_message(message):
         for u in urls:
             img = make_amiami_image(u)
             e = discord.Embed()
+            print(img)
             e.set_image(url=img)
             await await_message(message, embed=e)
 
