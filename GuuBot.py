@@ -180,11 +180,13 @@ def find_amiami(string):
             ur = string[:end]
         urls.append(ur)
         string = string[end:]
+    if len(urls) > 0:
+        print("Found amiami:", urls)
     return urls
 
 
 def get_amiami_image(url):
-    print("Finding amiami images")
+    print("Finding amiami images", url)
     browser = webdriver.Chrome()
     browser.get(url)
     innerHTML = ''
