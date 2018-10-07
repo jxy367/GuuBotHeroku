@@ -190,11 +190,9 @@ def get_amiami_image(url):
     print("Finding amiami images", url)
     browser = webdriver.Chrome()
     browser.get(url)
-    sleep(7)
+    sleep(10)
     innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
-    html = browser.page_source
     browser.close()
-    print(html)
     html = str(innerHTML)
     start = html.find("https://img.amiami.com/images/product/main")
     print("start: ", start)
@@ -854,3 +852,4 @@ async def on_ready():
     expand4 = client.get_emoji(expand4)
 
 client.run(TOKEN)
+
