@@ -196,7 +196,7 @@ def get_amiami_image(url):
     innerHTML = ''
     try:
         element = WebDriverWait(browser, 10).until(
-            EC.presence_of_element_located((By.ByXPath,
+            EC.presence_of_element_located((By.XPATH,
                                             '//*[@id="__layout"]/div/div[1]/div[2]/div/div/div/div/div/section[1]/div/div[2]/div[2]/ul/li/a/img'))
         )
         print("element: ", element)
