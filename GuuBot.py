@@ -191,13 +191,14 @@ def get_amiami_image(url):
     browser = webdriver.Chrome()
     browser.get(url)
     innerHTML = ''
-    while (len(innerHTML) <= 40000):
+    while (len(innerHTML) < 2000 or len(innerHTML) > 40000):
         sleep(1)
         innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
     sleep(1)
     html = browser.page_source
     browser.close()
-    print(html)
+    # print(html)
+    print(innerHTML)
     # print(innerHTML)
     # start = html.find("https://img.amiami.com/images")
     # print("start: ", start)
