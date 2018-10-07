@@ -9,6 +9,7 @@ from urllib import parse
 from urllib import request
 
 import discord
+import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from pytz import timezone
@@ -169,7 +170,6 @@ noah = 165481032043331584
 
 
 def find_amiami(string):
-    print("Finding amiami:", string)
     urls = []
     while string.find("https://www.amiami.com/eng/detail/") != -1:
         start = string.find("https://www.amiami.com/eng/detail/")
@@ -202,6 +202,25 @@ def get_amiami_image(url):
     img_url = html[0:end] + ".jpg"
     print(img_url)
     return img_url
+
+
+def make_amiami_image(url):
+    start = url.find("=")
+    suffix = "/" + url[start + 1:] + ".jpg"
+    prefix = "https://img.amiami.com/images/product/main/"
+    for num in range(184, 1, -1):
+        if num >= 10 and num < 100:
+            test_url = prefix + "0" + str(num) + suffix
+        elif num < 10:
+            test_url = prefix + "00" + str(num) + suffix
+        else:
+            test_url = prefix + str(num) + suffix
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        result = requests.get(test_url, headers=headers)
+        if result.status_code == 200:
+            return test_url
+    return ""
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
@@ -748,7 +767,7 @@ async def on_message(message):
 
     elif len(urls) > 0:
         for u in urls:
-            img = get_amiami_image(u)
+            img = make_amiami_image(u)
             e = discord.Embed()
             e.set_image(url=img)
             await await_message(message, embed=e)
