@@ -872,4 +872,3 @@ async def on_ready():
     expand4 = client.get_emoji(expand4)
 
 client.run(TOKEN)
-
