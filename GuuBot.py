@@ -777,7 +777,6 @@ async def on_message(message):
             await await_message(message, content=u, embed=e)
 
     else:
-        message.content = message.content.lower()
         await client.process_commands(message)
 
 
