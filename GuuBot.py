@@ -777,6 +777,8 @@ async def on_message(message):
             await await_message(message, content=u, embed=e)
 
     else:
+        if message.content.lower()[:6] == "guubot":
+            message.content = "guubot" + message.content[6:]
         await client.process_commands(message)
 
 
