@@ -89,6 +89,13 @@ sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
 powerful_embed = discord.Embed()
 powerful_embed.set_image(url="https://i.ytimg.com/vi/4DFsaVdQstE/maxresdefault.jpg")
 
+almost_like_embed = discord.Embed()
+almost_like_embed.set_image(
+    url="http://memeshappen.com/media/created/omg-its-almost-like--i-don39t-even-care-meme-18321.jpg")
+
+ye_embed = discord.Embed()
+ye_embed.set_image(url="https://i.ytimg.com/vi/-HXcxGnmiSI/maxresdefault.jpg")
+
 fair_embeds = []
 fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
         'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
@@ -781,6 +788,12 @@ async def on_message(message):
 
     elif "powerful" in message.content.lower():
         await await_message(message, embed=powerful_embed)
+
+    elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
+        await await_message(message, embed=almost_like_embed)
+
+    elif exactly_in("ye", message.content.lower()):
+        await await_message(message, embed=ye_embed)
 
     else:
         if message.content.lower()[:6] == "guubot":
