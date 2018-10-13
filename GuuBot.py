@@ -86,6 +86,9 @@ fire_embed.set_image(url='https://media.giphy.com/media/5a6Y7Fe0TT50Q/giphy.gif'
 sheik_embed = discord.Embed()
 sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
 
+powerful_embed = discord.Embed()
+powerful_embed.set_image(url="https://i.ytimg.com/vi/4DFsaVdQstE/maxresdefault.jpg")
+
 fair_embeds = []
 fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
         'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
@@ -775,6 +778,9 @@ async def on_message(message):
             e = discord.Embed()
             e.set_image(url=img)
             await await_message(message, content=u, embed=e)
+
+    elif "powerful" in message.content.lower():
+        await await_message(message, embed=powerful_embed)
 
     else:
         if message.content.lower()[:6] == "guubot":
