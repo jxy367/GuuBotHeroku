@@ -96,6 +96,19 @@ almost_like_embed.set_image(
 ye_embed = discord.Embed()
 ye_embed.set_image(url="https://i.ytimg.com/vi/-HXcxGnmiSI/maxresdefault.jpg")
 
+something_something_embed = discord.Embed()
+something_something_embed.set_image(
+    url="https://vignette.wikia.nocookie.net/familyguy/images/8/89/Bscap0524.jpg/revision/latest?cb=20100110115057")
+
+bad_embed = discord.Embed()
+bad_embed.set_image(url="https://cdn.shopify.com/s/files/1/0018/7639/4036/products/12_1200x1200.jpg?v=1524333747")
+
+coded_embed = discord.Embed()
+coded_embed.set_image(url="https://upload.wikimedia.org/wikipedia/en/8/8e/Kingdom_Hearts_coded_logo.png")
+
+vc_embed = discord.Embed()
+vc_embed.set_image(url="https://cdn.discordapp.com/attachments/216304922025525248/501182690524135435/unknown.png")
+
 fair_embeds = []
 fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
         'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
@@ -795,10 +808,24 @@ async def on_message(message):
     elif exactly_in("ye", message.content.lower()):
         await await_message(message, embed=ye_embed)
 
+    elif "coded" in message.content.lower():
+        await await_message(message, embed=coded_embed)
+
+    elif exactly_in("vc", message.content.lower()):
+        await await_message(message, embed=vc_embed)
+
+    elif exactly_in("bad", message.content.lower()):
+        await await_message(message, embed=bad_embed)
+
+    elif "something something" in message.content.lower():
+        await await_message(message, embed=something_something_embed)
+
     else:
-        if message.content.lower()[:6] == "guubot":
-            message.content = "guubot" + message.content[6:]
-        await client.process_commands(message)
+        x = 0
+
+    if message.content.lower()[:6] == "guubot":
+        message.content = "guubot" + message.content[6:]
+    await client.process_commands(message)
 
 
 @client.event
