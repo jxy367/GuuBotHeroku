@@ -814,8 +814,8 @@ async def on_message(message):
     elif exactly_in("vc", message.content.lower()):
         await await_message(message, embed=vc_embed)
 
-    elif exactly_in("bad", message.content.lower()):
-        await await_message(message, embed=bad_embed)
+    # elif exactly_in("bad", message.content.lower()):
+    #    await await_message(message, embed=bad_embed)
 
     elif "something something" in message.content.lower():
         await await_message(message, embed=something_something_embed)
