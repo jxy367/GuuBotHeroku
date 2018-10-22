@@ -820,6 +820,9 @@ async def on_message(message):
     elif "something something" in message.content.lower():
         await await_message(message, embed=something_something_embed)
 
+    elif message.content.lower() in ["f", "1"]:
+        await await_message(message, content=message.content)
+
     else:
         x = 0
 
