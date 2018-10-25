@@ -799,14 +799,8 @@ async def on_message(message):
             e.set_image(url=img)
             await await_message(message, content=u, embed=e)
 
-    elif "powerful" in message.content.lower():
-        await await_message(message, embed=powerful_embed)
-
     elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
         await await_message(message, embed=almost_like_embed)
-
-    elif exactly_in("ye", message.content.lower()):
-        await await_message(message, embed=ye_embed)
 
     elif "coded" in message.content.lower():
         await await_message(message, embed=coded_embed)
