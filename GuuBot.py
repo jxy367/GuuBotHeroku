@@ -818,7 +818,7 @@ async def on_message(message):
             m1 = previous_messages[0]
             m2 = previous_messages[1]
 
-            if m1.content.lower() == m2.content.lower() and previous_messages[0].lower() in ["f", "1"]:
+            if m1.content.lower() == m2.content.lower() and m1.content.lower() in ["f", "1"]:
                 if not m1.author.bot and not m2.author.bot:
                     await await_message(message, content=message.content)
 
