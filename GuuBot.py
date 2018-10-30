@@ -751,7 +751,7 @@ async def on_message(message):
             await message.guild.kick(message.author)
             await await_message(message=message, content='Fine. Just the kick hammer...')
 
-    elif "nico" in message.content.lower():
+    elif exactly_in("nico", message.content.lower()):
         await await_message(message=message, content=nico, embed=nico_embed)
 
     elif "secret" in message.content.lower() and "woman" in message.content.lower():
@@ -808,17 +808,19 @@ async def on_message(message):
     elif exactly_in("vc", message.content.lower()):
         await await_message(message, embed=vc_embed)
 
-    # elif exactly_in("bad", message.content.lower()):
-    #    await await_message(message, embed=bad_embed)
-
     elif "something something" in message.content.lower():
         await await_message(message, embed=something_something_embed)
 
-    elif message.content.lower() in ["f", "1"]:
-        await await_message(message, content=message.content)
-
     else:
-        x = 0
+        previous_messages = await message.channel.history(limit=2, before=message).flatten()
+        if len(previous_messages) == 2:
+
+            m1 = previous_messages[0]
+            m2 = previous_messages[1]
+
+            if m1.content.lower() == m2.content.lower() and previous_messages[0].lower() in ["f", "1"]:
+                if not m1.author.bot and not m2.author.bot:
+                    await await_message(message, content=message.content)
 
     if message.content.lower()[:6] == "guubot":
         message.content = "guubot" + message.content[6:]
