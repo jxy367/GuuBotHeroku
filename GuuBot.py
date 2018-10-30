@@ -812,14 +812,13 @@ async def on_message(message):
         await await_message(message, embed=something_something_embed)
 
     else:
-        previous_messages = await message.channel.history(limit=2, before=message).flatten()
-        if len(previous_messages) == 2:
+        previous_messages = await message.channel.history(limit=1, before=message).flatten()
+        if len(previous_messages) == 1:
 
             m1 = previous_messages[0]
-            m2 = previous_messages[1]
 
-            if m1.content.lower() == m2.content.lower() and m1.content.lower() in ["f", "1"]:
-                if not m1.author.bot and not m2.author.bot:
+            if m1.content.lower() == message.content.lower() and message.content.lower() in ["f", "1"]:
+                if not m1.author.bot:
                     await await_message(message, content=message.content)
 
     if message.content.lower()[:6] == "guubot":
