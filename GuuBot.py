@@ -737,6 +737,8 @@ async def upvote(ctx, phrase):
                 emoji_to_use = emoji_dict[k][i]
                 await previous_message.add_reaction(emoji_to_use)
             await previous_message.add_reaction(up_arrow)
+
+
 client.remove_command('help')
 
 
@@ -753,6 +755,8 @@ async def help(ctx):
     embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
     embed.add_field(name="guubot f#$%*",
                     value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead",
+                    inline=False)
+    embed.add_field(name="guubot upvote [number]", value="Attempts to upvote the previous message to [number] upvotes",
                     inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
