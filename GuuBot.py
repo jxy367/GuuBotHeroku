@@ -718,11 +718,14 @@ async def upvote(ctx, phrase):
 
     if not num.isnumeric():
         await await_ctx(ctx, content="Value must be number")
+        return
 
     else:
         emoji_list = convert_to_emoji_list(num)
         if len(emoji_list) > 19:
             await await_ctx(ctx, content="Too long to convert into emojis")
+            return
+
         emoji_list = check_emojis(emoji_list, emoji_nums)
         if emoji_list[0] == -1:
             # await message
