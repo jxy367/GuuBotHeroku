@@ -4,6 +4,7 @@ import random
 import re
 import urllib
 from datetime import datetime
+from itertools import permutations
 # from time import sleep
 from urllib import parse
 from urllib import request
@@ -212,24 +213,6 @@ def find_amiami(string):
     return urls
 
 
-# def get_amiami_image(url):
-#    print("Finding amiami images", url)
-#    browser = webdriver.Chrome()
-#    browser.get(url)
-#    sleep(10)
-#    innerHTML = browser.execute_script("return document.body.innerHTML")  # returns the inner HTML as a string
-#    browser.close()
-#    html = str(innerHTML)
-#    start = html.find("https://img.amiami.com/images/product/main")
-#    print("start: ", start)
-#    html = html[start:]
-#    end = html.find(".jpg")
-#    print("end: ", end)
-#    img_url = html[0:end] + ".jpg"
-#    print(img_url)
-#    return img_url
-
-
 def make_amiami_image(url):
     start = url.find("=")
     suffix = "/" + url[start + 1:] + ".jpg"
@@ -346,7 +329,7 @@ def request_youtube_video(keyword: str):
 
 
 def regex_fair(message: str):
-    list_of_fairs = ["fair"]
+    list_of_fairs = ["".join(p) for p in permutations("fair")]
     for word in list_of_fairs:
         #if generic_regex(message, word):
             #return True
@@ -711,20 +694,6 @@ async def on_message(message):
                 else:
                     await  await_message(message=message, content=multi_woo, embed=woo_embed)
 
-            elif message.author.id == kaius:
-                kaius_select = random.randrange(0, 2)
-                if kaius_select == 0:
-                    await await_message(message=message, content=woop, embed=woop_embed)
-                else:
-                    await await_message(message=message, content=multi_woo, embed=woo_embed)
-
-            elif message.author.id == riley:
-                riley_select = random.randrange(0, 2)
-                if riley_select == 0:
-                    await await_message(message=message, content=woop, embed=woop_embed)
-                else:
-                    await await_message(message=message, content=multi_woo, embed=woo_embed)
-
             else:
                 await await_message(message=message, content=multi_woo, embed=woo_embed)
 
@@ -773,9 +742,6 @@ async def on_message(message):
         if message.author.id == noah:
             await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
 
-    elif "barbie girl" in message.content.lower():
-        await await_message(message=message, content="https://www.youtube.com/watch?v=ZyhrYis509A")
-
     elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
         annoying = message.content.lower().split("guubot play", 1)
         video = request_youtube_video(annoying[1])
@@ -801,15 +767,6 @@ async def on_message(message):
 
     elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
         await await_message(message, embed=almost_like_embed)
-
-    elif "coded" in message.content.lower():
-        await await_message(message, embed=coded_embed)
-
-    elif exactly_in("vc", message.content.lower()):
-        await await_message(message, embed=vc_embed)
-
-    elif "something something" in message.content.lower():
-        await await_message(message, embed=something_something_embed)
 
     else:
         previous_messages = await message.channel.history(limit=1, before=message).flatten()
