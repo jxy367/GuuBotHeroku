@@ -721,6 +721,8 @@ async def upvote(ctx, phrase):
 
     else:
         emoji_list = convert_to_emoji_list(num)
+        if len(emoji_list) > 19:
+            await await_ctx(ctx, content="Too long to convert into emojis")
         emoji_list = check_emojis(emoji_list, emoji_nums)
         if emoji_list[0] == -1:
             # await message
@@ -731,7 +733,7 @@ async def upvote(ctx, phrase):
                 k, i = tup
                 emoji_to_use = emoji_dict[k][i]
                 await previous_message.add_reaction(emoji_to_use)
-
+            await previous_message.add_reaction(up_arrow)
 client.remove_command('help')
 
 
