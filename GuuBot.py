@@ -20,7 +20,7 @@ from pytz import timezone
 
 TOKEN = os.environ.get('TOKEN')
 # GOOGLE_CHROME_BIN = os.environ.get('GOOGLE_CHROM_BIN')
-#CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
+# CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
 
 client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 
@@ -29,7 +29,7 @@ client = commands.Bot(command_prefix="guubot ", case_insensitive=True)
 # chrome_options.binary_location = GOOGLE_CHROME_BIN
 # chrome_options.add_argument('--disable-gpu')
 # chrome_options.add_argument('--no-sandbox')
-#driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
+# driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
 
 # Guu Messages #
 woo = 'Woo'
@@ -55,10 +55,12 @@ wu_embed1.set_image(
     url='https://cdn.discordapp.com/attachments/191988856839602176/438907914552475660/oRV3vC6E_400x400.png')
 
 wu_embed2 = discord.Embed()
-wu_embed2.set_image(url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t31.0-8/23004588_1807971082834301_9153680533274895689_o.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGbnqhaXMf0xOFb0HZWvNxBvC9lIuEiS6m55S2E46FofIaAOfmLtipA3BDKkom43pF3sG8tDppkxbPQ5ICnJu_ABx2iC2JuDxzjYFpDUMKj3A&oh=5b4fc35b2c43bea5283ad315def59e64&oe=5B68987A')
+wu_embed2.set_image(
+    url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t31.0-8/23004588_1807971082834301_9153680533274895689_o.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGbnqhaXMf0xOFb0HZWvNxBvC9lIuEiS6m55S2E46FofIaAOfmLtipA3BDKkom43pF3sG8tDppkxbPQ5ICnJu_ABx2iC2JuDxzjYFpDUMKj3A&oh=5b4fc35b2c43bea5283ad315def59e64&oe=5B68987A')
 
 wu_embed3 = discord.Embed()
-wu_embed3.set_image(url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t1.0-9/16711577_1691924731105604_448770579254912570_n.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGNWyFqGgPHbBoPqljpVJZlyTSNI298EMfHoR3p_m7g94Apj4VqpCoN_Ya7vh7sz8V1o4K4Vr6nudMcUWW9DRnv1NxHWYTAXpEoFTYworEGKQ&oh=383f61bc9566164c2aad0d0a64cb5d83&oe=5B6712C6')
+wu_embed3.set_image(
+    url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t1.0-9/16711577_1691924731105604_448770579254912570_n.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGNWyFqGgPHbBoPqljpVJZlyTSNI298EMfHoR3p_m7g94Apj4VqpCoN_Ya7vh7sz8V1o4K4Vr6nudMcUWW9DRnv1NxHWYTAXpEoFTYworEGKQ&oh=383f61bc9566164c2aad0d0a64cb5d83&oe=5B6712C6')
 
 awoo_embed1 = discord.Embed()
 awoo_embed1.set_image(url='http://i0.kym-cdn.com/photos/images/newsfeed/001/175/124/112.gif')
@@ -79,7 +81,8 @@ conan_embed = discord.Embed()
 conan_embed.set_image(url='https://i.imgur.com/bFE5wR9.jpg')
 
 malt_shop_embed = discord.Embed()
-malt_shop_embed.set_image(url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
+malt_shop_embed.set_image(
+    url='https://media.discordapp.net/attachments/216304922025525248/450292196562960395/latest.png')
 
 fire_embed = discord.Embed()
 fire_embed.set_image(url='https://media.giphy.com/media/5a6Y7Fe0TT50Q/giphy.gif')
@@ -111,18 +114,19 @@ vc_embed = discord.Embed()
 vc_embed.set_image(url="https://cdn.discordapp.com/attachments/216304922025525248/501182690524135435/unknown.png")
 
 fair_embeds = []
-fair_urls = ['http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
-        'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
-        'https://media1.fdncms.com/clevescene/imager/u/original/9012469/ohio_state_fair_-_readingandlearning_instagram.png',
-        'https://media.nbcwashington.com/images/652*367/fairgrounds071017.jpg',
-        'https://d3m7xw68ay40x8.cloudfront.net/assets/2016/10/14163048/1016-state-fair.jpg',
-        'http://www.stratfordagriculturalsociety.com/wp-content/uploads/2015/09/FB-Fair-pic.jpg',
-        'https://scontent.fbkl1-1.fna.fbcdn.net/v/t31.0-8/11148833_10153519083058322_8334046223350439297_o.jpg?_nc_cat=0&oh=7c835a3f739107548538ca894c06a507&oe=5B9A73E2',
-        'https://upload.wikimedia.org/wikipedia/commons/b/b7/L.A._County_Fair_1262.jpg',
-        'https://www.gannett-cdn.com/-mm-/c0059ff26d6046b65292170ffc20f75e93874fea/c=0-261-3396-2180&r=x1683&c=3200x1680/local/-/media/2016/10/17/Phoenix/Phoenix/636122964086278930-Arizona-State-Fair-20.jpg',
-        'http://www.effinghamcountyfair.com/wp-content/uploads/2014/12/county-fair.jpg',
-        'https://i.ytimg.com/vi/2yVeQRcOTi4/maxresdefault.jpg',
-        'http://www.lancasterfair.com/wp-content/uploads/2017/01/44.jpg']
+fair_urls = [
+    'http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
+    'https://myareanetwork-photos.s3.amazonaws.com/editorphotos/f/26657_1520825140.png',
+    'https://media1.fdncms.com/clevescene/imager/u/original/9012469/ohio_state_fair_-_readingandlearning_instagram.png',
+    'https://media.nbcwashington.com/images/652*367/fairgrounds071017.jpg',
+    'https://d3m7xw68ay40x8.cloudfront.net/assets/2016/10/14163048/1016-state-fair.jpg',
+    'http://www.stratfordagriculturalsociety.com/wp-content/uploads/2015/09/FB-Fair-pic.jpg',
+    'https://scontent.fbkl1-1.fna.fbcdn.net/v/t31.0-8/11148833_10153519083058322_8334046223350439297_o.jpg?_nc_cat=0&oh=7c835a3f739107548538ca894c06a507&oe=5B9A73E2',
+    'https://upload.wikimedia.org/wikipedia/commons/b/b7/L.A._County_Fair_1262.jpg',
+    'https://www.gannett-cdn.com/-mm-/c0059ff26d6046b65292170ffc20f75e93874fea/c=0-261-3396-2180&r=x1683&c=3200x1680/local/-/media/2016/10/17/Phoenix/Phoenix/636122964086278930-Arizona-State-Fair-20.jpg',
+    'http://www.effinghamcountyfair.com/wp-content/uploads/2014/12/county-fair.jpg',
+    'https://i.ytimg.com/vi/2yVeQRcOTi4/maxresdefault.jpg',
+    'http://www.lancasterfair.com/wp-content/uploads/2017/01/44.jpg']
 
 for url in fair_urls:
     new_embed = discord.Embed()
@@ -132,21 +136,28 @@ for url in fair_urls:
 take_embeds = []
 take_urls = ['https://i.ytimg.com/vi/xvXh2NDE6iM/maxresdefault.jpg',  # hot shake
              'http://cdn-webimages.wimages.net/05154eed87de00290048db240e69fe77b94fda-wm.jpg?v=3',  # hot ache
-             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTB9Jz6gSPri9l7bJ23fjCE6AYU9vOtqnuAlaY99uLuV-6okU',  # hot bake
+             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTB9Jz6gSPri9l7bJ23fjCE6AYU9vOtqnuAlaY99uLuV-6okU',
+             # hot bake
              'https://i.ytimg.com/vi/7-kcnEPhJGY/maxresdefault.jpg',  # hot blake
              'http://carphotos.cardomain.com/story_images/1/1955/3521/4886760001_large.jpg',  # hot break
              'http://www.hummingbrew.com/uploads/7/6/4/7/7647871/5739699_orig.jpg',  # hot break
              'https://www.japanesecooking101.com/wp-content/uploads/2017/08/DSC00083-copy.jpg',  # hot cake
              'https://i.pinimg.com/originals/32/a0/c2/32a0c2830e93f3d57cb302884e096288.jpg',  # hot drake
-             'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF',  # hot flake
-             'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg',  # hot hake
+             'https://i5.walmartimages.com/asr/1d23e86b-dda0-47c6-8995-b5cdb076f1c7_1.1fb0c60d61b11936725881f4b94eb799.jpeg?odnHeight=560&odnWidth=560&odnBg=FFFFFF',
+             # hot flake
+             'https://www.bascofinefoods.com/spanish-recipes-wpfiles/wp-content/uploads/2014/09/crispy_hake_with_piquillo_peppers-e1505676037705.jpg',
+             # hot hake
              'https://i.ytimg.com/vi/NeW6MQ0bIRQ/maxresdefault.jpg',  # hot jake
              'https://i.ytimg.com/vi/3qGxG5P1-Ro/maxresdefault.jpg',  # hot lake
-             'http://www.sciencemag.org/sites/default/files/styles/article_main_large/public/images/sn-seismicH.jpg?itok=I-6a0Sri',  # hot quake
+             'http://www.sciencemag.org/sites/default/files/styles/article_main_large/public/images/sn-seismicH.jpg?itok=I-6a0Sri',
+             # hot quake
              'http://www.doityourselfrv.com/wp-content/uploads/2013/07/campfire-hotdogs-rake.jpg',  # hot rake
-             'https://images.reverb.com/image/upload/s--up0dQ8AK--/a_exif,c_limit,e_unsharp_mask:80,f_auto,fl_progressive,g_south,h_620,q_90,w_620/v1490375727/tzc0ozcn2pmkcwyii6qj.jpg',  # hot sake
-             'https://www.detectiveconanworld.com/wiki/images/thumb/2/20/EP106_Case.jpg/290px-EP106_Case.jpg',  # hot slake
-             'https://subpop-img.s3.amazonaws.com/asset/artist_images/attachments/000/007/225/max_960/hotsnakes-2017-promo-02-courtesyoftheartist-2667x1500-300.jpg?1516298549',  # hot snake
+             'https://images.reverb.com/image/upload/s--up0dQ8AK--/a_exif,c_limit,e_unsharp_mask:80,f_auto,fl_progressive,g_south,h_620,q_90,w_620/v1490375727/tzc0ozcn2pmkcwyii6qj.jpg',
+             # hot sake
+             'https://www.detectiveconanworld.com/wiki/images/thumb/2/20/EP106_Case.jpg/290px-EP106_Case.jpg',
+             # hot slake
+             'https://subpop-img.s3.amazonaws.com/asset/artist_images/attachments/000/007/225/max_960/hotsnakes-2017-promo-02-courtesyoftheartist-2667x1500-300.jpg?1516298549',
+             # hot snake
              'http://1000awesomethings.com/wp-content/uploads/2009/11/grilled-steak.jpg',  # hot steak
              ]
 
@@ -188,9 +199,10 @@ danny = 191426236935831552
 esther = 145075344095969281
 noah = 165481032043331584
 
+
 # Voice stuff
-#discord.opus.load_opus('libopus-0.dll')
-#with youtube_dl.YoutubeDL() as ydl:
+# discord.opus.load_opus('libopus-0.dll')
+# with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
 
 
@@ -218,7 +230,7 @@ def make_amiami_image(url):
     suffix = "/" + url[start + 1:] + ".jpg"
     prefix = "https://img.amiami.com/images/product/main/"
     for num in range(184, 1, -1):
-        if num >= 10 and num < 100:
+        if 10 <= num < 100:
             test_url = prefix + "0" + str(num) + suffix
         elif num < 10:
             test_url = prefix + "00" + str(num) + suffix
@@ -277,7 +289,7 @@ def str1_star_str2(str1: str, str2: str, str3: str):
     else:
         index = str2.find(str1)
         len_str1 = len(str1)
-        return exactly_in(str2, str3[index+len_str1:])
+        return exactly_in(str2, str3[index + len_str1:])
 
 
 def get_cooldown_key(message_or_channel):
@@ -331,8 +343,8 @@ def request_youtube_video(keyword: str):
 def regex_fair(message: str):
     list_of_fairs = ["".join(p) for p in permutations("fair")]
     for word in list_of_fairs:
-        #if generic_regex(message, word):
-            #return True
+        # if generic_regex(message, word):
+        # return True
         if exactly_in(word, message):
             return True
     return False
@@ -351,7 +363,7 @@ def generic_regex(message: str, phrase: str):
     return result is not None
 
 
-#Roll function designed for command usage
+# Roll function designed for command usage
 def roll_function(message: str, roll_type: str):
     message = message.strip()
     danny_roll = (roll_type == 'dannyroll')
@@ -386,7 +398,7 @@ def roll_function(message: str, roll_type: str):
                 for num in range(0, number_of_rolls):
                     if danny_roll:
                         if number_of_sides == 1:
-                            dice_list.append(1-2)
+                            dice_list.append(1 - 2)
                         else:
                             new_number_of_sides = (number_of_sides // 3) if (number_of_sides // 3) > 0 else 1
                             dice_list.append(random.randrange(1, new_number_of_sides + 1))
@@ -436,6 +448,70 @@ def roll_function(message: str, roll_type: str):
     return roll_string
 
 
+def convert_to_emoji_list(num):
+    jackpot = ("777", num.find("777"))
+    # twenty_one_a = num.find("21")
+    # twenty_one_b = -1
+    # if twenty_one_a >= 0:
+    #    twenty_one_b = num[twenty_one_a + 2:].find("21")
+    #    if twenty_one_b >= 0:
+    #        twenty_one_b += twenty_one_a + 2 + 1
+    # twenty_one_a = ("21", twenty_one_a)
+    # twenty_one_b = ("21", twenty_one_b)
+    hundred = num.find("100")
+    ten = num.find("10")
+    if ten == hundred:
+        ten = num[hundred + 3:].find("10")
+        if ten >= 0:
+            ten += hundred + 3
+    hundred = ("100", hundred)
+    ten = ("10", ten)
+
+    chars = list(num)
+    # for tup in [jackpot, twenty_one_a, twenty_one_b, hundred, ten]:
+    for tup in [jackpot, hundred, ten]:
+        v, i = tup
+        if i >= 0:
+            chars[i] = v
+            for j in range(i + 1, i + len(v)):
+                chars[j] = "-"
+
+    chars = [value for value in chars if value != "-"]
+
+    return chars
+
+
+def check_emojis(emoji_list, emoji_nums):
+    emoji_keys = emoji_nums.keys()
+
+    emoji_count = {}
+    for key in emoji_keys:
+        emoji_count[key] = 0
+
+    emoji_check = True
+
+    for i in range(0, len(emoji_list)):
+        e = emoji_list[i]
+        if not emoji_check:
+            break
+
+        if e in emoji_keys:
+            if emoji_count[e] < emoji_nums[e]:
+                emoji_list[i] = (e, emoji_count[e])
+                emoji_count[e] += 1
+            else:
+                emoji_check = False
+                break
+        else:
+            print("Unknown value")
+            return [-1]
+
+    if not emoji_check:
+        return [-1]
+
+    return emoji_list
+
+
 # Get information of message for fetching
 async def get_message_data(msg):
     # Get string content
@@ -450,6 +526,7 @@ async def get_message_data(msg):
         files.append(file)
 
     return content, files
+
 
 async def reset_display_name():
     for changed_guild in client.guilds:
@@ -597,6 +674,64 @@ async def fetch(ctx):
     # Delete the command
     await ctx.message.delete()
 
+
+@client.command()
+async def upvote(ctx, phrase):
+    previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
+    # Weird situation where there is no previous message
+    if len(previous_message) == 0:
+        await await_ctx(ctx, "Message could not be found")
+        return
+
+    # Get previous message
+    previous_message = previous_message[0]
+
+    # Don't send a message to another bot
+    author = previous_message.author
+    if author.bot:
+        await await_ctx(ctx, "Author is bot")
+        return
+
+    up_arrow = u"\U00002B06"
+    num = phrase
+    emoji_dict = {
+        "0": ['\N{Digit Zero}', '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
+            , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
+        "1": ['\N{Digit One}', '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
+        "2": ['\N{Digit Two}', '\N{Second Place Medal}'],
+        "3": ['\N{Digit Three}', '\N{Third Place Medal}'],
+        "4": ['\N{Digit Four}'],
+        "5": ['\N{Digit Five}'],
+        "6": ['\N{Digit Six}'],
+        "7": ['\N{Digit Seven}'],
+        "8": ['\N{Digit Eight}', '\N{Billiards}'],
+        "9": ['\N{Digit Nine}'],
+        "10": ['\N{Keycap Ten}'],
+        "100": ['\N{Hundred Points Symbol}'],
+        # "21": [u"\U0001F4C5", u"\U0001F4C6"],
+        "777": ['\N{Slot Machine}']
+    }
+
+    emoji_nums = {}
+    for em in emoji_dict.keys():
+        emoji_nums[em] = len(emoji_dict[em])
+
+    if not num.isnumeric():
+        await await_ctx(ctx, content="Value must be number")
+
+    else:
+        emoji_list = convert_to_emoji_list(num)
+        emoji_list = check_emojis(emoji_list, emoji_nums)
+        if emoji_list[0] == -1:
+            # await message
+            await await_ctx(ctx, content="Not enough emojis to make value")
+            return
+        else:
+            for tup in emoji_list:
+                k, i = tup
+                emoji_to_use = emoji_dict[k][i]
+                await previous_message.add_reaction(emoji_to_use)
+
 client.remove_command('help')
 
 
@@ -604,11 +739,16 @@ client.remove_command('help')
 async def help(ctx):
     embed = discord.Embed(title="Guubot", description="List of commands:", color=0xeee657)
 
-    embed.add_field(name="guubot play *phrase* (Ex: 'guubot play barbie doll')", value="Searches for a youtube video", inline=False)
-    embed.add_field(name="guubot roll #d# +/- # (Ex: 'guubot roll 4d20 + 4' or 'guubot roll 10d15')", value="Rolls dice with optional modifier", inline=False)
-    embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')", value="Rolls dice with optional modifier as if it were Danny", inline=False)
+    embed.add_field(name="guubot play *phrase* (Ex: 'guubot play barbie doll')", value="Searches for a youtube video",
+                    inline=False)
+    embed.add_field(name="guubot roll #d# +/- # (Ex: 'guubot roll 4d20 + 4' or 'guubot roll 10d15')",
+                    value="Rolls dice with optional modifier", inline=False)
+    embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')",
+                    value="Rolls dice with optional modifier as if it were Danny", inline=False)
     embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
-    embed.add_field(name="guubot f#$%*", value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead", inline=False)
+    embed.add_field(name="guubot f#$%*",
+                    value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead",
+                    inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
@@ -747,7 +887,8 @@ async def on_message(message):
         video = request_youtube_video(annoying[1])
         await await_message(message=message, content=video)
 
-    elif exactly_in("<@438892047039070218> do your thing", message.content.lower()) and (message.author.id == julian or message.author.id == me):
+    elif exactly_in("<@438892047039070218> do your thing", message.content.lower()) and (
+            message.author.id == julian or message.author.id == me):
         if 0 == random.randrange(0, 2):
             await await_message(message=message, embed=sheik_embed)
         else:
@@ -875,5 +1016,6 @@ async def on_ready():
     expand2 = client.get_emoji(expand2)
     expand3 = client.get_emoji(expand3)
     expand4 = client.get_emoji(expand4)
+
 
 client.run(TOKEN)
