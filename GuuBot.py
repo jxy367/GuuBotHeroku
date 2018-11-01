@@ -695,17 +695,17 @@ async def upvote(ctx, phrase):
     up_arrow = u"\U00002B06"
     num = phrase
     emoji_dict = {
-        "0": ['\N{Zero}', '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
+        "0": ['0', '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
             , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
-        "1": ['\N{Digit One}', '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
-        "2": ['\N{Digit Two}', '\N{Second Place Medal}'],
-        "3": ['\N{Digit Three}', '\N{Third Place Medal}'],
-        "4": ['\N{Digit Four}'],
-        "5": ['\N{Digit Five}'],
-        "6": ['\N{Digit Six}'],
-        "7": ['\N{Digit Seven}'],
-        "8": ['\N{Digit Eight}', '\N{Billiards}'],
-        "9": ['\N{Digit Nine}'],
+        "1": ['1', '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
+        "2": ['2', '\N{Second Place Medal}'],
+        "3": ['3', '\N{Third Place Medal}'],
+        "4": ['4'],
+        "5": ['5'],
+        "6": ['6'],
+        "7": ['7'],
+        "8": ['8', '\N{Billiards}'],
+        "9": ['9'],
         "10": ['\N{Keycap Ten}'],
         "100": ['\N{Hundred Points Symbol}'],
         # "21": [u"\U0001F4C5", u"\U0001F4C6"],
