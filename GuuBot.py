@@ -695,7 +695,7 @@ async def upvote(ctx, phrase):
     up_arrow = u"\U00002B06"
     num = phrase
     emoji_dict = {
-        "0": ['\N{Digit Zero}', '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
+        "0": ['\N{Zero}', '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
             , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
         "1": ['\N{Digit One}', '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
         "2": ['\N{Digit Two}', '\N{Second Place Medal}'],
