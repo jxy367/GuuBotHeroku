@@ -693,6 +693,7 @@ async def upvote(ctx, phrase):
         return
 
     up_arrow = u"\U00002B06"
+
     num = phrase
     emoji_dict = {
         "0": ["0\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
@@ -739,6 +740,70 @@ async def upvote(ctx, phrase):
             await previous_message.add_reaction(up_arrow)
 
 
+@client.command()
+async def downvote(ctx, phrase):
+    previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
+    # Weird situation where there is no previous message
+    if len(previous_message) == 0:
+        await await_ctx(ctx, "Message could not be found")
+        return
+
+    # Get previous message
+    previous_message = previous_message[0]
+
+    # Don't send a message to another bot
+    author = previous_message.author
+    if author.bot:
+        await await_ctx(ctx, "Author is bot")
+        return
+
+    down_arrow = u"\U00002B07"
+
+    num = phrase
+    emoji_dict = {
+        "0": ["0\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
+            , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
+        "1": ["1\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
+        "2": ["2\u20e3", '\N{Second Place Medal}'],
+        "3": ["3\u20e3", '\N{Third Place Medal}'],
+        "4": ["4\u20e3"],
+        "5": ["5\u20e3"],
+        "6": ["6\u20e3"],
+        "7": ["7\u20e3"],
+        "8": ["8\u20e3", '\N{Billiards}'],
+        "9": ["9\u20e3"],
+        "10": ['\N{Keycap Ten}'],
+        "100": ['\N{Hundred Points Symbol}'],
+        # "21": [u"\U0001F4C5", u"\U0001F4C6"],
+        "777": ['\N{Slot Machine}']
+    }
+
+    emoji_nums = {}
+    for em in emoji_dict.keys():
+        emoji_nums[em] = len(emoji_dict[em])
+
+    if not num.isnumeric():
+        await await_ctx(ctx, content="Value must be number")
+        return
+
+    else:
+        emoji_list = convert_to_emoji_list(num)
+        if len(emoji_list) > 19:
+            await await_ctx(ctx, content="Too long to convert into emojis")
+            return
+
+        emoji_list = check_emojis(emoji_list, emoji_nums)
+        if emoji_list[0] == -1:
+            # await message
+            await await_ctx(ctx, content="Not enough emojis to make value")
+            return
+        else:
+            for tup in emoji_list:
+                k, i = tup
+                emoji_to_use = emoji_dict[k][i]
+                await previous_message.add_reaction(emoji_to_use)
+            await previous_message.add_reaction(down_arrow)
+
 client.remove_command('help')
 
 
@@ -757,6 +822,9 @@ async def help(ctx):
                     value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead",
                     inline=False)
     embed.add_field(name="guubot upvote [number]", value="Attempts to upvote the previous message to [number] upvotes",
+                    inline=False)
+    embed.add_field(name="guubot downvote [number]",
+                    value="Attempts to diwbvote the previous message to [number] downvotes",
                     inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
