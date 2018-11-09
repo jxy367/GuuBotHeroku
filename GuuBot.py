@@ -207,6 +207,9 @@ noah = 165481032043331584
 # with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
 
+def make_mention(user_id: int):
+    return "<@" + str(user_id) + ">"
+
 
 def find_amiami(string):
     urls = []
@@ -329,7 +332,7 @@ def make_amiami_image(url):
     if image_url != -1:
         return image_url
 
-    return "Image was not found. SOMEONE go fix it"
+    return "Image was not found."
 
 
 def make_request(request_url, header):
