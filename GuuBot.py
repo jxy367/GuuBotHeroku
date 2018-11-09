@@ -302,9 +302,10 @@ def make_amiami_image(url):
 
     print("Urls made")
     image_url = -1
+
     # make the Pool of workers
     print("Pool started")
-    num_threads = len(url_list) if len(url_list) % 2 == 1 else len(url_list) // 2
+    num_threads = len(url_list)
     pool = Pool(num_threads)
 
     # Callback function that checks results and kills the pool
