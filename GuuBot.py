@@ -235,7 +235,9 @@ def make_amiami_image(url):
     base_suffix = "/" + base_code + ".jpg"
     alt_suffix = "/" + alt_code + ".jpg"
     prefix = "https://img.amiami.com/images/product/main/"
+    print("Searching for amiami image")
     for num in range(184, 1, -1):
+        print("Testing number: ", num)
         if 10 <= num < 100:
             test_url = prefix + "0" + str(num) + base_suffix
             alt_test_url = prefix + "0" + str(num) + alt_suffix
