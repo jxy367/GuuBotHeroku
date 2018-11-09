@@ -2,9 +2,11 @@ import asyncio
 import os
 import random
 import re
+import time
 import urllib
 from datetime import datetime
 from itertools import permutations
+from multiprocessing.dummy import Pool as ThreadPool
 # from time import sleep
 from urllib import parse
 from urllib import request
@@ -226,38 +228,105 @@ def find_amiami(string):
 
 
 def make_amiami_image(url):
+    begin = time.time()
+    headers = \
+        [{
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.63 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)'},
+            {
+                'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; wbx 1.0.0)'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1 Safari/605.1.15'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15'},
+            {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_2_1 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C153 Safari/604.1'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36'},
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36'},
+        ]
+
     start = url.find("=")
     item_code = url[start + 1:]
 
     base_code = item_code
     alt_code = item_code.rsplit("-", 1)[0]
+    check_code = alt_code.rsplit("-", 1)
+    if len(check_code) == 2:
+        check_code = check_code[1].isnumeric()
+    else:
+        check_code = False
 
     base_suffix = "/" + base_code + ".jpg"
     alt_suffix = "/" + alt_code + ".jpg"
     prefix = "https://img.amiami.com/images/product/main/"
-    print("Searching for amiami image")
+    url_list = []
+    header_list = []
     for num in range(184, 1, -1):
-        print("Testing number: ", num)
         if 10 <= num < 100:
-            test_url = prefix + "0" + str(num) + base_suffix
-            alt_test_url = prefix + "0" + str(num) + alt_suffix
+            part_url = prefix + "0" + str(num)
         elif num < 10:
-            test_url = prefix + "00" + str(num) + base_suffix
-            alt_test_url = prefix + "00" + str(num) + alt_suffix
+            part_url = prefix + "00" + str(num)
         else:
-            test_url = prefix + str(num) + base_suffix
-            alt_test_url = prefix + str(num) + alt_suffix
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        result = requests.get(test_url, headers=headers)
-        if result.status_code == 200:
-            print("amiami image: ", test_url)
-            return test_url
-        alt_result = requests.get(alt_test_url, headers=headers)
-        if alt_result.status_code == 200:
-            print("amiami image: ", alt_test_url)
-            return alt_test_url
+            part_url = prefix + str(num)
+
+        test_url = part_url + base_suffix
+        url_list.append(test_url)
+        header_list.append(random.choice(headers))
+
+        if check_code:
+            alt_test_url = part_url + alt_suffix
+            url_list.append(alt_test_url)
+            header_list.append(random.choice(headers))
+
+    print("Urls made")
+
+    # make the Pool of workers
+    print("Pool started")
+    pool = ThreadPool(50)
+
+    # open the urls in their own threads
+    # and return the results
+    results = pool.map(make_request, zip(url_list, header_list))
+
+    # close the pool and wait for the work to finish
+    pool.close()
+    pool.join()
+
+    print("Pool finished")
+
+    for r in results:
+        if r.status_code == 200:
+            print("Time taken: ", (time.time() - begin) / 60)
+            print("amiami image: ", r.url)
+            return r.url
+
     return ""
+
+
+def make_request(url_header_bundle):
+    request_url, header = url_header_bundle
+    return requests.get(request_url, headers=header)
 
 
 def exactly_in(str1: str, str2: str):  # str1 exactly in str2
