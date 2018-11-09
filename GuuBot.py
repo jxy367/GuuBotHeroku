@@ -303,7 +303,7 @@ def make_amiami_image(url):
 
     # make the Pool of workers
     print("Pool started")
-    pool = ThreadPool(50)
+    pool = ThreadPool(100)
 
     # open the urls in their own threads
     # and return the results
@@ -317,7 +317,7 @@ def make_amiami_image(url):
 
     for r in results:
         if r.status_code == 200:
-            print("Time taken: ", (time.time() - begin) / 60)
+            print("Time taken: ", (time.time() - begin), " seconds")
             print("amiami image: ", r.url)
             return r.url
 
