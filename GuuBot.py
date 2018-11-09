@@ -232,8 +232,8 @@ def make_amiami_image(url):
     base_code = item_code
     alt_code = item_code.rsplit("-", 1)[0]
 
-    base_suffix = "/" + url[start + 1:] + ".jpg"
-    alt_suffix = "/" + url[start + 1:] + ".jpg"
+    base_suffix = "/" + base_code + ".jpg"
+    alt_suffix = "/" + alt_code + ".jpg"
     prefix = "https://img.amiami.com/images/product/main/"
     for num in range(184, 1, -1):
         if 10 <= num < 100:
