@@ -319,6 +319,7 @@ def make_amiami_image(url):
             pool.terminate()
             print("Time taken: ", (time.time() - begin), " seconds")
             print("amiami image: ", result.url)
+            print("")
             image_url = result.url
 
     # Start up all of the processes
