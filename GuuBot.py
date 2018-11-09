@@ -303,16 +303,15 @@ def make_amiami_image(url):
 
     # make the Pool of workers
     print("Pool started")
-    pool = ThreadPool(100)
+    pool = ThreadPool(200)
 
     # open the urls in their own threads
     # and return the results
     results = pool.map(make_request, zip(url_list, header_list))
 
-    # close the pool and wait for the work to finish
+    # close pool and wait for the work to finish
     pool.close()
     pool.join()
-
     print("Pool finished")
 
     for r in results:
@@ -321,7 +320,7 @@ def make_amiami_image(url):
             print("amiami image: ", r.url)
             return r.url
 
-    return ""
+    return "Image was not found. SOMEONE go fix it"
 
 
 def make_request(url_header_bundle):
