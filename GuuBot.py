@@ -6,7 +6,7 @@ import time
 import urllib
 from datetime import datetime
 from itertools import permutations
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing.dummy import Pool
 # from time import sleep
 from urllib import parse
 from urllib import request
@@ -228,6 +228,7 @@ def find_amiami(string):
 
 
 def make_amiami_image(url):
+    global image_url
     begin = time.time()
     headers = \
         [{
@@ -300,31 +301,37 @@ def make_amiami_image(url):
             header_list.append(random.choice(headers))
 
     print("Urls made")
-
+    image_url = -1
     # make the Pool of workers
     print("Pool started")
-    pool = ThreadPool(200)
+    num_threads = len(url_list) if len(url_list) % 2 == 1 else len(url_list) // 2
+    pool = Pool(num_threads)
 
-    # open the urls in their own threads
-    # and return the results
-    results = pool.map(make_request, zip(url_list, header_list))
+    # Callback function that checks results and kills the pool
+    def check_result(result):
+        global image_url
+        if result.status_code == 200:
+            print("Image found")
+            pool.terminate()
+            print("Time taken: ", (time.time() - begin), " seconds")
+            print("amiami image: ", result.url)
+            image_url = result.url
+
+    # Start up all of the processes
+    for i in range(num_threads):
+        pool.apply_async(make_request, args=[url_list[i], header_list[i]], callback=check_result)
 
     # close pool and wait for the work to finish
     pool.close()
     pool.join()
-    print("Pool finished")
 
-    for r in results:
-        if r.status_code == 200:
-            print("Time taken: ", (time.time() - begin), " seconds")
-            print("amiami image: ", r.url)
-            return r.url
+    if image_url != -1:
+        return image_url
 
     return "Image was not found. SOMEONE go fix it"
 
 
-def make_request(url_header_bundle):
-    request_url, header = url_header_bundle
+def make_request(request_url, header):
     return requests.get(request_url, headers=header)
 
 
