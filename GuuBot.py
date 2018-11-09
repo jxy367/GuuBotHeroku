@@ -227,21 +227,34 @@ def find_amiami(string):
 
 def make_amiami_image(url):
     start = url.find("=")
-    suffix = "/" + url[start + 1:] + ".jpg"
+    item_code = url[start + 1:]
+
+    base_code = item_code
+    alt_code = item_code.rsplit("-", 1)[0]
+
+    base_suffix = "/" + url[start + 1:] + ".jpg"
+    alt_suffix = "/" + url[start + 1:] + ".jpg"
     prefix = "https://img.amiami.com/images/product/main/"
     for num in range(184, 1, -1):
         if 10 <= num < 100:
-            test_url = prefix + "0" + str(num) + suffix
+            test_url = prefix + "0" + str(num) + base_suffix
+            alt_test_url = prefix + "0" + str(num) + alt_suffix
         elif num < 10:
-            test_url = prefix + "00" + str(num) + suffix
+            test_url = prefix + "00" + str(num) + base_suffix
+            alt_test_url = prefix + "00" + str(num) + alt_suffix
         else:
-            test_url = prefix + str(num) + suffix
+            test_url = prefix + str(num) + base_suffix
+            alt_test_url = prefix + str(num) + alt_suffix
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         result = requests.get(test_url, headers=headers)
         if result.status_code == 200:
             print("amiami image: ", test_url)
             return test_url
+        alt_result = requests.get(alt_test_url, headers=headers)
+        if alt_result.status_code == 200:
+            print("amiami image: ", alt_test_url)
+            return alt_test_url
     return ""
 
 
