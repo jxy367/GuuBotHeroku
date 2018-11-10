@@ -286,7 +286,7 @@ def make_amiami_image(url):
     prefix = "https://img.amiami.com/images/product/main/"
     url_list = []
     header_list = []
-    for num in range(200, 1, -1):
+    for num in range(184, 1, -1):
         if 10 <= num < 100:
             part_url = prefix + "0" + str(num)
         elif num < 10:
