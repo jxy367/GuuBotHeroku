@@ -221,8 +221,6 @@ def find_amiami(string):
             ur = string
         else:
             ur = string[:end]
-        while not ur[-1].isnumeric():
-            ur = ur[:-1]
         urls.append(ur)
         string = string[end:]
     if len(urls) > 0:
