@@ -116,7 +116,8 @@ vc_embed = discord.Embed()
 vc_embed.set_image(url="https://cdn.discordapp.com/attachments/216304922025525248/501182690524135435/unknown.png")
 
 you_died_embed = discord.Embed()
-you_died_embed.set_image(url="https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459")
+you_died_embed.set_image(url="https://boygeniusreport.files.wordpress.com/2016/04/dark_souls_you_died.jpg?quality=98&strip=all&w=782")
+#"https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459"
 
 fair_embeds = []
 fair_urls = [
@@ -936,8 +937,9 @@ async def kill(ctx):
     if ctx.message.author.id != me and ctx.message.author.id != miguel:
         await await_ctx(ctx, content="You do not have permission to kill")
         return
+
     # Delete the command
-    await ctx.message.delete()
+    #await ctx.message.delete()
 
     # Find previous message
     previous_message = await ctx.channel.history(limit=1).flatten()
