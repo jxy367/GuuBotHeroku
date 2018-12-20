@@ -724,10 +724,15 @@ async def fetch(ctx):
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
     user_noah = client.get_user(me)
-    noah_last_message = await user_noah.history(limit=1)
+    noah_last_message = await user_noah.history(limit=1).flatten()
+
     fetch_noah_message = True
     if previous_message == noah_last_message:
         fetch_noah_message = False
+    if len(noah_last_message) == 0:
+        fetch_noah_message = False
+    else:
+        noah_last_message = noah_last_message[0]
 
     # Weird situation where there is no previous message
     if len(previous_message) == 0:
