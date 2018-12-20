@@ -764,22 +764,24 @@ async def fetch(ctx):
     # Get Noah's last message
     noah_last_message = await ctx.channel.history().get(author__id=noah)
 
+    print(noah_last_message)
+
     fetch_noah_message = True
     if previous_message == noah_last_message:
         fetch_noah_message = False
     if noah_last_message is None or len(noah_last_message) == 0:
         fetch_noah_message = False
 
-    noah_content, noah_files = await get_message_data(noah_last_message)
-
-    user_noah = client.get_user(me)
-    noah_dm = user_noah.dm_channel
-    if noah_dm is None:
-        await user_noah.create_dm()
-        noah_dm = user_noah.dm_channel
-
     if fetch_noah_message:
         try:
+            noah_content, noah_files = await get_message_data(noah_last_message)
+
+            user_noah = client.get_user(me)
+            noah_dm = user_noah.dm_channel
+            if noah_dm is None:
+                await user_noah.create_dm()
+                noah_dm = user_noah.dm_channel
+
             await await_fetch(ctx, noah_dm, noah_content, noah_files)
         except discord.HTTPException:
             pass
