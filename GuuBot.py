@@ -200,6 +200,7 @@ riley = 306997179367555074
 danny = 191426236935831552
 esther = 145075344095969281
 noah = 165481032043331584
+mark = 213097197456064512
 
 
 # Voice stuff
@@ -764,32 +765,36 @@ async def fetch(ctx):
     # Get Noah's last message
     noah_last_message = await ctx.channel.history().get(author__id=noah)
 
-    print(noah_last_message)
-
+    # Check if last message was noah's
     fetch_noah_message = True
-    if previous_message == noah_last_message:
+    # If noah's message is the last message, don't delete twice
+    if previous_message.id == noah_last_message.id:
         fetch_noah_message = False
+    # If Noah's somehow hasn't sent a message to this channel
     if noah_last_message is None:
         fetch_noah_message = False
 
     if fetch_noah_message:
         try:
+            # Get the content and/or files
             noah_content, noah_files = await get_message_data(noah_last_message)
 
-            user_noah = client.get_user(me)
+            # Get noah's dm
+            user_noah = client.get_user(noah)
             noah_dm = user_noah.dm_channel
             if noah_dm is None:
                 await user_noah.create_dm()
                 noah_dm = user_noah.dm_channel
 
+            # send noah his last message
             await await_fetch(ctx, noah_dm, noah_content, noah_files)
+
+            # delete noah's message
+            await noah_last_message.delete()
+
         except discord.HTTPException:
             pass
-    else:
-        try:
-            await await_fetch(ctx, noah_dm, "You've been spared this time")
-        except discord.HTTPException:
-            pass
+
 
 
 @client.command()
@@ -1053,6 +1058,19 @@ async def on_message(message):
             await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
             await message.guild.kick(message.author)
             await await_message(message=message, content='Fine. Just the kick hammer...')
+
+    elif "concrete revolutio" in message.content.lower():
+        if message.author.id == mark:
+            new_invite = await message.channel.create_invite(max_uses=1)
+            user = client.get_user(message.author.id)
+            await user.send(content=new_invite)
+            await await_message(message=message, content="I'm sorry.")
+            await message.guild.kick(message.author)
+            await await_message(message=message,
+                                content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
+        if message.author.id == me:
+            await await_message(message=message,
+                                content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
 
     elif exactly_in("nico", message.content.lower()):
         await await_message(message=message, content=nico, embed=nico_embed)
