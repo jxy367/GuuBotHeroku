@@ -115,6 +115,9 @@ coded_embed.set_image(url="https://upload.wikimedia.org/wikipedia/en/8/8e/Kingdo
 vc_embed = discord.Embed()
 vc_embed.set_image(url="https://cdn.discordapp.com/attachments/216304922025525248/501182690524135435/unknown.png")
 
+you_died_embed = discord.Embed()
+you_died_embed.set_image(url="https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459")
+
 fair_embeds = []
 fair_urls = [
     'http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
@@ -201,6 +204,7 @@ danny = 191426236935831552
 esther = 145075344095969281
 noah = 165481032043331584
 mark = 213097197456064512
+miguel = 385306442439065601
 
 
 # Voice stuff
@@ -926,6 +930,45 @@ async def downvote(ctx, phrase):
                 await previous_message.add_reaction(emoji_to_use)
             await previous_message.add_reaction(down_arrow)
 
+@client.command()
+async def kill(ctx):
+    # Only allow me and miguel to use kill command
+    if ctx.message.author.id != me and ctx.message.author.id != miguel:
+        await await_ctx(ctx, content="You do not have permission to kill")
+        return
+    # Delete the command
+    await ctx.message.delete()
+
+    # Find previous message
+    previous_message = await ctx.channel.history(limit=1).flatten()
+
+    # Weird situation where there is no previous message
+    if len(previous_message) == 0:
+        await await_ctx(ctx, "Message could not be found")
+        return
+
+    # Get previous message
+    previous_message = previous_message[0]
+
+    # Don't send a message to another bot
+    author = previous_message.author
+    if author.bot:
+        await await_ctx(ctx, "Author is bot")
+        return
+
+    # Delete message being fetched
+    await previous_message.delete()
+
+    # Get dm_channel with author
+    author_user = client.get_user(author.id)
+    author_dm = author_user.dm_channel
+    if author_dm is None:
+        await author_user.create_dm()
+        author_dm = author_user.dm_channel
+
+    # Send a you died screen to user
+    await await_channel(author_dm, embed=you_died_embed)
+
 client.remove_command('help')
 
 
@@ -947,6 +990,9 @@ async def help(ctx):
                     inline=False)
     embed.add_field(name="guubot downvote [number]",
                     value="Attempts to diwbvote the previous message to [number] downvotes",
+                    inline=False)
+    embed.add_field(name="guubot kill",
+                    value="A requested command that causes no ill effects other than death",
                     inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
