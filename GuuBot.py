@@ -723,17 +723,6 @@ async def echo(ctx, *, phrase):
 async def fetch(ctx):
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
-    user_noah = client.get_user(me)
-    noah_last_message = await user_noah.history(limit=1).flatten()
-
-    fetch_noah_message = True
-    if previous_message == noah_last_message:
-        fetch_noah_message = False
-    if len(noah_last_message) == 0:
-        fetch_noah_message = False
-    else:
-        noah_last_message = noah_last_message[0]
-
     # Weird situation where there is no previous message
     if len(previous_message) == 0:
         await await_ctx(ctx, "Message could not be found")
@@ -769,7 +758,21 @@ async def fetch(ctx):
     # Delete the command
     await ctx.message.delete()
 
+
+    # Deleting Noah's last message
+
+    # Get Noah's last message
+    noah_last_message = await ctx.channel.history().get(author__id=noah)
+
+    fetch_noah_message = True
+    if previous_message == noah_last_message:
+        fetch_noah_message = False
+    if noah_last_message is None or len(noah_last_message) == 0:
+        fetch_noah_message = False
+
     noah_content, noah_files = await get_message_data(noah_last_message)
+
+    user_noah = client.get_user(me)
     noah_dm = user_noah.dm_channel
     if noah_dm is None:
         await user_noah.create_dm()
