@@ -769,7 +769,7 @@ async def fetch(ctx):
     fetch_noah_message = True
     if previous_message == noah_last_message:
         fetch_noah_message = False
-    if noah_last_message is None or len(noah_last_message) == 0:
+    if noah_last_message is None:
         fetch_noah_message = False
 
     if fetch_noah_message:
