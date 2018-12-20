@@ -939,10 +939,10 @@ async def kill(ctx):
         return
 
     # Delete the command
-    #await ctx.message.delete()
+    # await ctx.message.delete()
 
     # Find previous message
-    previous_message = await ctx.channel.history(limit=1).flatten()
+    previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
     # Weird situation where there is no previous message
     if len(previous_message) == 0:
