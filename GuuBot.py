@@ -1092,7 +1092,7 @@ async def on_message(message):
     if message.content.lower()[:6] == "guubot":
         message.content = "guubot" + message.content[6:]
 
-    if message.content.lower() == "Hello? Can anyone hear me?" and message.author.id == me:
+    if message.content == "Hello? Can anyone hear me?" and message.author.id == me:
         await await_message(message, content="What do you want....?")
 
     await client.process_commands(message)
