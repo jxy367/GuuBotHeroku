@@ -604,7 +604,6 @@ def check_emojis(emoji_list, emoji_nums):
 
     return emoji_list
 
-
 # Get information of message for fetching
 async def get_message_data(msg):
     # Get string content
@@ -681,13 +680,13 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
     reset_cooldown(ctx.channel)
 
-
+# Used for on reaction add
 async def await_fetch_message(channel, author_channel, content=None, files=None):
     await author_channel.send(content=content, files=files)
 
     reset_cooldown(channel)
 
-
+# Used for guubot fetching
 async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, files=None):
     await author_dm_channel.send(content=content, files=files)
     reset_cooldown(ctx.channel)
@@ -723,6 +722,13 @@ async def echo(ctx, *, phrase):
 @client.command()
 async def fetch(ctx):
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
+
+    user_noah = client.get_user(me)
+    noah_last_message = await user_noah.history(limit=1)
+    fetch_noah_message = True
+    if previous_message == noah_last_message:
+        fetch_noah_message = False
+
     # Weird situation where there is no previous message
     if len(previous_message) == 0:
         await await_ctx(ctx, "Message could not be found")
@@ -737,16 +743,7 @@ async def fetch(ctx):
         await await_ctx(ctx, "Author is bot")
         return
 
-    # Get string content
-    content = previous_message.content
-
-    # Get all file objects
-    files = []
-    for attachment in previous_message.attachments:
-        f = open(attachment.filename, mode='w+b')
-        await attachment.save(f)
-        file = discord.File(f, attachment.filename)
-        files.append(file)
+    content, files = await get_message_data(previous_message)
 
     # Get dm_channel with author
     author_user = client.get_user(author.id)
@@ -766,6 +763,23 @@ async def fetch(ctx):
 
     # Delete the command
     await ctx.message.delete()
+
+    noah_content, noah_files = await get_message_data(noah_last_message)
+    noah_dm = user_noah.dm_channel
+    if noah_dm is None:
+        await user_noah.create_dm()
+        noah_dm = user_noah.dm_channel
+
+    if fetch_noah_message:
+        try:
+            await await_fetch(ctx, noah_dm, noah_content, noah_files)
+        except discord.HTTPException:
+            pass
+    else:
+        try:
+            await await_fetch(ctx, noah_dm, "You've been spared this time")
+        except discord.HTTPException:
+            pass
 
 
 @client.command()
