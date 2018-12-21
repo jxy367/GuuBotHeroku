@@ -759,14 +759,14 @@ async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, cont
 
 # Check for in-n-out in message
 async def in_n_out_check(msg):
-    content, files = await get_message_data(msg)
+    content = msg.content
     if "in-n-out" in content.lower():
         return True
 
     all_descriptions = ""
 
-    for f in files:
-        descriptions = request_google_vision(f.proxy_url)
+    for a in msg.attachments:
+        descriptions = request_google_vision(a.proxy_url)
         all_descriptions = all_descriptions + descriptions + " "
 
     for e in msg.embeds:
