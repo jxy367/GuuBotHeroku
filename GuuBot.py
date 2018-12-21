@@ -4,6 +4,8 @@ import random
 import re
 import time
 import urllib
+import json
+import base64
 from datetime import datetime
 from itertools import permutations
 from multiprocessing.dummy import Pool
@@ -20,7 +22,9 @@ from pytz import timezone
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
+API_KEY = os.environ.get('API_KEY')
 TOKEN = os.environ.get('TOKEN')
+
 # GOOGLE_CHROME_BIN = os.environ.get('GOOGLE_CHROM_BIN')
 # CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
 
@@ -439,6 +443,60 @@ def request_youtube_video(keyword: str):
     return despacito
 
 
+def request_google_vision(url):
+    print("Starting request")
+
+    descriptions = ""
+    image_types = ['jpg', 'jpeg', 'png', 'gif', 'application', 'html']
+
+    test_response = requests.post(url)
+
+    try:
+        content_type = test_response.headers['Content-Type']
+    except KeyError:
+        return ""
+    print(content_type)
+    if any(ext in content_type for ext in image_types):
+        print("requesting")
+
+        image_data = base64.b64encode(requests.get(url).content).decode('UTF-8')
+
+        content_json_obj = {'content': image_data}
+
+        feature_json_obj = [
+            {
+                'type': 'WEB_DETECTION',
+                'maxResults': 10,
+            }
+        ]
+
+        request_list = [
+            {
+                'features': feature_json_obj,
+                'image': content_json_obj,
+            }
+        ]
+
+        with open('hold.txt', 'w') as hold:
+            json.dump({'requests': request_list}, hold)
+        data = open('hold.txt', 'rb').read()
+        # print("post")
+        response = requests.post(url='https://vision.googleapis.com/v1/images:annotate?key=' + API_KEY,
+                                 data=data,
+                                 headers={'Content-Type': 'application/json'})
+        print("received data")
+        response_data = json.loads(response.text)
+        # print(response_data)
+        descriptions = ""
+        try:
+            for webEntity in response_data['responses'][0]['webDetection']['webEntities']:
+                if 'description' in webEntity.keys():
+                    descriptions = descriptions + webEntity['description'] + " "
+        except KeyError:
+            descriptions = ""
+    print(descriptions)
+    return descriptions
+
 def regex_fair(message: str):
     list_of_fairs = ["".join(p) for p in permutations("fair")]
     for word in list_of_fairs:
@@ -460,6 +518,27 @@ def generic_regex(message: str, phrase: str):
     compiler = re.compile(regex)
     result = compiler.search(message)
     return result is not None
+
+
+def in_n_out_check(msg):
+    content, files = get_message_data(msg)
+    if "in-n-out" in content.lower():
+        return True
+
+    all_descriptions = ""
+
+    for f in files:
+        descriptions = request_google_vision(f.proxy_url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    for e in msg.embeds:
+        descriptions = request_google_vision(e.url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    if "in-n-out" in all_descriptions.lower():
+        return True
+
+    return
 
 
 # Roll function designed for command usage
@@ -768,37 +847,37 @@ async def fetch(ctx):
     # Deleting Noah's last message
 
     # Get Noah's last message
-    noah_last_message = await ctx.channel.history().get(author__id=noah)
+    #noah_last_message = await ctx.channel.history().get(author__id=noah)
 
     # Check if last message was noah's
-    fetch_noah_message = True
+    #fetch_noah_message = True
     # If noah's message is the last message, don't delete twice
-    if previous_message.id == noah_last_message.id:
-        fetch_noah_message = False
+    #if previous_message.id == noah_last_message.id:
+    #    fetch_noah_message = False
     # If Noah's somehow hasn't sent a message to this channel
-    if noah_last_message is None:
-        fetch_noah_message = False
+    #if noah_last_message is None:
+    #    fetch_noah_message = False
 
-    if fetch_noah_message:
-        try:
+    #if fetch_noah_message:
+    #    try:
             # Get the content and/or files
-            noah_content, noah_files = await get_message_data(noah_last_message)
+    #        noah_content, noah_files = await get_message_data(noah_last_message)
 
             # Get noah's dm
-            user_noah = client.get_user(noah)
-            noah_dm = user_noah.dm_channel
-            if noah_dm is None:
-                await user_noah.create_dm()
-                noah_dm = user_noah.dm_channel
+    #        user_noah = client.get_user(noah)
+    #        noah_dm = user_noah.dm_channel
+    #        if noah_dm is None:
+    #            await user_noah.create_dm()
+    #            noah_dm = user_noah.dm_channel
 
             # send noah his last message
-            await await_fetch(ctx, noah_dm, noah_content, noah_files)
+    #        await await_fetch(ctx, noah_dm, noah_content, noah_files)
 
             # delete noah's message
-            await noah_last_message.delete()
+    #        await noah_last_message.delete()
 
-        except discord.HTTPException:
-            pass
+    #    except discord.HTTPException:
+    #        pass
 
 
 
@@ -1053,6 +1132,9 @@ async def on_message(message):
     # Check if "amiami.com" in message
     urls = find_amiami(message.content)
 
+    # Check if "in-n-out" appears in message
+    in_n_out = in_n_out_check(message)
+
     if "awoo" in message.content.lower():
 
         awoo_select = random.randrange(0, 4)
@@ -1097,6 +1179,9 @@ async def on_message(message):
                 await await_message(message=message, embed=fair_embeds[index])
         else:
             await await_message(message=message, embed=fair_embeds[index])
+
+    elif in_n_out:
+        await await_message(message=message, content="A reminder that Ryan is a terrible friend sometimes.")
 
     elif "pasta" in message.content.lower():
         if message.author.id == kolson:
