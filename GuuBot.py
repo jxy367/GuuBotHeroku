@@ -520,27 +520,6 @@ def generic_regex(message: str, phrase: str):
     return result is not None
 
 
-def in_n_out_check(msg):
-    content, files = get_message_data(msg)
-    if "in-n-out" in content.lower():
-        return True
-
-    all_descriptions = ""
-
-    for f in files:
-        descriptions = request_google_vision(f.proxy_url)
-        all_descriptions = all_descriptions + descriptions + " "
-
-    for e in msg.embeds:
-        descriptions = request_google_vision(e.url)
-        all_descriptions = all_descriptions + descriptions + " "
-
-    if "in-n-out" in all_descriptions.lower():
-        return True
-
-    return
-
-
 # Roll function designed for command usage
 def roll_function(message: str, roll_type: str):
     message = message.strip()
@@ -771,10 +750,33 @@ async def await_fetch_message(channel, author_channel, content=None, files=None)
 
     reset_cooldown(channel)
 
+
 # Used for guubot fetching
 async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, files=None):
     await author_dm_channel.send(content=content, files=files)
     reset_cooldown(ctx.channel)
+
+
+# Check for in-n-out in message
+async def in_n_out_check(msg):
+    content, files = await get_message_data(msg)
+    if "in-n-out" in content.lower():
+        return True
+
+    all_descriptions = ""
+
+    for f in files:
+        descriptions = request_google_vision(f.proxy_url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    for e in msg.embeds:
+        descriptions = request_google_vision(e.url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    if "in-n-out" in all_descriptions.lower():
+        return True
+
+    return
 
 
 @client.command()
@@ -1133,7 +1135,7 @@ async def on_message(message):
     urls = find_amiami(message.content)
 
     # Check if "in-n-out" appears in message
-    in_n_out = in_n_out_check(message)
+    in_n_out = await in_n_out_check(message)
 
     if "awoo" in message.content.lower():
 
