@@ -1563,7 +1563,7 @@ async def on_ready():
     print('------')
     client.loop.create_task(reset_display_name())
     client.loop.create_task(cooldown())
-
+    client.loop.create_task(rps_loop())
     expand1 = client.get_emoji(expand1)
     expand2 = client.get_emoji(expand2)
     expand3 = client.get_emoji(expand3)
