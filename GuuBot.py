@@ -20,7 +20,7 @@ from discord.ext import commands
 from pytz import timezone
 
 # Own class
-from RPS import RPSData
+from RPS import *
 
 
 # from selenium import webdriver
@@ -220,7 +220,7 @@ miguel = 385306442439065601
 
 
 # RPS Data
-rps_data = None
+rps_game = None
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -404,6 +404,14 @@ def str1_star_str2(str1: str, str2: str, str3: str):
         index = str2.find(str1)
         len_str1 = len(str1)
         return exactly_in(str2, str3[index + len_str1:])
+
+
+def alnum_only(str1):
+    new_str = ""
+    for char in str1:
+        if char.isalnum():
+            new_str += char
+    return new_str
 
 
 def get_cooldown_key(message_or_channel):
@@ -681,11 +689,44 @@ def check_emojis(emoji_list, emoji_nums):
     return emoji_list
 
 
-def create_rps_data(user_id: int, num_rounds: int):
-    return RPSData(user_id=user_id, num_rounds=num_rounds)
+# Creates a new RPSData object
+def create_rps_data(user_id: int, channel: discord.TextChannel, num_rounds: int):
+    return RPSData(user_id=user_id, channel=channel, num_rounds=num_rounds)
 
 
-# Get information of message for fetching
+# Randomly selects a result (lose, draw, win)
+def select_rps_result():
+    return random.choice([-1, 0, 1])
+
+
+# Calculate Guubot's input from user input and result
+def calculate_guubot_rps_input(user_input, result: int):
+    return RPSChoices((user_input + result) % 2).name.lower()
+
+
+# Check for in-n-out in message
+async def in_n_out_check(msg):
+    content = msg.content
+    if "in-n-out" in content.lower():
+        return True
+
+    all_descriptions = ""
+
+    for a in msg.attachments:
+        descriptions = request_google_vision(a.proxy_url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    for e in msg.embeds:
+        descriptions = request_google_vision(e.url)
+        all_descriptions = all_descriptions + descriptions + " "
+
+    if "in-n-out" in all_descriptions.lower():
+        return True
+
+    return
+
+
+# Get information of message
 async def get_message_data(msg):
     # Get string content
     content = msg.content
@@ -701,22 +742,22 @@ async def get_message_data(msg):
     return content, files
 
 
+# Functions run in loop
+
+# reset display name loop
 async def reset_display_name():
-    for changed_guild in client.guilds:
-        if changed_guild.me.display_name != "GuuBot":
-            print(changed_guild.name)
-            print(changed_guild.me.display_name)
-            print("---")
-            await changed_guild.me.edit(nick=None)
-
-
-async def background_update():
     await client.wait_until_ready()
     while not client.is_closed():
-        await reset_display_name()
+        for changed_guild in client.guilds:
+            if changed_guild.me.display_name != "GuuBot":
+                print(changed_guild.name)
+                print(changed_guild.me.display_name)
+                print("---")
+                await changed_guild.me.edit(nick=None)
         await asyncio.sleep(60)
 
 
+# cooldown loop
 async def cooldown():
     global on_cooldown
     await client.wait_until_ready()
@@ -728,6 +769,95 @@ async def cooldown():
         await asyncio.sleep(1)
 
 
+# RPS loop
+async def rps_loop():
+    global rps_game
+    await client.wait_until_ready()
+    while not client.is_closed():
+        if rps_game is not None:
+            # Reset input and early statuses
+            rps_game.refuse_input()
+            rps_game.set_early()
+            rps_game.reset_early_shot()
+            rps_game.reset_user_input()
+
+            # Get game data
+            data = rps_game.get_game_data()
+            channel = data["channel"]
+
+            # Make intro score text
+            user_mention = make_mention(data["opponent id"])
+            basic_score_text = user_mention + " " \
+                            + "The current score is :\n" \
+                            + "Me: " + data["bot score"] + "\n"\
+                            + "You: " + data["opponent score"] + "\n"
+
+            # Send intro score text
+            await channel.send(content=basic_score_text)
+
+            # Pause
+            await asyncio.sleep(0.5)
+
+            # Send start round text
+            await channel.send(content="Let's begin a round")
+
+            # Begin accepting input
+            rps_game.allow_input()
+
+            for game_text in ["Rock!", "Paper!", "Scissors!", "Shoot!"]:
+                # Pause
+                await asyncio.sleep(0.75)
+
+                # output game text
+                await channel.send(content=game_text)
+
+            # Change early status to false
+            rps_game.set_not_early()
+
+            # Wait until user input is received
+            for i in range(0, 50):
+                if rps_game.get_user_input() is None:
+                    await asyncio.sleep(0.1)
+                else:
+                    break
+
+            user_input = rps_game.get_user_input()
+
+            # Choose result
+            if user_input is None:
+                result = 1
+            elif user_input is RPSChoices.GUN:
+                result = 1
+            else:
+                result = select_rps_result()
+
+            # Figure out end of round text
+            if user_input is None:
+                round_text = "You did not show your hand. I automatically win the round"
+            elif user_input is RPSChoices.GUN:
+                round_text = "I activate mirror force. I win this round."
+            else:
+                guubot_input = calculate_guubot_rps_input(user_input, result)
+                round_text = "I select " + guubot_input
+
+            # Output Guubot's choice and round result (if necessary)
+            channel.send(content=round_text)
+
+            # Output overall score/result if game is finished
+            if rps_game.is_game_over():
+                data = rps_game.get_game_data()
+                end_of_game_text = \
+                    data["winner"] + " Win!" + "\n" \
+                    + "Me: " + data["bot score"] + "\n" \
+                    + "You: " + data["opponent score"] + "\n"
+
+                channel.send(content=end_of_game_text)
+                rps_game = None
+
+        await asyncio.sleep(1)
+
+
+# Various awaited responses
 async def await_message(message: discord.Message, content=None, embed=None):
     if content is None:
         await message.channel.send(embed=embed)
@@ -761,6 +891,7 @@ async def await_ctx(ctx: discord.ext.commands.Context, content=None, embed=None)
 
     reset_cooldown(ctx.channel)
 
+
 # Used for on reaction add
 async def await_fetch_message(channel, author_channel, content=None, files=None):
     await author_channel.send(content=content, files=files)
@@ -772,28 +903,6 @@ async def await_fetch_message(channel, author_channel, content=None, files=None)
 async def await_fetch(ctx: discord.ext.commands.Context, author_dm_channel, content=None, files=None):
     await author_dm_channel.send(content=content, files=files)
     reset_cooldown(ctx.channel)
-
-
-# Check for in-n-out in message
-async def in_n_out_check(msg):
-    content = msg.content
-    if "in-n-out" in content.lower():
-        return True
-
-    all_descriptions = ""
-
-    for a in msg.attachments:
-        descriptions = request_google_vision(a.proxy_url)
-        all_descriptions = all_descriptions + descriptions + " "
-
-    for e in msg.embeds:
-        descriptions = request_google_vision(e.url)
-        all_descriptions = all_descriptions + descriptions + " "
-
-    if "in-n-out" in all_descriptions.lower():
-        return True
-
-    return
 
 
 @client.command()
@@ -1067,16 +1176,29 @@ async def kill(ctx):
 
 @client.command()
 async def RPS(ctx, num):
+    global rps_game
+
     if ctx.guild.id != TS:
         await await_ctx(ctx=ctx, content="This command is currently under additional pylons.")
         return
 
-    global rps_data
+    if rps_game is not None:
+        await await_ctx(ctx=ctx, content="I'm already playing Rock-Paper-Scissors. How many hands do you think I have?")
+        return
+
     check_failed = False
+    num_rounds = 0
 
     # Check conditions of valid input
     try:
         num_rounds = int(num)
+
+        # personal RESET
+        if num_rounds == -1:
+            rps_game = None
+            return
+
+        # Actual check
         if 0 >= num_rounds >= 20 or num_rounds % 2 == 0:
             check_failed = True
     except ValueError:
@@ -1086,13 +1208,12 @@ async def RPS(ctx, num):
         await await_ctx(ctx=ctx, content="Please input a positive odd number less than 20")
         return
 
-    rps_data = create_rps_data(user_id=ctx.author.id, num_rounds=num_rounds)
+    rps_game = create_rps_data(user_id=ctx.author.id, channel=ctx.channel, num_rounds=num_rounds)
 
-    game_data_dict = rps_data.get_game_data()
+    game_data_dict = rps_game.get_game_data()
     output_text = str(game_data_dict)
     await await_ctx(ctx=ctx, content=output_text)
 
-    rps_data = None
 
 client.remove_command('help')
 
@@ -1155,6 +1276,30 @@ async def on_message(message):
 
     except AttributeError:
         pass
+
+    if rps_game is not None:
+        if message.author.id == rps_game.get_opponent() and message.channel == rps_game.get_channel() \
+                and rps_game.get_input_status() and rps_game.get_user_input() is None:
+
+            # Remove special characters
+            shortened_text = alnum_only(message.content.lower())
+
+            # Set user input to appropriate value
+            if shortened_text == "rock" or shortened_text == "r":
+                rps_game.set_user_input(RPSChoices.ROCK)
+
+            if shortened_text == "paper" or shortened_text == "p":
+                rps_game.set_user_input(RPSChoices.PAPER)
+
+            if shortened_text == "scissors" or shortened_text == "s":
+                rps_game.set_user_input(RPSChoices.SCISSORS)
+
+            if shortened_text == "gun":
+                rps_game.set_user_input(RPSChoices.GUN)
+
+            # If user made an input and early status is true ==> early shot.
+            if rps_game.get_user_input() is not None and rps_game.get_early_status():
+                rps_game.early_input()
 
     guild_cooldown = cd <= 0
     if not guild_cooldown:
@@ -1416,8 +1561,9 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    client.loop.create_task(background_update())
+    client.loop.create_task(reset_display_name())
     client.loop.create_task(cooldown())
+
     expand1 = client.get_emoji(expand1)
     expand2 = client.get_emoji(expand2)
     expand3 = client.get_emoji(expand3)
