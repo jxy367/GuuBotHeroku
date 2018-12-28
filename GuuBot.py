@@ -859,7 +859,6 @@ async def rps_loop():
             if rps_game.is_game_over():
                 data = rps_game.get_game_data()
                 end_of_game_text = \
-                    "-------" + \
                     data["winner"] + " Win!" \
                     + "\nMe:" + str(data["bot score"]) \
                     + "\nYou:" + str(data["opponent score"])
