@@ -831,6 +831,13 @@ async def rps_loop():
             else:
                 result = select_rps_result()
 
+            # update game score
+            if result == 1:
+                rps_game.bot_won()
+
+            if result == -1:
+                rps_game.opponent_won()
+
             # Figure out end of round text
             if user_input is None:
                 round_text = "You did not show your hand. I automatically win the round"
