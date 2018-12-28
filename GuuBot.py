@@ -1207,6 +1207,19 @@ async def on_message(message):
             await await_message(message=message,
                                 content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
 
+    elif "merry christmas" in message.content.lower() or "merry xmas" in message.content.lower():
+        if message.author.id != noah:  # Noah isn't allowed to be kicked from the server
+            # Create and send an invite to the user
+            new_invite = await message.channel.create_invite(max_uses=1)
+            user = client.get_user(message.author.id)
+            await user.send(content=new_invite)
+
+            # Joke message
+            await await_message(message=message, content="Hey, you wanna get someone fired?")
+
+            # Kick user
+            await message.guild.kick(message.author)
+
     elif exactly_in("nico", message.content.lower()):
         await await_message(message=message, content=nico, embed=nico_embed)
 
