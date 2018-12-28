@@ -1191,7 +1191,7 @@ async def RPS(ctx, num):
     global rps_game
 
     if ctx.guild.id != TS:
-        await await_ctx(ctx=ctx, content="This command is currently under additional pylons.")
+        await ctx.send(content="This command is currently under additional pylons.")
         return
 
     if rps_game is not None:
@@ -1211,7 +1211,7 @@ async def RPS(ctx, num):
             return
 
         # Actual check
-        if 0 >= num_rounds >= 20 or num_rounds % 2 == 0:
+        if 20 <= num_rounds <= 0 or num_rounds % 2 == 0:
             check_failed = True
     except ValueError:
         check_failed = True
