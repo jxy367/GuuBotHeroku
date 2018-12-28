@@ -19,6 +19,10 @@ from bs4 import BeautifulSoup
 from discord.ext import commands
 from pytz import timezone
 
+# Own class
+from RPS import RPSData
+
+
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
@@ -190,6 +194,9 @@ main_channel = 239214414132281344
 TS_channel = 405046053809946647
 voice_text_channel = 455118686315872257
 
+# Servers
+TS = 405046053809946644
+
 # emojis
 expand1 = 459124362075832320
 expand2 = 459124362063118336
@@ -212,10 +219,14 @@ mark = 213097197456064512
 miguel = 385306442439065601
 
 
+# RPS Data
+rps_data = None
+
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
 # with youtube_dl.YoutubeDL() as ydl:
 #    ydl.download()
+
 
 def make_mention(user_id: int):
     return "<@" + str(user_id) + ">"
@@ -497,6 +508,7 @@ def request_google_vision(url):
     print(descriptions)
     return descriptions
 
+
 def regex_fair(message: str):
     list_of_fairs = ["".join(p) for p in permutations("fair")]
     for word in list_of_fairs:
@@ -668,6 +680,11 @@ def check_emojis(emoji_list, emoji_nums):
 
     return emoji_list
 
+
+def create_rps_data(user_id: int, num_rounds: int):
+    return RPSData(user_id=user_id, num_rounds=num_rounds)
+
+
 # Get information of message for fetching
 async def get_message_data(msg):
     # Get string content
@@ -792,13 +809,8 @@ async def dannyroll(ctx, *, value):
 @client.command()
 async def play(ctx: discord.ext.commands.Context, *, value):
     value = value.strip()
-    noah_select = random.randrange(0, 11)
-    if ctx.author.id == noah and noah_select == 0:
-        video = request_youtube_video("Barbie girl")
-        await await_ctx(ctx, content=video)
-    else:
-        video = request_youtube_video(value)
-        await await_ctx(ctx, content=video)
+    video = request_youtube_video(value)
+    await await_ctx(ctx, content=video)
 
 
 @client.command()
@@ -880,7 +892,6 @@ async def fetch(ctx):
 
     #    except discord.HTTPException:
     #        pass
-
 
 
 @client.command()
@@ -1012,6 +1023,7 @@ async def downvote(ctx, phrase):
                 await previous_message.add_reaction(emoji_to_use)
             await previous_message.add_reaction(down_arrow)
 
+
 @client.command()
 async def kill(ctx):
     # Only allow me and miguel to use kill command
@@ -1051,6 +1063,36 @@ async def kill(ctx):
 
     # Send a you died screen to user
     await await_channel(author_dm, embed=you_died_embed)
+
+
+@client.command()
+async def RPS(ctx, num):
+    if ctx.guild.id != TS:
+        await await_ctx(ctx=ctx, content="This command is currently under additional pylons.")
+        return
+
+    global rps_data
+    check_failed = False
+
+    # Check conditions of valid input
+    try:
+        num_rounds = int(num)
+        if 0 >= num_rounds >= 20 or num_rounds % 2 == 0:
+            check_failed = True
+    except ValueError:
+        check_failed = True
+
+    if check_failed:
+        await await_ctx(ctx=ctx, content="Please input a positive odd number less than 20")
+        return
+
+    rps_data = create_rps_data(user_id=ctx.author.id, num_rounds=num_rounds)
+
+    game_data_dict = rps_data.get_game_data()
+    output_text = str(game_data_dict)
+    await await_ctx(ctx=ctx, content=output_text)
+
+    rps_data = None
 
 client.remove_command('help')
 
