@@ -22,7 +22,6 @@ from pytz import timezone
 # Own class
 from RPS import *
 
-
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
@@ -124,8 +123,9 @@ vc_embed = discord.Embed()
 vc_embed.set_image(url="https://cdn.discordapp.com/attachments/216304922025525248/501182690524135435/unknown.png")
 
 you_died_embed = discord.Embed()
-you_died_embed.set_image(url="https://boygeniusreport.files.wordpress.com/2016/04/dark_souls_you_died.jpg?quality=98&strip=all&w=782")
-#"https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459"
+you_died_embed.set_image(
+    url="https://boygeniusreport.files.wordpress.com/2016/04/dark_souls_you_died.jpg?quality=98&strip=all&w=782")
+# "https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459"
 
 fair_embeds = []
 fair_urls = [
@@ -218,9 +218,9 @@ noah = 165481032043331584
 mark = 213097197456064512
 miguel = 385306442439065601
 
-
 # RPS Data
 rps_game = None
+
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -850,12 +850,18 @@ async def rps_loop():
             # Output Guubot's choice and round result (if necessary)
             await channel.send(content=round_text)
 
+            # Output early shot text if necesary
+            if rps_game.get_early_shot():
+                early_shot_text = "I don't appreciate it when you shoot before I say to"
+                await channel.send(content=early_shot_text)
+
             # Output overall score/result if game is finished
             if rps_game.is_game_over():
                 data = rps_game.get_game_data()
                 end_of_game_text = \
+                    "-------" + \
                     data["winner"] + " Win!" \
-                    + "\nMe:" +  str(data["bot score"])\
+                    + "\nMe:" + str(data["bot score"]) \
                     + "\nYou:" + str(data["opponent score"])
 
                 await channel.send(content=end_of_game_text)
@@ -973,37 +979,36 @@ async def fetch(ctx):
     # Delete the command
     await ctx.message.delete()
 
-
     # Deleting Noah's last message
 
     # Get Noah's last message
-    #noah_last_message = await ctx.channel.history().get(author__id=noah)
+    # noah_last_message = await ctx.channel.history().get(author__id=noah)
 
     # Check if last message was noah's
-    #fetch_noah_message = True
+    # fetch_noah_message = True
     # If noah's message is the last message, don't delete twice
-    #if previous_message.id == noah_last_message.id:
+    # if previous_message.id == noah_last_message.id:
     #    fetch_noah_message = False
     # If Noah's somehow hasn't sent a message to this channel
-    #if noah_last_message is None:
+    # if noah_last_message is None:
     #    fetch_noah_message = False
 
-    #if fetch_noah_message:
+    # if fetch_noah_message:
     #    try:
-            # Get the content and/or files
+    # Get the content and/or files
     #        noah_content, noah_files = await get_message_data(noah_last_message)
 
-            # Get noah's dm
+    # Get noah's dm
     #        user_noah = client.get_user(noah)
     #        noah_dm = user_noah.dm_channel
     #        if noah_dm is None:
     #            await user_noah.create_dm()
     #            noah_dm = user_noah.dm_channel
 
-            # send noah his last message
+    # send noah his last message
     #        await await_fetch(ctx, noah_dm, noah_content, noah_files)
 
-            # delete noah's message
+    # delete noah's message
     #        await noah_last_message.delete()
 
     #    except discord.HTTPException:
