@@ -789,8 +789,8 @@ async def rps_loop():
             user_mention = make_mention(data["opponent id"])
             basic_score_text = \
                 user_mention + " " + "The current score is :" \
-                + "\nMe: ", data["bot score"] \
-                + "\nYou: ", data["opponent score"]
+                + "\nMe: " +  str(data["bot score"]) \
+                + "\nYou: "+ str(data["opponent score"])
 
             # Send intro score text
             await channel.send(content=basic_score_text)
@@ -848,8 +848,8 @@ async def rps_loop():
                 data = rps_game.get_game_data()
                 end_of_game_text = \
                     data["winner"] + " Win!" \
-                    + "\nMe:", data["bot score"]\
-                    + "\nYou:", data["opponent score"]
+                    + "\nMe:" +  str(data["bot score"])\
+                    + "\nYou:" + str(data["opponent score"])
 
                 channel.send(content=end_of_game_text)
                 rps_game = None
