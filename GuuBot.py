@@ -842,7 +842,7 @@ async def rps_loop():
             if user_input is None:
                 round_text = "You did not show your hand. I automatically win the round"
             elif user_input is RPSChoices.GUN:
-                round_text = "I activate mirror force. I win this round."
+                round_text = "I activate Mirror Force! I win this round."
             else:
                 guubot_input = calculate_guubot_rps_input(user_input, result)
                 round_text = "I select " + guubot_input
@@ -851,7 +851,7 @@ async def rps_loop():
             await channel.send(content=round_text)
 
             # Output early shot text if necesary
-            if rps_game.get_early_shot():
+            if rps_game.is_early_shooter():
                 early_shot_text = "I don't appreciate it when you shoot before I say to"
                 await channel.send(content=early_shot_text)
 
