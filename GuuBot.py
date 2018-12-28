@@ -860,8 +860,8 @@ async def rps_loop():
                 data = rps_game.get_game_data()
                 end_of_game_text = \
                     data["winner"] + " Win!" \
-                    + "\nMe:" + str(data["bot score"]) \
-                    + "\nYou:" + str(data["opponent score"])
+                    + "\nMe: " + str(data["bot score"]) \
+                    + "\nYou :" + str(data["opponent score"])
 
                 await channel.send(content=end_of_game_text)
                 rps_game = None
@@ -1210,7 +1210,7 @@ async def RPS(ctx, num):
             return
 
         # Actual check
-        if 20 <= num_rounds <= 0 or num_rounds % 2 == 0:
+        if (20 <= num_rounds <= 0) or (num_rounds % 2 == 0):
             check_failed = True
     except ValueError:
         check_failed = True
