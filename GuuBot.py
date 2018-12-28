@@ -789,8 +789,8 @@ async def rps_loop():
             user_mention = make_mention(data["opponent id"])
             basic_score_text = \
                 user_mention + " " + "The current score is :" \
-                + "\nMe: " +  str(data["bot score"]) \
-                + "\nYou: "+ str(data["opponent score"])
+                + "\nMe: " + str(data["bot score"]) \
+                + "\nYou: " + str(data["opponent score"])
 
             # Send intro score text
             await channel.send(content=basic_score_text)
@@ -848,7 +848,7 @@ async def rps_loop():
                 round_text = "I select " + guubot_input
 
             # Output Guubot's choice and round result (if necessary)
-            channel.send(content=round_text)
+            await channel.send(content=round_text)
 
             # Output overall score/result if game is finished
             if rps_game.is_game_over():
@@ -858,7 +858,7 @@ async def rps_loop():
                     + "\nMe:" +  str(data["bot score"])\
                     + "\nYou:" + str(data["opponent score"])
 
-                channel.send(content=end_of_game_text)
+                await channel.send(content=end_of_game_text)
                 rps_game = None
 
         await asyncio.sleep(1)
