@@ -1204,14 +1204,10 @@ async def RPS(ctx, num):
     try:
         num_rounds = int(num)
 
-        # personal RESET
-        if num_rounds == -1:
-            rps_game = None
-            return
-
         # Actual check
-        if (20 <= num_rounds <= 0) or (num_rounds % 2 == 0):
+        if (num_rounds <= 0) or (num_rounds >= 20) or (num_rounds % 2 == 0):
             check_failed = True
+            
     except ValueError:
         check_failed = True
 
