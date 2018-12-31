@@ -957,7 +957,7 @@ async def increase_quiz_role(member):
     # Congratulate players who finished the game
     if new_role_name == "Winner":
         await member.edit(nick="")
-        announcement_channel = discord.utils.get(member.guild.tect_channels, name='announcements')
+        announcement_channel = discord.utils.get(member.guild.text_channels, name='announcements')
         await announcement_channel.send(make_mention(member.id) + " answered all the questions!")
 
     return
