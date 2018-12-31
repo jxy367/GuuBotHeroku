@@ -1417,7 +1417,7 @@ async def on_message(message):
             author_dm_channel = await get_dm_channel(message.author.id)
             await author_dm_channel.send(content="That's correct. woo....")
             # Move user to next question
-            await increase_quiz_role(message.author.id)
+            await increase_quiz_role(message.author)
 
         # Delete any message if the author is not me or a bot
         if message.author.id != me:
