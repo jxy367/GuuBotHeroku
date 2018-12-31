@@ -734,7 +734,10 @@ def get_quiz_info(member, info_type:str):
     quiz_info = None
 
     # Get member role name which is also question name
-    question_name = get_member_role(member).name
+    role = get_member_role(member)
+    if role is None:
+        return None
+    question_name = role.name
 
     # Get question info if possible
     if question_name is not None:
