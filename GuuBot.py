@@ -1040,7 +1040,7 @@ async def echo(ctx, *, phrase):
 async def fetch(ctx):
     if ctx.message.author.id == me:
         return
-    
+
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
     # Weird situation where there is no previous message
