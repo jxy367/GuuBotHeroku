@@ -196,6 +196,7 @@ voice_text_channel = 455118686315872257
 
 # Servers
 TS = 405046053809946644
+EnergylessZone = 528382529502314521
 
 # emojis
 expand1 = 459124362075832320
@@ -221,6 +222,30 @@ miguel = 385306442439065601
 # RPS Data
 rps_game = None
 
+# Quiz Data
+quiz_data = {}
+quiz_roles = []
+with open("QuizData.txt", 'r') as f:
+    mod = 5
+    count = 0
+    question_data = {}
+    for line in f:
+        if count == 0:
+            question_data["role"] = line.strip()
+            quiz_roles.append(line.strip())
+        elif count == 1:
+            question_data["question"] = line.strip()[3:]
+        elif count == 2:
+            question_data["hint"] = line.strip()[3:]
+        elif count == 3:
+            question_data["answer"] = line.strip()[3:]
+        else:
+            quiz_data[question_data["role"]] = question_data
+            question_data = {}
+        count += 1
+        count = count % mod
+
+quiz_roles.append("Winner")
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -704,6 +729,28 @@ def calculate_guubot_rps_input(user_input, result: int):
     return RPSChoices((user_input + result) % 2).name.lower()
 
 
+# Returns quiz info dependent on the info_type
+def get_quiz_info(member, info_type:str):
+    quiz_info = None
+
+    # Get member role name which is also question name
+    question_name = get_member_role(member).name
+
+    # Get question info if possible
+    if question_name is not None:
+        quiz_info = quiz_data[question_name][info_type]
+
+    return quiz_info
+
+
+# Return the quiz role of member
+def get_member_role(member):
+    for role in member.roles:
+        if role.name in quiz_data:
+            return role
+    return None
+
+
 # Check for in-n-out in message
 async def in_n_out_check(msg):
     content = msg.content
@@ -742,7 +789,16 @@ async def get_message_data(msg):
     return content, files
 
 
+async def get_dm_channel(user_id):
+    user = client.get_user(user_id)
+    user_dm = user.dm_channel
+    if user_dm is None:
+        await user.create_dm()
+        user_dm = user.dm_channel
+    return user_dm
+
 # Functions run in loop
+
 
 # reset display name loop
 async def reset_display_name():
@@ -864,9 +920,50 @@ async def rps_loop():
                     + "\nYou :" + str(data["opponent score"])
 
                 await channel.send(content=end_of_game_text)
+
+                # Check whether or not to send invitation
+                # Guubot must win a best of 5
+                if data["winner"] == "I" and data["max_rounds"] == 5:
+                    loser_dm = get_dm_channel(data["opponent id"])
+                    ez_announcements_channel = discord.utils.get(client.get_guild(EnergylessZone).text_channels, name="announcements")
+                    new_invite = await ez_announcements_channel.create_invite(max_uses=1)
+                    await loser_dm.send(content="Welcome")
+                    await loser_dm.send(content=new_invite)
+
                 rps_game = None
 
         await asyncio.sleep(1)
+
+
+# On successful question answering, user moves on to next question
+async def increase_quiz_role(member):
+    current_role = get_member_role(member)
+    current_role_name = current_role.name
+    if current_role_name == "Winner":
+        return
+
+    cr_index = quiz_roles.index(current_role_name)
+    new_index = cr_index + 1
+    new_role_name = quiz_roles[new_index]
+    for role in member.guild.roles:
+        if role.name == new_role_name:
+            await member.remove_roles(current_role)
+            await member.add_roles(role)
+            break
+
+    # Congratulate players who finished the game
+    if new_role_name == "Winner":
+        await member.edit(nick="")
+        announcement_channel = discord.utils.get(member.guild.tect_channels, name='announcements')
+        await announcement_channel.send(make_mention(member.id) + " answered all the questions!")
+
+    return
+
+
+# Delete all quiz roles
+async def remove_quiz_roles(member):
+    new_roles = [role for role in member.roles if role.name not in quiz_roles]
+    await member.edit(roles=new_roles)
 
 
 # Various awaited responses
@@ -941,6 +1038,9 @@ async def echo(ctx, *, phrase):
 
 @client.command()
 async def fetch(ctx):
+    if ctx.message.author.id == me:
+        return
+    
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
     # Weird situation where there is no previous message
@@ -960,11 +1060,7 @@ async def fetch(ctx):
     content, files = await get_message_data(previous_message)
 
     # Get dm_channel with author
-    author_user = client.get_user(author.id)
-    author_dm = author_user.dm_channel
-    if author_dm is None:
-        await author_user.create_dm()
-        author_dm = author_user.dm_channel
+    author_dm = await get_dm_channel(author.id)
 
     # Delete message being fetched
     await previous_message.delete()
@@ -998,11 +1094,7 @@ async def fetch(ctx):
     #        noah_content, noah_files = await get_message_data(noah_last_message)
 
     # Get noah's dm
-    #        user_noah = client.get_user(noah)
-    #        noah_dm = user_noah.dm_channel
-    #        if noah_dm is None:
-    #            await user_noah.create_dm()
-    #            noah_dm = user_noah.dm_channel
+    #        noah_dm = await get_user_dm(noah)
 
     # send noah his last message
     #        await await_fetch(ctx, noah_dm, noah_content, noah_files)
@@ -1175,18 +1267,14 @@ async def kill(ctx):
     await previous_message.delete()
 
     # Get dm_channel with author
-    author_user = client.get_user(author.id)
-    author_dm = author_user.dm_channel
-    if author_dm is None:
-        await author_user.create_dm()
-        author_dm = author_user.dm_channel
+    author_dm = await get_dm_channel(author.id)
 
     # Send a you died screen to user
     await await_channel(author_dm, embed=you_died_embed)
 
 
 @client.command()
-async def RPS(ctx, num):
+async def rps(ctx, num):
     global rps_game
 
     if ctx.guild.id != TS:
@@ -1207,7 +1295,7 @@ async def RPS(ctx, num):
         # Actual check
         if (num_rounds <= 0) or (num_rounds >= 20) or (num_rounds % 2 == 0):
             check_failed = True
-            
+
     except ValueError:
         check_failed = True
 
@@ -1217,9 +1305,39 @@ async def RPS(ctx, num):
 
     rps_game = create_rps_data(user_id=ctx.author.id, channel=ctx.channel, num_rounds=num_rounds)
 
-    game_data_dict = rps_game.get_game_data()
-    output_text = str(game_data_dict)
-    await await_ctx(ctx=ctx, content=output_text)
+    #game_data_dict = rps_game.get_game_data()
+    #output_text = str(game_data_dict)
+    #await await_ctx(ctx=ctx, content=output_text)
+
+
+@client.command()
+async def question(ctx):
+    if ctx.guild.id != EnergylessZone:
+        await await_ctx(ctx=ctx, content="Questions are only for losers")
+        return
+
+    author = ctx.message.author
+    dm_channel = await get_dm_channel(author.id)
+    quiz_question = get_quiz_info(author, "question")
+    if quiz_question is not None:
+        await dm_channel.send(content=quiz_question)
+    else:
+        await dm_channel.send(content="I don't have any questions for you")
+
+
+@client.command()
+async def hint(ctx):
+    if ctx.guild.id != EnergylessZone:
+        await await_ctx(ctx=ctx, content="Hints are only for losers")
+        return
+
+    author = ctx.message.author
+    dm_channel = await get_dm_channel(author.id)
+    quiz_hint = get_quiz_info(author, "hint")
+    if quiz_hint is not None:
+        await dm_channel.send(content=quiz_hint)
+    else:
+        await dm_channel.send(content="I don't have any hints for you")
 
 
 client.remove_command('help')
@@ -1242,11 +1360,14 @@ async def help(ctx):
     embed.add_field(name="guubot upvote [number]", value="Attempts to upvote the previous message to [number] upvotes",
                     inline=False)
     embed.add_field(name="guubot downvote [number]",
-                    value="Attempts to diwbvote the previous message to [number] downvotes",
+                    value="Attempts to downvote the previous message to [number] downvotes",
                     inline=False)
     embed.add_field(name="guubot kill",
                     value="A requested command that causes no ill effects other than death",
                     inline=False)
+    embed.add_field(name="guubot rps [number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
+    embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
+    embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
@@ -1277,6 +1398,32 @@ async def on_message(message):
                 return
         else:
             return
+
+    if message.channel.guild.id == EnergylessZone:  # Serious Mode Guubot
+        # Guubot responds to only 2 commands
+        if message.content.lower() == "guubot question" or message.content.lower() == "guubot hint":
+            await client.process_commands(message)
+
+        # Guubot checks responses
+
+        # Get expected answer
+        expected_answer = get_quiz_info(message.author, "answer")
+
+        # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
+        if expected_answer is None:
+            return
+
+        # Check if answer is correct
+        if expected_answer.lower() == message.content.lower():
+            author_dm_channel = await get_dm_channel(message.author.id)
+            await author_dm_channel.send(content="That's correct. woo....")
+            # Move user to next question
+            await increase_quiz_role(message.author.id)
+
+        # Delete any message if the author is not me or a bot
+        if message.author.id != me:
+            await message.delete()
+        return
 
     try:
         mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
@@ -1553,6 +1700,28 @@ async def on_reaction_add(reaction, user):
 async def on_member_join(member):
     global client
     global mr_dictionary
+
+    # Only for Energyless Zone
+    if member.guild.id == EnergylessZone:
+        # Give players the first role
+        first_role_name = quiz_roles[0]
+        for role in member.guild.roles:
+            if role.name == first_role_name:
+                await member.add_roles(role)
+                break
+
+        # Assign each player a random prisoner number
+        prisoner_number = str(random.randrange(1, 999))
+        prisoner_number = ((3-len(prisoner_number)) * "0") + prisoner_number
+        prisoner_name = "Prisoner " + prisoner_number
+        await member.edit(nick=prisoner_name)
+
+        # Make an announcement in the announcment channel
+        announcement_channel = discord.utils.get(member.guild.tect_channels, name='announcements')
+        await announcement_channel.send("Welcome " + make_mention(member.id))
+
+        return
+
     if member.id in mr_dictionary:
         roles, nickname = mr_dictionary[member.id]
         await member.edit(nick=nickname, roles=roles)
