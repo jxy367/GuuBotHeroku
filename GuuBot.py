@@ -1190,7 +1190,7 @@ async def downvote(ctx, phrase):
     num = phrase
     emoji_dict = {
         "0": ["0\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
-            , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
+              , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
         "1": ["1\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
         "2": ["2\u20e3", '\N{Second Place Medal}'],
         "3": ["3\u20e3", '\N{Third Place Medal}'],
@@ -1408,6 +1408,8 @@ async def on_message(message):
 
         # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
         if expected_answer is None:
+            await message.channel.send("No answer expected")
+            await message.delete()
             return
 
         # Check if answer is correct
