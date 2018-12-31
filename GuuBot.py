@@ -1714,7 +1714,7 @@ async def on_member_join(member):
         await member.edit(nick=prisoner_name)
 
         # Make an announcement in the announcment channel
-        announcement_channel = discord.utils.get(member.guild.tect_channels, name='announcements')
+        announcement_channel = discord.utils.get(member.guild.text_channels, name='announcements')
         await announcement_channel.send("Welcome " + make_mention(member.id))
 
         return
