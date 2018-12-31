@@ -1411,7 +1411,6 @@ async def on_message(message):
 
         # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
         if expected_answer is None:
-            await message.channel.send("No answer expected")
             return
 
         # Check if answer is correct
