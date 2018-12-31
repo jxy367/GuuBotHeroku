@@ -847,7 +847,7 @@ async def rps_loop():
             # Make intro score text
             user_mention = make_mention(data["opponent id"])
             basic_score_text = \
-                user_mention + " " + "The current score is :" \
+                user_mention + "\n " + "The current score is :" \
                 + "\nMe: " + str(data["bot score"]) \
                 + "\nYou: " + str(data["opponent score"])
 
@@ -1277,10 +1277,6 @@ async def kill(ctx):
 async def rps(ctx, num):
     global rps_game
 
-    if ctx.guild.id != TS:
-        await ctx.send(content="This command is currently under additional pylons.")
-        return
-
     if rps_game is not None:
         await await_ctx(ctx=ctx, content="I'm already playing Rock-Paper-Scissors. How many hands do you think I have?")
         return
@@ -1365,9 +1361,9 @@ async def help(ctx):
     embed.add_field(name="guubot kill",
                     value="A requested command that causes no ill effects other than death",
                     inline=False)
-    #embed.add_field(name="guubot rps [number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
-    #embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
-    #embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
+    embed.add_field(name="guubot rps [odd number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
+    embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
+    embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
