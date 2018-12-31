@@ -1409,7 +1409,6 @@ async def on_message(message):
         # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
         if expected_answer is None:
             await message.channel.send("No answer expected")
-            await message.delete()
             return
 
         # Check if answer is correct
@@ -1420,8 +1419,9 @@ async def on_message(message):
             await increase_quiz_role(message.author)
 
         # Delete any message if the author is not me or a bot
-        if message.author.id != me:
-            await message.delete()
+        messages = await message.channel.history(limit=20).flatten()
+        for m in messages:
+            await m.delete()
         return
 
     try:
