@@ -1038,9 +1038,6 @@ async def echo(ctx, *, phrase):
 
 @client.command()
 async def fetch(ctx):
-    if ctx.message.author.id == me:
-        return
-
     previous_message = await ctx.channel.history(limit=1, before=ctx.message).flatten()
 
     # Weird situation where there is no previous message
@@ -1365,9 +1362,9 @@ async def help(ctx):
     embed.add_field(name="guubot kill",
                     value="A requested command that causes no ill effects other than death",
                     inline=False)
-    embed.add_field(name="guubot rps [number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
-    embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
-    embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
+    #embed.add_field(name="guubot rps [number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
+    #embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
+    #embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
