@@ -726,7 +726,7 @@ def select_rps_result():
 
 # Calculate Guubot's input from user input and result
 def calculate_guubot_rps_input(user_input, result: int):
-    return RPSChoices((user_input + result) % 2).name.lower()
+    return RPSChoices((user_input + result) % 3).name.lower()
 
 
 # Returns quiz info dependent on the info_type
@@ -1309,7 +1309,7 @@ async def rps(ctx, num):
 @client.command()
 async def question(ctx):
     if ctx.guild.id != EnergylessZone:
-        await await_ctx(ctx=ctx, content="Questions are only for losers")
+        await await_ctx(ctx=ctx, content="Questions are only for the best of 5 losers")
         return
 
     author = ctx.message.author
@@ -1324,7 +1324,7 @@ async def question(ctx):
 @client.command()
 async def hint(ctx):
     if ctx.guild.id != EnergylessZone:
-        await await_ctx(ctx=ctx, content="Hints are only for losers")
+        await await_ctx(ctx=ctx, content="Hints are only for the best of 5 losers")
         return
 
     author = ctx.message.author

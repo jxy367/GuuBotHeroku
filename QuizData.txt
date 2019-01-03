@@ -1,5 +1,5 @@
 Question 1: Guubot Stupidity For 100
-Q: Who can be defeated by making flour, egg, and water come out of their mouth?
+Q: Who can be killed by making pasta come out of their mouth?
 H: It's not Su
 A: Kolson
 
@@ -15,7 +15,7 @@ A: Sakamoto-san
 
 Question 4: Night And Day
 Q: Character: Rin Matsuoka's Mouth's Work is Never Done
-H: Teeth
+H: Teeth (Don't be Danny. Don't over think this)
 A: Ika Sainokami
 
 Question 5: You Gave These 7s
@@ -31,7 +31,7 @@ A: Tales of Wedding Rings
 Question 7: DD/MM/YYYY
 Q: Danny added 1 part whole milk to 1 part light cream on what day?
 H: Either read your role or read up on milk mixtures.
-A: 01/11/2015
+A: 02/11/2015
 
 Question 8: Insert Seinfeld Music Here
 Q: Iori, Assassin's Creed, Less buff Gin Dojima, Il-Deung Na, and guy go to school.
