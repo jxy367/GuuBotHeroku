@@ -927,11 +927,12 @@ async def rps_loop():
                 # Check whether or not to send invitation
                 # Guubot must win a best of 5
                 if data["winner"] == "I" and data["max rounds"] == 5:
-                    loser_dm = await get_dm_channel(data["opponent id"])
-                    ez_announcements_channel = discord.utils.get(client.get_guild(EnergylessZone).text_channels, name="announcements")
-                    new_invite = await ez_announcements_channel.create_invite(max_uses=1)
-                    await loser_dm.send(content="Welcome")
-                    await loser_dm.send(content=new_invite)
+                    if client.get_guild(EnergylessZone).get_member(data["opponent id"]) is None:
+                        loser_dm = await get_dm_channel(data["opponent id"])
+                        ez_announcements_channel = discord.utils.get(client.get_guild(EnergylessZone).text_channels, name="announcements")
+                        new_invite = await ez_announcements_channel.create_invite(max_uses=1)
+                        await loser_dm.send(content="Welcome")
+                        await loser_dm.send(content=new_invite)
 
                 rps_game = None
 
