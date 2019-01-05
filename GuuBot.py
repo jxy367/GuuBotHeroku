@@ -1396,7 +1396,7 @@ async def on_message(message):
         else:
             return
 
-    if message.channel.guild.id == EnergylessZone:  # Serious Mode Guubot
+    if isinstance(message.channel, discord.TextChannel) and (message.channel.guild.id == EnergylessZone):  # Serious Mode Guubot
         # Guubot responds to only 2 commands
         if message.content.lower() == "guubot question" or message.content.lower() == "guubot hint":
             await client.process_commands(message)
