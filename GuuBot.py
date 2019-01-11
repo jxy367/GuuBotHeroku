@@ -353,6 +353,7 @@ def make_amiami_image(url):
     # make the Pool of workers
     print("Pool started")
     num_threads = len(url_list) // 2 if check_code else len(url_list)
+    num_threads = 100
     pool = Pool(num_threads)
 
     # Callback function that checks results and kills the pool
@@ -1075,37 +1076,6 @@ async def fetch(ctx):
     # Delete the command
     await ctx.message.delete()
 
-    # Deleting Noah's last message
-
-    # Get Noah's last message
-    # noah_last_message = await ctx.channel.history().get(author__id=noah)
-
-    # Check if last message was noah's
-    # fetch_noah_message = True
-    # If noah's message is the last message, don't delete twice
-    # if previous_message.id == noah_last_message.id:
-    #    fetch_noah_message = False
-    # If Noah's somehow hasn't sent a message to this channel
-    # if noah_last_message is None:
-    #    fetch_noah_message = False
-
-    # if fetch_noah_message:
-    #    try:
-    # Get the content and/or files
-    #        noah_content, noah_files = await get_message_data(noah_last_message)
-
-    # Get noah's dm
-    #        noah_dm = await get_user_dm(noah)
-
-    # send noah his last message
-    #        await await_fetch(ctx, noah_dm, noah_content, noah_files)
-
-    # delete noah's message
-    #        await noah_last_message.delete()
-
-    #    except discord.HTTPException:
-    #        pass
-
 
 @client.command()
 async def upvote(ctx, phrase):
@@ -1351,6 +1321,9 @@ async def help(ctx):
     embed.add_field(name="guubot dannyroll #d# +/- # (Ex: 'guubot dannyroll 4d20 + 4' or 'guubot dannyroll 10d15')",
                     value="Rolls dice with optional modifier as if it were Danny", inline=False)
     embed.add_field(name="guubot echo *phrase*", value="Repeats what you say")
+    embed.add_field(name="guubot f#$%*",
+                    value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead",
+                    inline=False)
     embed.add_field(name="guubot f#$%*",
                     value="For when someone sends something really dumb or NSFL and you want them to be on the receiving end instead",
                     inline=False)
@@ -1607,6 +1580,38 @@ async def on_message(message):
 
     elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
         await await_message(message, embed=almost_like_embed)
+
+    elif "f#$%*" in message.content.lower():
+        # Deleting Noah's last message
+
+        # Get Noah's last message
+        noah_last_message = await message.channel.history().get(author__id=noah)
+
+        # Assume we are fetching Noah's last message
+        fetch_noah_message = True
+
+        # If Noah's somehow hasn't sent a message to this channel
+        if noah_last_message is None:
+            fetch_noah_message = False
+
+        if fetch_noah_message:
+            try:
+                # Get the content and/or files
+                noah_content, noah_files = await get_message_data(noah_last_message)
+
+                # Get noah's dm
+                noah_dm = await get_dm_channel(noah)
+
+                # send noah his last message
+                await await_fetch_message(message.channel, noah_dm, noah_content, noah_files)
+
+                # delete noah's message
+                await noah_last_message.delete()
+
+            except discord.HTTPException:
+                pass
+
+        await message.delete()
 
     else:
         previous_messages = await message.channel.history(limit=1, before=message).flatten()
