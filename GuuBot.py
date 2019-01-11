@@ -442,7 +442,7 @@ def alnum_only(str1):
 
 
 def timestring_to_sec(str):
-
+    return 0
 
 def get_cooldown_key(message_or_channel):
     global on_cooldown
