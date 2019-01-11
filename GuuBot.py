@@ -330,7 +330,14 @@ def make_amiami_image(url):
     prefix = "https://img.amiami.com/images/product/main/"
     url_list = []
     header_list = []
-    for num in range(300, 1, -1):
+    max_check = 400
+    mid_value = max_check//2
+    nums = []
+    for offset in range(1, max_check - mid_value):
+        nums.append(mid_value - offset)
+        nums.append(mid_value + offset)
+
+    for num in nums:
         if 10 <= num < 100:
             part_url = prefix + "0" + str(num)
         elif num < 10:
@@ -359,7 +366,6 @@ def make_amiami_image(url):
     # Callback function that checks results and kills the pool
     def check_result(result):
         global image_url
-        print(result)
         if result.status_code == 200:
             print("Image found")
             pool.terminate()
