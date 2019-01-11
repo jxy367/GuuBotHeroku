@@ -369,7 +369,7 @@ def make_amiami_image(url):
             image_url = result.url
 
     # Start up all of the processes
-    for i in range(num_threads):
+    for i in range(len(url_list)):
         pool.apply_async(make_request, args=[url_list[i], header_list[i]], callback=check_result)
 
     # close pool and wait for the work to finish
@@ -439,6 +439,9 @@ def alnum_only(str1):
         if char.isalnum():
             new_str += char
     return new_str
+
+
+def timestring_to_sec(str):
 
 
 def get_cooldown_key(message_or_channel):
