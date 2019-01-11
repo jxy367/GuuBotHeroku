@@ -359,6 +359,7 @@ def make_amiami_image(url):
     # Callback function that checks results and kills the pool
     def check_result(result):
         global image_url
+        print(result)
         if result.status_code == 200:
             print("Image found")
             pool.terminate()
@@ -1574,9 +1575,10 @@ async def on_message(message):
     elif len(urls) > 0:
         for u in urls:
             img = make_amiami_image(u)
-            e = discord.Embed()
-            e.set_image(url=img)
-            await await_message(message, content=u, embed=e)
+            if img !=  "Image was not found.":
+                e = discord.Embed()
+                e.set_image(url=img)
+                await await_message(message, content=u, embed=e)
 
     elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
         await await_message(message, embed=almost_like_embed)
