@@ -1457,7 +1457,7 @@ async def on_message(message):
     urls = find_amiami(message.content)
 
     # Check if "in-n-out" appears in message
-    in_n_out = await in_n_out_check(message)
+    #in_n_out = await in_n_out_check(message)
 
     if "awoo" in message.content.lower():
 
