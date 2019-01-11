@@ -1609,7 +1609,7 @@ async def on_message(message):
             try:
                 # Get the content and/or files
                 noah_content, noah_files = await get_message_data(noah_last_message)
-
+                print(noah_content)
                 # Get noah's dm
                 noah_dm = await get_dm_channel(noah)
 
