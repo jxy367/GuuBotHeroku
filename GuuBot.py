@@ -1504,8 +1504,8 @@ async def on_message(message):
         else:
             await await_message(message=message, embed=fair_embeds[index])
 
-    elif in_n_out:
-        await await_message(message=message, content="A reminder that Ryan is a terrible friend sometimes.")
+    #elif in_n_out:
+    #    await await_message(message=message, content="A reminder that Ryan is a terrible friend sometimes.")
 
     elif "pasta" in message.content.lower():
         if message.author.id == kolson:
