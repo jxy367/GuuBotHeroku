@@ -1597,7 +1597,7 @@ async def on_message(message):
 
         # Get Noah's last message
         noah_last_message = await message.channel.history().get(author__id=noah)
-
+        print(noah_last_message)
         # Assume we are fetching Noah's last message
         fetch_noah_message = True
 
