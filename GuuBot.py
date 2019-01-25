@@ -127,6 +127,9 @@ you_died_embed.set_image(
     url="https://boygeniusreport.files.wordpress.com/2016/04/dark_souls_you_died.jpg?quality=98&strip=all&w=782")
 # "https://vignette.wikia.nocookie.net/darksouls/images/6/63/You-Died.jpg/revision/latest?cb=20130515050459"
 
+faker_embed = discord.Embed()
+faker_embed.set_image(url="https://cdn.discordapp.com/attachments/443065453896531968/535562120817803268/image.jpg")
+
 fair_embeds = []
 fair_urls = [
     'http://www.pensacolafair.com/wp-content/themes/wp-responsive110/scripts/timthumb.php?src=http://www.pensacolafair.com/wp-content/uploads/2012/11/midway-night-600x400.jpg&w=600&h=400&zc=1',
@@ -246,6 +249,17 @@ with open("QuizData.txt", 'r') as f:
         count = count % mod
 
 quiz_roles.append("Winner")
+
+magic_8ball_responses = []
+magic_guuball_responses = []
+
+with open("Magic8BallResponses",'r') as f:
+    for line in f:
+        magic_8ball_responses.append(line.strip())
+
+with open("MagicGuuBallResponses",'r') as f:
+    for line in f:
+        magic_guuball_responses.append(line.strip())
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -1288,6 +1302,23 @@ async def rps(ctx, num):
 
 
 @client.command()
+async def guuball(ctx, question):
+    response_string = ""
+    if question[-1] != "?":
+        response_string = "Ask a proper question."
+
+    else:
+        guuball_index = random.randrange(0,len(magic_guuball_responses))
+        if guuball_index == 0: # Special response
+            magic_8ball_index = random.randrange(0,len(magic_8ball_responses))
+            response_string = magic_guuball_responses[guuball_index] + " '" + magic_8ball_responses[magic_8ball_index] + "'"
+        else:
+            response_string = magic_guuball_responses[guuball_index]
+
+    await await_ctx(ctx=ctx, content=response_string)
+
+
+@client.command()
 async def question(ctx):
     if ctx.guild.id != EnergylessZone:
         await await_ctx(ctx=ctx, content="Questions are only for the best of 5 losers")
@@ -1563,6 +1594,10 @@ async def on_message(message):
     elif "sad" == message.content.lower() or "sad!" == message.content.lower() or "sad." == message.content.lower():
         if message.author.id == noah:
             await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
+
+    elif "fake" in message.content.lower():
+        if message.author.id == noah:
+            await await_message(message=message, embed=faker_embed)
 
     elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
         annoying = message.content.lower().split("guubot play", 1)

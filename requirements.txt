@@ -8,7 +8,7 @@ attrs==17.4.0
 idna-ssl==1.1.0
 async-timeout==3.0.0
 pycparser==2.18
-pytz==2018.5
+pytz>=2018.5
 bs4
 #discord.py==1.0.0a1504+gf06563c
 requests>=2.20.0
