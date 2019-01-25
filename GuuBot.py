@@ -1306,9 +1306,9 @@ async def rps(ctx, num):
 
 
 @client.command()
-async def guuball(ctx, yes_no_question):
+async def guuball(ctx, *, yes_no_question):
     response_string = ""
-    if yes_no_question[-1] != "?":
+    if len(yes_no_question) < 3 or yes_no_question[-1] != "?":
         response_string = "Ask a proper question."
 
     else:
@@ -1382,6 +1382,7 @@ async def help(ctx):
                     value="A requested command that causes no ill effects other than death",
                     inline=False)
     embed.add_field(name="guubot rps [odd number]", value="Challenge Guubot to some rock-paper-scissors", inline=False)
+    embed.add_field(name="guubot guuball *question*", value="Guubot pretends to be a Magic 8-ball", inline=False)
     embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
     embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
