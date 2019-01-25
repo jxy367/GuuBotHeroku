@@ -253,13 +253,14 @@ quiz_roles.append("Winner")
 magic_8ball_responses = []
 magic_guuball_responses = []
 
-with open("Magic8BallResponses",'r') as f:
+with open("Magic8BallResponses", 'r') as f:
     for line in f:
         magic_8ball_responses.append(line.strip())
 
-with open("MagicGuuBallResponses",'r') as f:
+with open("MagicGuuBallResponses", 'r') as f:
     for line in f:
         magic_guuball_responses.append(line.strip())
+
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -345,7 +346,7 @@ def make_amiami_image(url):
     url_list = []
     header_list = []
     max_check = 400
-    mid_value = max_check//2
+    mid_value = max_check // 2
     nums = []
     for offset in range(1, max_check - mid_value):
         nums.append(mid_value - offset)
@@ -463,6 +464,7 @@ def alnum_only(str1):
 
 def timestring_to_sec(str):
     return 0
+
 
 def get_cooldown_key(message_or_channel):
     global on_cooldown
@@ -755,7 +757,7 @@ def calculate_guubot_rps_input(user_input, result: int):
 
 
 # Returns quiz info dependent on the info_type
-def get_quiz_info(member, info_type:str):
+def get_quiz_info(member, info_type: str):
     quiz_info = None
 
     # Get member role name which is also question name
@@ -824,6 +826,7 @@ async def get_dm_channel(user_id):
         await user.create_dm()
         user_dm = user.dm_channel
     return user_dm
+
 
 # Functions run in loop
 
@@ -954,7 +957,8 @@ async def rps_loop():
                 if data["winner"] == "I" and data["max rounds"] == 5:
                     if client.get_guild(EnergylessZone).get_member(data["opponent id"]) is None:
                         loser_dm = await get_dm_channel(data["opponent id"])
-                        ez_announcements_channel = discord.utils.get(client.get_guild(EnergylessZone).text_channels, name="announcements")
+                        ez_announcements_channel = discord.utils.get(client.get_guild(EnergylessZone).text_channels,
+                                                                     name="announcements")
                         new_invite = await ez_announcements_channel.create_invite(max_uses=1)
                         await loser_dm.send(content="Welcome")
                         await loser_dm.send(content=new_invite)
@@ -1188,7 +1192,7 @@ async def downvote(ctx, phrase):
     num = phrase
     emoji_dict = {
         "0": ["0\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{Negative Squared Latin Capital Letter O}'
-              , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
+            , '\N{Heavy Large Circle}', '\N{Black Circle for Record}'],
         "1": ["1\u20e3", '\N{Regional Indicator Symbol Letter O}', '\N{First Place Medal}'],
         "2": ["2\u20e3", '\N{Second Place Medal}'],
         "3": ["3\u20e3", '\N{Third Place Medal}'],
@@ -1296,22 +1300,23 @@ async def rps(ctx, num):
 
     rps_game = create_rps_data(user_id=ctx.author.id, channel=ctx.channel, num_rounds=num_rounds)
 
-    #game_data_dict = rps_game.get_game_data()
-    #output_text = str(game_data_dict)
-    #await await_ctx(ctx=ctx, content=output_text)
+    # game_data_dict = rps_game.get_game_data()
+    # output_text = str(game_data_dict)
+    # await await_ctx(ctx=ctx, content=output_text)
 
 
 @client.command()
-async def guuball(ctx, question):
+async def guuball(ctx, yes_no_question):
     response_string = ""
-    if question[-1] != "?":
+    if yes_no_question[-1] != "?":
         response_string = "Ask a proper question."
 
     else:
-        guuball_index = random.randrange(0,len(magic_guuball_responses))
-        if guuball_index == 0: # Special response
-            magic_8ball_index = random.randrange(0,len(magic_8ball_responses))
-            response_string = magic_guuball_responses[guuball_index] + " '" + magic_8ball_responses[magic_8ball_index] + "'"
+        guuball_index = random.randrange(0, len(magic_guuball_responses))
+        if guuball_index == 0:  # Special response
+            magic_8ball_index = random.randrange(0, len(magic_8ball_responses))
+            response_string = magic_guuball_responses[guuball_index] + " '" + magic_8ball_responses[
+                magic_8ball_index] + "'"
         else:
             response_string = magic_guuball_responses[guuball_index]
 
@@ -1410,7 +1415,8 @@ async def on_message(message):
         else:
             return
 
-    if isinstance(message.channel, discord.TextChannel) and (message.channel.guild.id == EnergylessZone):  # Serious Mode Guubot
+    if isinstance(message.channel, discord.TextChannel) and (
+            message.channel.guild.id == EnergylessZone):  # Serious Mode Guubot
         # Guubot responds to only 2 commands
         if message.content.lower() == "guubot question" or message.content.lower() == "guubot hint":
             await client.process_commands(message)
@@ -1488,7 +1494,7 @@ async def on_message(message):
     urls = find_amiami(message.content)
 
     # Check if "in-n-out" appears in message
-    #in_n_out = await in_n_out_check(message)
+    # in_n_out = await in_n_out_check(message)
 
     if "awoo" in message.content.lower():
 
@@ -1535,7 +1541,7 @@ async def on_message(message):
         else:
             await await_message(message=message, embed=fair_embeds[index])
 
-    #elif in_n_out:
+    # elif in_n_out:
     #    await await_message(message=message, content="A reminder that Ryan is a terrible friend sometimes.")
 
     elif "pasta" in message.content.lower():
@@ -1619,7 +1625,7 @@ async def on_message(message):
     elif len(urls) > 0:
         for u in urls:
             img = make_amiami_image(u)
-            if img !=  "Image was not found.":
+            if img != "Image was not found.":
                 e = discord.Embed()
                 e.set_image(url=img)
                 await await_message(message, content=u, embed=e)
@@ -1761,7 +1767,7 @@ async def on_member_join(member):
 
         # Assign each player a random prisoner number
         prisoner_number = str(random.randrange(1, 999))
-        prisoner_number = ((3-len(prisoner_number)) * "0") + prisoner_number
+        prisoner_number = ((3 - len(prisoner_number)) * "0") + prisoner_number
         prisoner_name = "Prisoner " + prisoner_number
         await member.edit(nick=prisoner_name)
 
