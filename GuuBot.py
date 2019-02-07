@@ -1420,13 +1420,13 @@ async def data(ctx, num_weeks):
         # Send to me
         my_channel = await get_dm_channel(me)
 
-        # String of data
-        string_data = ""
-
         # Make user common words file and send to me
         print("Making common words files")
         common_words_author_ids = common_words.keys()
         for author_id in common_words_author_ids:
+            # String of data
+            string_data = ""
+
             author = ctx.guild.get_member(author_id)
             if not author.bot:
                 for word in common_words[author_id]:
