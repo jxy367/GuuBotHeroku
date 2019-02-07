@@ -1376,6 +1376,7 @@ async def data(ctx, num_weeks):
         for text_channel in ctx.guild.text_channels:
             # Get past messages
             tc_history = await text_channel.history(after=num_weeks_ago).flatten()
+            print(len(tc_history))
             for tc_message in tc_history:
                 # Ignore bot messages
                 if not tc_message.author.bot and (ctx.guild.get_member(tc_message.author.id) is not None):
