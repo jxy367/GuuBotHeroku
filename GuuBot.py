@@ -1356,6 +1356,8 @@ async def hint(ctx):
 
 @client.command()
 async def data(ctx, num_weeks):
+    num_weeks = int(num_weeks)
+
     if ctx.message.author.id == me and num_weeks in range(1, 105):
         print("Data function started: " + str(num_weeks) + " weeks")
 
@@ -1377,7 +1379,7 @@ async def data(ctx, num_weeks):
             tc_history = await text_channel.history(after=num_weeks_ago).flatten()
             for tc_message in tc_history:
                 # Ignore bot messages
-                if not tc_message.author.bot:
+                if not tc_message.author.bot and (ctx.guild.get_member(tc_message.author.id) is not None):
                     # Calculate the message creation time in eastern timezone
                     new_created_at = tc_message.created_at.astimezone(tz=et)
 
