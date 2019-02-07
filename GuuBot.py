@@ -1409,6 +1409,9 @@ async def data(ctx, num_weeks):
                     else:
                         week_message_frequency[week_message_frequency_index][author_id] += 1
 
+                    print(common_words)
+                    print(week_message_frequency)
+
         # Send to me
         my_channel = await get_dm_channel(me)
 
