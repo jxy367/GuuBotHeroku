@@ -1,12 +1,13 @@
 import asyncio
+import base64
+import json
 import os
 import random
 import re
+import tempfile
 import time
 import urllib
-import json
-import base64
-from datetime import datetime
+from datetime import *
 from itertools import permutations
 from multiprocessing.dummy import Pool
 # from time import sleep
@@ -929,7 +930,7 @@ async def rps_loop():
             if user_input is None:
                 round_text = "You did not show your hand. I automatically win the round"
             elif user_input is RPSChoices.GUN:
-                round_text = "I activate Mirror Force! I win this round."
+                round_text = "In the club doin Aegis Reflector. I win this round."
             else:
                 guubot_input = calculate_guubot_rps_input(user_input, result)
                 round_text = "I select " + guubot_input
@@ -1351,6 +1352,129 @@ async def hint(ctx):
         await dm_channel.send(content=quiz_hint)
     else:
         await dm_channel.send(content="I don't have any hints for you")
+
+
+@client.command()
+async def data(ctx, num_weeks):
+    if ctx.message.author.id == me and num_weeks in range(1, 105):
+        print("Data function started: " + str(num_weeks) + " weeks")
+
+        num_weeks = int(num_weeks)
+
+        # num_weeks weeks ago datetime
+        today = datetime.today()
+        num_weeks_ago = today - timedelta(weeks=num_weeks)
+
+        common_words = {}
+        week_message_frequency = (4 * 24 * 7) * [{}]  # 60 * 24 * 7 / 15
+
+        # Get eastern timezone
+        et = timezone('US/Eastern')
+
+        # For all text channels
+        for text_channel in ctx.guild.text_channels:
+            # Get past messages
+            tc_history = await text_channel.history(after=num_weeks_ago).flatten()
+            for tc_message in tc_history:
+                # Ignore bot messages
+                if not tc_message.author.bot:
+                    # Calculate the message creation time in eastern timezone
+                    new_created_at = tc_message.created_at.astimezone(tz=et)
+
+                    # Get necessary values for week_message_frequency
+                    weekday = new_created_at.weekday()
+                    hour = new_created_at.hour
+                    minute = new_created_at.minute
+                    total_time = (weekday * 24 * 60) + (hour * 60) + minute
+                    week_message_frequency_index = total_time // 15  # Every 15 minute segment
+
+                    # Split the message into words and add to common words
+                    author_id = tc_message.author.id
+                    words = re.split('[^a-zA-Z]', tc_message.content.lower())
+
+                    # Add word frequency to common words
+                    for word in words:
+                        if author_id not in common_words:
+                            common_words[author_id] = {}
+                        if word not in common_words[author_id]:
+                            common_words[author_id][word] = 1
+                        else:
+                            common_words[author_id][word] += 1
+
+                    # Add message to week message frequency
+                    if author_id not in week_message_frequency[week_message_frequency_index]:
+                        week_message_frequency[week_message_frequency_index][author_id] = 1
+                    else:
+                        week_message_frequency[week_message_frequency_index][author_id] += 1
+
+        # Send to me
+        my_channel = await get_dm_channel(me)
+
+        # Make user common words file and send to me
+        print("Making common words files")
+        common_words_author_ids = common_words.keys()
+        for author_id in common_words_author_ids:
+            author = ctx.guild.get_member(author_id)
+            with tempfile.TemporaryFile() as temp:
+                for word in common_words[author_id]:
+                    temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
+                print("Creating file: ", author.name)
+                file = discord.File(temp, author.name)
+                print("Sending file: ", author.name)
+                await my_channel.send(file=file)
+                print("File sent")
+
+        # Make file of week-long frequency
+        print("Making week-long frequency file")
+        with tempfile.TemporaryFile() as temp:
+            # add column name line to file
+            print("Making column name line")
+            # Add index column
+            line = ""
+            line += "index, "
+
+            # Add names of all guild members
+            for member in ctx.guild.members:
+                line += member.name
+                line += ", "
+
+            # Remove extra "," and add "\n"
+            line = line[-2]
+            line += "\n"
+
+            temp.write(bytearray(line, "utf-8"))
+
+            print("Adding in week-long data")
+            for index in range(0, len(week_message_frequency)):
+                data_segment = week_message_frequency[index]
+                line = ""
+                line += str(index)
+                line += ", "
+
+                # Add user frequency
+                for member in ctx.guild.members:
+                    member_id = member.id
+                    member_frequency = data_segment[member_id] if member_id in data_segment else 0
+                    line += str(member_frequency)
+                    line += ", "
+
+                # Remove extra "," and add "\n"
+                line = line[-2]
+                line += "\n"
+
+                # Add line to file
+                temp.write(bytearray(line, "utf-8"))
+
+            print("Creating file: WeekFrequency")
+            file = discord.File(temp, "WeekFrequency")
+            print("Sending file: WeekFrequency")
+            await my_channel.send(file=file)
+            print("File sent")
+
+        print("Data function complete")
+
+    else:
+        await await_ctx(ctx=ctx, content="Work in progress")
 
 
 client.remove_command('help')
