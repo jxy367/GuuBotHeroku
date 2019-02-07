@@ -1358,9 +1358,8 @@ async def hint(ctx):
 async def data(ctx, num_weeks):
     num_weeks = int(num_weeks)
 
-    if ctx.message.author.id == me and num_weeks in range(1, 5 * 52) and isinstance(ctx.message.channel,
-                                                                                    discord.TextChannel):
-        print("Data function started: " + str(num_weeks) + " weeks")
+    if num_weeks in range(1, 5 * 52) and isinstance(ctx.message.channel, discord.TextChannel):
+        print("Data function started: " + str(num_weeks) + " weeks by " + ctx.message.author.name)
 
         num_weeks = int(num_weeks)
 
@@ -1414,11 +1413,8 @@ async def data(ctx, num_weeks):
                     else:
                         week_message_frequency[week_message_frequency_index][author_id] += 1
 
-        # print(common_words)
-        #print(week_message_frequency)
-
         # Send to me
-        my_channel = await get_dm_channel(me)
+        author_channel = await get_dm_channel(ctx.message.author.id)
 
         # Make user common words file and send to me
         print("Making common words files")
@@ -1436,7 +1432,7 @@ async def data(ctx, num_weeks):
                 print("Making file")
                 file = discord.File(io.BytesIO(bytes(string_data, "utf-8")), author.name + ".txt")
                 print("Sending file")
-                await my_channel.send(file=file)
+                await author_channel.send(file=file)
                 print("Sent file")
 
 
@@ -1488,11 +1484,11 @@ async def data(ctx, num_weeks):
         file2 = discord.File(io.BytesIO(bytes(wlf_string, "utf-8")), "WeekFrequency.txt")
 
         print("Sending file: WeekFrequency")
-        await my_channel.send(file=file2)
+        await author_channel.send(file=file2)
         print("WeekFrequency.txt sent")
 
         print("Data function complete")
-        await my_channel.send(content="-------------------")
+        await author_channel.send(content="-------------------")
 
     else:
         await await_ctx(ctx=ctx, content="Work in progress")
@@ -1530,6 +1526,8 @@ async def help(ctx):
     embed.add_field(name="guubot guuball *question*", value="Guubot pretends to be a Magic 8-ball", inline=False)
     embed.add_field(name="guubot question", value="Guubot may have a question for you", inline=False)
     embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
+    embed.add_field(name="guubot data [number]", value="Gets messages from the last [number] weeks and compiles data",
+                    inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
