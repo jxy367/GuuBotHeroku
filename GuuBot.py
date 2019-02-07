@@ -1451,8 +1451,9 @@ async def data(ctx, num_weeks):
 
         # Add names of all guild members
         for member in ctx.guild.members:
-            line += member.name
-            line += ", "
+            if not member.bot:
+                line += member.name
+                line += ", "
 
         # Remove extra "," and add "\n"
         line = line[-2]
@@ -1469,16 +1470,18 @@ async def data(ctx, num_weeks):
 
             # Add user frequency
             for member in ctx.guild.members:
-                member_id = member.id
-                member_frequency = data_segment[member_id] if member_id in data_segment else 0
-                segment_line += str(member_frequency)
-                segment_line += ", "
+                if not member.bot:
+                    member_id = member.id
+                    member_frequency = data_segment[member_id] if member_id in data_segment else 0
+                    segment_line += str(member_frequency)
+                    segment_line += ", "
 
             # Remove extra "," and add "\n"
             segment_line = segment_line[-2]
             segment_line += "\n"
 
             # Add line to string
+            print(segment_line)
             wlf_string += segment_line
 
         print(wlf_string)
