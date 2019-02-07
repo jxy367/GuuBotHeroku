@@ -1423,6 +1423,11 @@ async def data(ctx, num_weeks):
                 temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
             print("Creating file: ", author.name)
             file = discord.File(temp, author.name)
+            print(file)
+            print(file.open_file())
+            for x in file.fp:
+                print(x)
+                break
             #file = file.open_file()
             print("Sending file: ", author.name)
             await my_channel.send(content=author.name, file=file)
