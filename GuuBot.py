@@ -1456,7 +1456,7 @@ async def data(ctx, num_weeks):
                 line += ", "
 
         # Remove extra "," and add "\n"
-        line = line[-2]
+        line = line[:-2]
         line += "\n"
 
         wlf_string += line
@@ -1481,10 +1481,7 @@ async def data(ctx, num_weeks):
             segment_line += "\n"
 
             # Add line to string
-            print(segment_line)
             wlf_string += segment_line
-
-        print(wlf_string)
 
         print("Creating file: WeekFrequency")
         file2 = discord.File(io.BytesIO(bytes(wlf_string, "utf-8")), "WeekFrequency.txt")
