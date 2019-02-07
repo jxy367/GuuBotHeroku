@@ -1421,7 +1421,12 @@ async def data(ctx, num_weeks):
             for word in common_words[author_id]:
                 temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
             print("Creating file: ", author.name)
-            file = discord.File(temp, author.name + ".txt")
+            file = discord.File(temp, author.name)
+            file.open_file()
+            for x in file.fp:
+                print(x)
+                break
+            # file = file.open_file()
             print("Sending file: ", author.name)
             await my_channel.send(content=author.name, file=file)
             print("File sent")
@@ -1468,7 +1473,7 @@ async def data(ctx, num_weeks):
             temp.write(bytearray(line, "utf-8"))
 
             print("Creating file: WeekFrequency")
-            file = discord.File(temp, "WeekFrequency.txt")
+            file = discord.File(temp, "WeekFrequency")
             print("Sending file: WeekFrequency")
             await my_channel.send(content="Week Frequency", file=file)
             print("File sent")
