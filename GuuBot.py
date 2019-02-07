@@ -1358,8 +1358,8 @@ async def hint(ctx):
 async def data(ctx, num_weeks):
     num_weeks = int(num_weeks)
 
-    if ctx.message.author.id == me and num_weeks in range(1, 105) and isinstance(ctx.message.channel,
-                                                                                 discord.TextChannel):
+    if ctx.message.author.id == me and num_weeks in range(1, 5 * 52) and isinstance(ctx.message.channel,
+                                                                                    discord.TextChannel):
         print("Data function started: " + str(num_weeks) + " weeks")
 
         num_weeks = int(num_weeks)
@@ -1488,10 +1488,11 @@ async def data(ctx, num_weeks):
         file2 = discord.File(io.BytesIO(bytes(wlf_string, "utf-8")), "WeekFrequency.txt")
 
         print("Sending file: WeekFrequency")
-        await my_channel.send(content="Week Frequency", file=file2)
+        await my_channel.send(file=file2)
         print("WeekFrequency.txt sent")
 
         print("Data function complete")
+        await my_channel.send(content="-------------------")
 
     else:
         await await_ctx(ctx=ctx, content="Work in progress")
