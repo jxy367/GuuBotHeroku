@@ -4,7 +4,6 @@ import json
 import os
 import random
 import re
-import tempfile
 import time
 import urllib
 from datetime import *
@@ -1418,64 +1417,58 @@ async def data(ctx, num_weeks):
         for author_id in common_words_author_ids:
             author = ctx.guild.get_member(author_id)
             # temp = tempfile.TemporaryFile()
-            temp = open(str(author.id) + ".txt", "bw+")
+            temp = open(str(author.name) + ".txt", "bw+")
             for word in common_words[author_id]:
                 temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
             print("Creating file: ", author.name)
-            file = discord.File(temp, author.name)
-            print(file)
-            print(file.open_file())
-            for x in file.fp:
-                print(x)
-                break
-            #file = file.open_file()
+            file = discord.File(temp, author.name + ".txt")
             print("Sending file: ", author.name)
             await my_channel.send(content=author.name, file=file)
             print("File sent")
 
         # Make file of week-long frequency
         print("Making week-long frequency file")
-        with tempfile.TemporaryFile() as temp:
-            # add column name line to file
-            print("Making column name line")
-            # Add index column
-            line = ""
-            line += "index, "
+        temp = open("WeekFrequency.txt", "bw+")
+        # add column name line to file
+        print("Making column name line")
+        # Add index column
+        line = ""
+        line += "index, "
 
-            # Add names of all guild members
+        # Add names of all guild members
+        for member in ctx.guild.members:
+            line += member.name
+            line += ", "
+
+        # Remove extra "," and add "\n"
+        line = line[-2]
+        line += "\n"
+
+        temp.write(bytearray(line, "utf-8"))
+
+        print("Adding in week-long data")
+        for index in range(0, len(week_message_frequency)):
+            data_segment = week_message_frequency[index]
+            line = ""
+            line += str(index)
+            line += ", "
+
+            # Add user frequency
             for member in ctx.guild.members:
-                line += member.name
+                member_id = member.id
+                member_frequency = data_segment[member_id] if member_id in data_segment else 0
+                line += str(member_frequency)
                 line += ", "
 
             # Remove extra "," and add "\n"
             line = line[-2]
             line += "\n"
 
+            # Add line to file
             temp.write(bytearray(line, "utf-8"))
 
-            print("Adding in week-long data")
-            for index in range(0, len(week_message_frequency)):
-                data_segment = week_message_frequency[index]
-                line = ""
-                line += str(index)
-                line += ", "
-
-                # Add user frequency
-                for member in ctx.guild.members:
-                    member_id = member.id
-                    member_frequency = data_segment[member_id] if member_id in data_segment else 0
-                    line += str(member_frequency)
-                    line += ", "
-
-                # Remove extra "," and add "\n"
-                line = line[-2]
-                line += "\n"
-
-                # Add line to file
-                temp.write(bytearray(line, "utf-8"))
-
             print("Creating file: WeekFrequency")
-            file = discord.File(temp, "WeekFrequency")
+            file = discord.File(temp, "WeekFrequency.txt")
             print("Sending file: WeekFrequency")
             await my_channel.send(content="Week Frequency", file=file)
             print("File sent")
