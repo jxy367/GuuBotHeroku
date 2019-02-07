@@ -1379,7 +1379,7 @@ async def data(ctx, num_weeks):
         # For all text channels
         for text_channel in ctx.guild.text_channels:
             # Get past messages
-            tc_history = await text_channel.history(after=num_weeks_ago).flatten()
+            tc_history = await text_channel.history(after=num_weeks_ago, limit=1000000).flatten()
             print(text_channel.name, len(tc_history))
             for tc_message in tc_history:
                 # Ignore bot messages
