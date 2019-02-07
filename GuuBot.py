@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import io
 import json
 import os
 import random
@@ -1398,12 +1399,13 @@ async def data(ctx, num_weeks):
 
                     # Add word frequency to common words
                     for word in words:
-                        if author_id not in common_words:
-                            common_words[author_id] = {}
-                        if word not in common_words[author_id]:
-                            common_words[author_id][word] = 1
-                        else:
-                            common_words[author_id][word] += 1
+                        if len(word) > 0:
+                            if author_id not in common_words:
+                                common_words[author_id] = {}
+                            if word not in common_words[author_id]:
+                                common_words[author_id][word] = 1
+                            else:
+                                common_words[author_id][word] += 1
 
                     # Add message to week message frequency
                     if author_id not in week_message_frequency[week_message_frequency_index]:
@@ -1411,11 +1413,14 @@ async def data(ctx, num_weeks):
                     else:
                         week_message_frequency[week_message_frequency_index][author_id] += 1
 
-            print(common_words)
-            print(week_message_frequency)
+        print(common_words)
+        print(week_message_frequency)
 
         # Send to me
         my_channel = await get_dm_channel(me)
+
+        # String of data
+        string_data = ""
 
         # Make user common words file and send to me
         print("Making common words files")
@@ -1425,7 +1430,10 @@ async def data(ctx, num_weeks):
             # temp = tempfile.TemporaryFile()
             temp = open(str(author.name) + ".txt", "bw+")
             for word in common_words[author_id]:
-                temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
+                line = word + ":" + str(common_words[author_id][word]) + "\n"
+                temp.write(bytearray(line, "utf-8"))
+                string_data += line
+
             print("Creating file: ", author.name)
             file = discord.File(temp, author.name)
             file.open_file()
@@ -1437,6 +1445,13 @@ async def data(ctx, num_weeks):
             await my_channel.send(content=author.name, file=file)
             print("File sent")
 
+            print("Testing creation and sending of file2")
+            print("Making file2")
+            file2 = discord.File(io.BytesIO(bytes(string_data, "utf-8")), author.name)
+            print("Sending file2")
+            await my_channel.send(file=file2)
+            print("Sent file2")
+            
         # Make file of week-long frequency
         print("Making week-long frequency file")
         temp = open("WeekFrequency.txt", "bw+")
