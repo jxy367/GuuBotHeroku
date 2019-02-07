@@ -1380,7 +1380,7 @@ async def data(ctx, num_weeks):
         for text_channel in ctx.guild.text_channels:
             # Get past messages
             tc_history = await text_channel.history(after=num_weeks_ago).flatten()
-            print(len(tc_history))
+            # print(len(tc_history))
             for tc_message in tc_history:
                 # Ignore bot messages
                 if not tc_message.author.bot and (ctx.guild.get_member(tc_message.author.id) is not None):
@@ -1414,8 +1414,8 @@ async def data(ctx, num_weeks):
                     else:
                         week_message_frequency[week_message_frequency_index][author_id] += 1
 
-        print(common_words)
-        print(week_message_frequency)
+        # print(common_words)
+        #print(week_message_frequency)
 
         # Send to me
         my_channel = await get_dm_channel(me)
