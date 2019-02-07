@@ -1477,7 +1477,7 @@ async def data(ctx, num_weeks):
                     segment_line += ", "
 
             # Remove extra "," and add "\n"
-            segment_line = segment_line[-2]
+            segment_line = segment_line[:-2]
             segment_line += "\n"
 
             # Add line to string
