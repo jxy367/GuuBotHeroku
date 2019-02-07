@@ -1423,7 +1423,7 @@ async def data(ctx, num_weeks):
                 print("Creating file: ", author.name)
                 file = discord.File(temp, author.name)
                 print("Sending file: ", author.name)
-                await my_channel.send(file=file)
+                await my_channel.send(content=author.name, file=file)
                 print("File sent")
 
         # Make file of week-long frequency
@@ -1470,7 +1470,7 @@ async def data(ctx, num_weeks):
             print("Creating file: WeekFrequency")
             file = discord.File(temp, "WeekFrequency")
             print("Sending file: WeekFrequency")
-            await my_channel.send(file=file)
+            await my_channel.send(content="Week Frequency", file=file)
             print("File sent")
 
         print("Data function complete")
