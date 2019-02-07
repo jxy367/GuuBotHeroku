@@ -1367,7 +1367,9 @@ async def data(ctx, num_weeks):
         num_weeks_ago = today - timedelta(weeks=num_weeks)
 
         common_words = {}
-        week_message_frequency = (4 * 24 * 7) * [{}]  # 60 * 24 * 7 / 15
+        week_message_frequency = []
+        for num in range(0, int(60 * 24 * 7 // 15)):
+            week_message_frequency.append({})
 
         # Get eastern timezone
         et = timezone('US/Eastern')
