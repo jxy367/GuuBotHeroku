@@ -1417,15 +1417,15 @@ async def data(ctx, num_weeks):
         common_words_author_ids = common_words.keys()
         for author_id in common_words_author_ids:
             author = ctx.guild.get_member(author_id)
-            with tempfile.TemporaryFile() as temp:
-                for word in common_words[author_id]:
-                    temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
-                print("Creating file: ", author.name)
-                file = discord.File(temp, author.name)
-                print("Sending file: ", author.name)
-                await my_channel.send(content=author.name)
-                await my_channel.send(content=author.name, file=file)
-                print("File sent")
+            temp = tempfile.TemporaryFile()
+            x = open(temp)
+            for word in common_words[author_id]:
+                temp.write(bytearray(word + ":" + str(common_words[author_id][word]) + "\n", "utf-8"))
+            print("Creating file: ", author.name)
+            file = discord.File(temp, author.name)
+            print("Sending file: ", author.name)
+            await my_channel.send(content=author.name, file=file)
+            print("File sent")
 
         # Make file of week-long frequency
         print("Making week-long frequency file")
