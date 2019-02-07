@@ -1423,6 +1423,7 @@ async def data(ctx, num_weeks):
                 print("Creating file: ", author.name)
                 file = discord.File(temp, author.name)
                 print("Sending file: ", author.name)
+                await my_channel.send(content=author.name)
                 await my_channel.send(content=author.name, file=file)
                 print("File sent")
 
