@@ -1358,7 +1358,8 @@ async def hint(ctx):
 async def data(ctx, num_weeks):
     num_weeks = int(num_weeks)
 
-    if ctx.message.author.id == me and num_weeks in range(1, 105):
+    if ctx.message.author.id == me and num_weeks in range(1, 105) and isinstance(ctx.message.channel,
+                                                                                 discord.TextChannel):
         print("Data function started: " + str(num_weeks) + " weeks")
 
         num_weeks = int(num_weeks)
