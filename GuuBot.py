@@ -1427,15 +1427,17 @@ async def data(ctx, num_weeks):
         common_words_author_ids = common_words.keys()
         for author_id in common_words_author_ids:
             author = ctx.guild.get_member(author_id)
-            for word in common_words[author_id]:
-                word_data = (word + ":" + str(common_words[author_id][word]) + "\n")
-                string_data += word_data
+            if not author.bot:
+                for word in common_words[author_id]:
+                    word_data = (word + ":" + str(common_words[author_id][word]) + "\n")
+                    string_data += word_data
 
-            print("Making file")
-            file = discord.File(io.BytesIO(bytes(string_data, "utf-8")), author.name)
-            print("Sending file")
-            await my_channel.send(file=file)
-            print("Sent file")
+                print("Making file")
+                file = discord.File(io.BytesIO(bytes(string_data, "utf-8")), author.name + ".txt")
+                print("Sending file")
+                await my_channel.send(file=file)
+                print("Sent file")
+
 
         # Make file of week-long frequency
         wlf_string = ""
@@ -1479,13 +1481,15 @@ async def data(ctx, num_weeks):
             # Add line to string
             wlf_string += segment_line
 
+        print(wlf_string)
+
         print("Creating file: WeekFrequency")
         file2 = discord.File(io.BytesIO(bytes(wlf_string, "utf-8")), "WeekFrequency.txt")
 
         print("Sending file: WeekFrequency")
         await my_channel.send(content="Week Frequency", file=file2)
         print("WeekFrequency.txt sent")
-        
+
         print("Data function complete")
 
     else:
