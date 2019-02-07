@@ -1474,6 +1474,7 @@ async def data(ctx, num_weeks):
 
             print("Creating file: WeekFrequency")
             file = discord.File(temp, "WeekFrequency")
+            file.open_file()
             print("Sending file: WeekFrequency")
             await my_channel.send(content="Week Frequency", file=file)
             print("File sent")
