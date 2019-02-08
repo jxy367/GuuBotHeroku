@@ -74,7 +74,7 @@ wu_embed3.set_image(
     url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t1.0-9/16711577_1691924731105604_448770579254912570_n.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGNWyFqGgPHbBoPqljpVJZlyTSNI298EMfHoR3p_m7g94Apj4VqpCoN_Ya7vh7sz8V1o4K4Vr6nudMcUWW9DRnv1NxHWYTAXpEoFTYworEGKQ&oh=383f61bc9566164c2aad0d0a64cb5d83&oe=5B6712C6')
 
 awoo_embed1 = discord.Embed()
-awoo_embed1.set_image(url='https://gfycat.com/niftydistinctindianelephant')
+awoo_embed1.set_image(url='https://zippy.gfycat.com/NiftyDistinctIndianelephant.webm')
 
 awoo_embed2 = discord.Embed()
 awoo_embed2.set_image(url='https://i.imgur.com/FXSNNQa.gif')
