@@ -1426,9 +1426,11 @@ async def data(ctx, num_weeks):
 
             author = ctx.guild.get_member(author_id)
             if not author.bot:
-                for word in common_words[author_id]:
-                    word_data = (word + ":" + str(common_words[author_id][word]) + "\n")
-                    string_data += word_data
+                author_common_words = common_words[author_id]
+
+                for key in sorted(author_common_words, key=author_common_words.get, reverse=True):
+                    new_line = (key + ":" + str(author_common_words[key]) + "\n")
+                    string_data += new_line
 
                 print("Making file")
                 file = discord.File(io.BytesIO(bytes(string_data, "utf-8")), author.name + ".txt")
