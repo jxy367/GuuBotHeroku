@@ -1,5 +1,7 @@
 import asyncio
 import base64
+# from datetime import *
+import datetime as dt
 import io
 import json
 import os
@@ -7,7 +9,6 @@ import random
 import re
 import time
 import urllib
-from datetime import *
 from itertools import permutations
 from multiprocessing.dummy import Pool
 # from time import sleep
@@ -1364,8 +1365,8 @@ async def data(ctx, num_weeks):
         num_weeks = int(num_weeks)
 
         # num_weeks weeks ago datetime
-        today = datetime.today()
-        num_weeks_ago = today - timedelta(weeks=num_weeks)
+        today = dt.datetime.today()
+        num_weeks_ago = today - dt.timedelta(weeks=num_weeks)
 
         common_words = {}
         week_message_frequency = []
@@ -1737,7 +1738,7 @@ async def on_message(message):
 
     elif "nora" in message.content.lower():
         et = timezone('US/Eastern')
-        today = datetime.now().astimezone(et)
+        today = dt.datetime.now().astimezone(et)
         if today.hour < 12:
             await await_message(message=message, content=morning, embed=nora_morning)
 
