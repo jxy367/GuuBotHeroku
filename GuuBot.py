@@ -1813,7 +1813,7 @@ async def on_message(message):
 
         await message.delete()
 
-    elif "happy valentine's day" in message.content.lower() and client.mentioned_in(message):
+    elif "happy valentine's day" in message.content.lower() and client.user.mentioned_in(message):
         valentine_embed1 = discord.Embed()
         valentine_embed1.set_image(
             url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
