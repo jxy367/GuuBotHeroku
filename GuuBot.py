@@ -1538,6 +1538,7 @@ async def help(ctx):
 
 @client.event
 async def on_message(message):
+    global client
     global mr_dictionary
 
     cd = get_current_cooldown(message)
@@ -1811,6 +1812,16 @@ async def on_message(message):
                 pass
 
         await message.delete()
+
+    elif "happy valentine's day" in message.content.lower() and client.mentioned_in(message):
+        valentine_embed1 = discord.Embed()
+        valentine_embed1.set_image(
+            url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
+        valentine_embed2 = discord.Embed()
+        valentine_embed2.set_image(url="https://i.giphy.com/media/26BRv0ThflsHCqDrG/giphy.webp")
+        author_dm = await get_dm_channel(message.author.id)
+        await await_channel(channel=author_dm, embed=valentine_embed1)
+        await await_channel(channel=author_dm, embed=valentine_embed2)
 
     else:
         previous_messages = await message.channel.history(limit=1, before=message).flatten()
