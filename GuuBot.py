@@ -1438,7 +1438,6 @@ async def data(ctx, num_weeks):
                 await author_channel.send(file=file)
                 print("Sent file")
 
-
         # Make file of week-long frequency
         wlf_string = ""
         print("Making week-long frequency file")
@@ -1813,7 +1812,8 @@ async def on_message(message):
 
         await message.delete()
 
-    elif "happy valentine's day" in message.content.lower() and client.user.mentioned_in(message):
+    elif client.user.mentioned_in(message) and (
+            "happy valentine's day" in message.content.lower() or "i love you" in message.content.lower() or "i love u" in message.content.lower()):
         valentine_embed1 = discord.Embed()
         valentine_embed1.set_image(
             url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
