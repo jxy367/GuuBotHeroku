@@ -1818,7 +1818,7 @@ async def on_message(message):
         valentine_embed1.set_image(
             url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
         valentine_embed2 = discord.Embed()
-        valentine_embed2.set_image(url="https://i.giphy.com/media/26BRv0ThflsHCqDrG/giphy.webp")
+        valentine_embed2.set_image(url="https://media1.tenor.com/images/8136b603efe5c252e0eab0876b398e32/tenor.gif")
         author_dm = await get_dm_channel(message.author.id)
         await await_channel(channel=author_dm, embed=valentine_embed1)
         await await_channel(channel=author_dm, embed=valentine_embed2)
