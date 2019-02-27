@@ -1103,13 +1103,16 @@ async def fetch(ctx):
     except discord.HTTPException:
         pass
 
-    # Send a copy to Me
-    content = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
-    my_channel = await get_dm_channel(me)
-    await my_channel.send(content=content, files=files)
+    # hold author of fetch
+    ctx_author = ctx.author
 
     # Delete the command
     await ctx.message.delete()
+
+    # Send a copy to me
+    content = ctx_author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
+    my_channel = await get_dm_channel(me)
+    await my_channel.send(content=content, files=files)
 
 
 
