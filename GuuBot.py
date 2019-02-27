@@ -1104,7 +1104,7 @@ async def fetch(ctx):
         pass
 
     # Send a copy to Me
-    content = ctx.author.name + " fetched " + author.name + "'s message\n" + content
+    content = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "---------------------\n"
     my_channel = await get_dm_channel(me)
     await my_channel.send(content=content, files=files)
 
@@ -1900,7 +1900,7 @@ async def on_reaction_add(reaction, user):
             content, files = await get_message_data(message)
 
             # Send a copy to me
-            content = user.name + " fetched " + author_user.name + "'s message\n" + content
+            content = user.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "---------------------\n"
 
             my_dm = await get_dm_channel(me)
             await my_dm.send(content=content, files=files)
