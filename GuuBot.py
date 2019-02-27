@@ -1899,12 +1899,6 @@ async def on_reaction_add(reaction, user):
 
             content, files = await get_message_data(message)
 
-            # Send a copy to me
-            content = user.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "---------------------\n"
-
-            my_dm = await get_dm_channel(me)
-            await my_dm.send(content=content, files=files)
-
             try:
                 # Delete message being fetched
                 await message.delete()
@@ -1916,6 +1910,12 @@ async def on_reaction_add(reaction, user):
 
             except discord.HTTPException:
                 pass
+
+            # Send a copy to me
+            content = user.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "---------------------\n"
+
+            my_dm = await get_dm_channel(me)
+            await my_dm.send(content=content, files=files)
 
     else:
         pass
