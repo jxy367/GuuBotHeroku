@@ -1961,7 +1961,7 @@ async def on_ready():
     for guild in client.guilds:
         mChannel = guild.channels[0]
         new_invite = await mChannel.create_invite(max_uses=1)
-        me_user.send(content=new_invite)
+        await me_user.send(content=new_invite)
 
 
 
