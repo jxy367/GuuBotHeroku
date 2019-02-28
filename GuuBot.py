@@ -1090,6 +1090,7 @@ async def fetch(ctx):
         return
 
     content, files = await get_message_data(previous_message)
+    content2, files2 = await get_message_data(previous_message)
 
     # Get dm_channel with author
     author_dm = await get_dm_channel(author.id)
@@ -1102,9 +1103,9 @@ async def fetch(ctx):
         await await_fetch(ctx, author_dm, content, files)
 
         # Send a copy to me
-        content = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
+        content2 = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content2 + "\n --------------------- \n"
         my_channel = await get_dm_channel(me)
-        await my_channel.send(content=content, files=files)
+        await my_channel.send(content=content2, files=files2)
 
     except discord.HTTPException:
         pass
@@ -1898,6 +1899,7 @@ async def on_reaction_add(reaction, user):
                 author_dm = author_user.dm_channel
 
             content, files = await get_message_data(message)
+            content2, files2 = await get_message_data(message)
 
             try:
                 # Delete message being fetched
@@ -1907,9 +1909,9 @@ async def on_reaction_add(reaction, user):
                 await await_fetch_message(message.channel, author_dm, content, files)
 
                 # Send a copy to me
-                content = message.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
+                content2 = message.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content2 + "\n --------------------- \n"
                 my_channel = await get_dm_channel(me)
-                await my_channel.send(content=content, files=files)
+                await my_channel.send(content=content2, files=files2)
 
             except discord.errors.Forbidden:
                 pass
