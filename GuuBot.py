@@ -1102,16 +1102,17 @@ async def fetch(ctx):
     try:
         await await_fetch(ctx, author_dm, content, files)
 
-        # Send a copy to me
-        content2 = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content2 + "\n --------------------- \n"
-        my_channel = await get_dm_channel(me)
-        await my_channel.send(content=content2, files=files2)
-
     except discord.HTTPException:
         pass
 
     # Delete the command
     await ctx.message.delete()
+
+    # Send a copy to me
+    my_channel = await get_dm_channel(me)
+    await my_channel.send(content=ctx.author.name + " fetched " + author.name + "'s message\n-----------------")
+    await my_channel.send(content=content2, files=files2)
+    await my_channel.send(content="-----------------")
 
 
 @client.command()
@@ -1909,9 +1910,10 @@ async def on_reaction_add(reaction, user):
                 await await_fetch_message(message.channel, author_dm, content, files)
 
                 # Send a copy to me
-                content2 = message.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content2 + "\n --------------------- \n"
                 my_channel = await get_dm_channel(me)
+                await my_channel.send(content=author.name + " fetched " + author.name + "'s message\n-----------------")
                 await my_channel.send(content=content2, files=files2)
+                await my_channel.send(content="-----------------")
 
             except discord.errors.Forbidden:
                 pass
