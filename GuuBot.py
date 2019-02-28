@@ -1100,20 +1100,17 @@ async def fetch(ctx):
     # Deliver message back to owner
     try:
         await await_fetch(ctx, author_dm, content, files)
+
+        # Send a copy to me
+        content = ctx.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
+        my_channel = await get_dm_channel(me)
+        await my_channel.send(content=content, files=files)
+
     except discord.HTTPException:
         pass
 
-    # hold author of fetch
-    ctx_author = ctx.author
-
     # Delete the command
     await ctx.message.delete()
-
-    # Send a copy to me
-    content = ctx_author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
-    my_channel = await get_dm_channel(me)
-    await my_channel.send(content=content, files=files)
-
 
 
 @client.command()
@@ -1908,17 +1905,17 @@ async def on_reaction_add(reaction, user):
 
                 # Deliver message back to owner
                 await await_fetch_message(message.channel, author_dm, content, files)
+
+                # Send a copy to me
+                content = message.author.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
+                my_channel = await get_dm_channel(me)
+                await my_channel.send(content=content, files=files)
+
             except discord.errors.Forbidden:
                 pass
 
             except discord.HTTPException:
                 pass
-
-            # Send a copy to me
-            content = user.name + " fetched " + author.name + "'s message\n ---------------------- \n" + content + "\n --------------------- \n"
-
-            my_dm = await get_dm_channel(me)
-            await my_dm.send(content=content, files=files)
 
     else:
         pass
