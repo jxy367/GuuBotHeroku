@@ -74,10 +74,13 @@ wu_embed3.set_image(
     url='https://scontent.fbkl1-1.fna.fbcdn.net/v/t1.0-9/16711577_1691924731105604_448770579254912570_n.jpg?_nc_cat=0&_nc_eui2=v1%3AAeGNWyFqGgPHbBoPqljpVJZlyTSNI298EMfHoR3p_m7g94Apj4VqpCoN_Ya7vh7sz8V1o4K4Vr6nudMcUWW9DRnv1NxHWYTAXpEoFTYworEGKQ&oh=383f61bc9566164c2aad0d0a64cb5d83&oe=5B6712C6')
 
 awoo_embed1 = discord.Embed()
-awoo_embed1.set_image(url='https://i.warosu.org/data/jp/img/0124/04/1408724821852.gif')
+awoo_embed1.set_image(url='http://i.freegifmaker.me/1/5/5/1/5/8/15515899681071734.gif')
 
 awoo_embed2 = discord.Embed()
 awoo_embed2.set_image(url='https://i.imgur.com/FXSNNQa.gif')
+
+monster_bath_embed = discord.Embed()
+monster_bath_embed.set_image(url="http://i.freegifmaker.me/1/5/5/1/5/8/15515899681071734.gif")
 
 woop_embed = discord.Embed()
 woop_embed.set_image(url='https://media.giphy.com/media/zPSkALwMfE72U/giphy.gif')
@@ -1696,8 +1699,8 @@ async def on_message(message):
         else:
             await await_message(message=message, embed=fair_embeds[index])
 
-    # elif in_n_out:
-    #    await await_message(message=message, content="A reminder that Ryan is a terrible friend sometimes.")
+    elif "monster bath" in message.content.lower():
+        await await_message(message=message, embed=monster_bath_embed)
 
     elif "pasta" in message.content.lower():
         if message.author.id == kolson:
