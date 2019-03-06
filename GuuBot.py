@@ -1914,7 +1914,7 @@ async def on_reaction_add(reaction, user):
 
                 # Send a copy to me
                 my_channel = await get_dm_channel(me)
-                await my_channel.send(content=author.name + " fetched " + author.name + "'s message\n-----------------")
+                await my_channel.send(content=user.name + " fetched " + author.name + "'s message\n-----------------")
                 await my_channel.send(content=content2, files=files2)
                 await my_channel.send(content="-----------------")
 
