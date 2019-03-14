@@ -1507,6 +1507,69 @@ async def data(ctx, num_weeks):
         await await_ctx(ctx=ctx, content="Work in progress")
 
 
+@client.command()
+async def secret_data(ctx, num_weeks):
+    # Only allow me use this command
+    if ctx.message.author.id != me:
+        await await_ctx(ctx, content="Sorry, this is a command just for me to use a couple times")
+        return
+
+    num_weeks = int(num_weeks)
+
+    if num_weeks in range(1, 5 * 52) and isinstance(ctx.message.channel, discord.TextChannel):
+        print("Secret Data function started: " + str(num_weeks) + " weeks by " + ctx.message.author.name)
+
+        num_weeks = int(num_weeks)
+
+        # num_weeks weeks ago datetime
+        today = dt.datetime.today()
+        num_weeks_ago = today - dt.timedelta(weeks=num_weeks)
+
+        found_words = {}
+
+        # For all text channels
+        for text_channel in ctx.guild.text_channels:
+            # Get past messages
+            tc_history = await text_channel.history(after=num_weeks_ago, limit=1000000).flatten()
+            print(text_channel.name, len(tc_history))
+            for tc_message in tc_history:
+                # Only focus on nicer completion bot messages
+                if tc_message.author.id == nicer_completion_bot and "points for the word" in tc_message.content:
+                    clean = re.sub('[^A-Za-z0-9 ]+', '', tc_message.content.lower())
+                    clean = clean.strip()
+                    words = clean.split(" ")
+                    user = words[0]
+                    word = words[-1]
+                    found_words[word] = user
+
+        # Send to me
+        author_channel = await get_dm_channel(ctx.message.author.id)
+
+        # Make found words file and send to me
+        print("Making found words file")
+
+        # String of data
+        string_data = ""
+
+        f_words = found_words.keys()
+
+        for found_word in f_words:
+            new_line = (found_word + ":" + str(found_words[found_word]) + "\n")
+            string_data += new_line
+
+        print("Making file")
+        file = discord.File(io.BytesIO(bytes(string_data, "utf-8")), "found_words.txt")
+        print("Sending file")
+        await author_channel.send(file=file)
+        print("Sent file")
+
+        print("Data function complete")
+        await author_channel.send(content="-------------------")
+
+    else:
+        await await_ctx(ctx=ctx, content="Work in progress")
+
+
 client.remove_command('help')
 
 
