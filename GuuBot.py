@@ -1573,6 +1573,7 @@ async def secret_data(ctx, num_weeks):
 @client.command()
 async def please(ctx, *, nice_request):
     if nice_request.lower() == "kindly take that back":
+        await ctx.message.delete()
         msg = await ctx.channel.history().get(author__id=client.user.id)
         await msg.delete()
         await await_ctx(ctx=ctx, content="Thanks for asking politely")
