@@ -1516,7 +1516,7 @@ async def secret_data(ctx, num_weeks):
 
     num_weeks = int(num_weeks)
 
-    if num_weeks in range(1, 5 * 52) and isinstance(ctx.message.channel, discord.TextChannel):
+    if num_weeks in range(1, 4 * 52) and isinstance(ctx.message.channel, discord.TextChannel):
         print("Secret Data function started: " + str(num_weeks) + " weeks by " + ctx.message.author.name)
 
         num_weeks = int(num_weeks)
@@ -1570,6 +1570,13 @@ async def secret_data(ctx, num_weeks):
         await await_ctx(ctx=ctx, content="Work in progress")
 
 
+@client.command()
+async def please(ctx, *, nice_request):
+    if nice_request.lower() == "kindly take that back":
+        msg = await ctx.channel.history().get(author__id=client.user.id)
+        await msg.delete()
+        await await_ctx(ctx=ctx, content="Thanks for asking politely")
+
 client.remove_command('help')
 
 
@@ -1604,6 +1611,7 @@ async def help(ctx):
     embed.add_field(name="guubot hint", value="Guubot may have a hint for you", inline=False)
     embed.add_field(name="guubot data [number]", value="Gets messages from the last [number] weeks and compiles data",
                     inline=False)
+    embed.add_field(name="guubot please [request]", value="Guubot does one thing at most", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
@@ -1614,307 +1622,310 @@ async def on_message(message):
     global client
     global mr_dictionary
 
-    cd = get_current_cooldown(message)
+    try:
 
-    # we do not want the bot to reply to itself
-    if message.author == client.user:
-        return
+        cd = get_current_cooldown(message)
 
-    if message.author.bot:
-        if message.author.id == nicer_completion_bot:  # Nicer Completion Bot | Nicer Completion Bot Winning
-            if "And then everyone important died." in message.content:
-                members = message.guild.members
-                print(members)
-                for member in members:
-                    if not member.bot:
-                        mr_dictionary[member.id] = (member.roles, member.nick)
-                        await message.guild.kick(message.author)
-                await await_message(message, content="Have Fun Noah")
-                print(mr_dictionary)
+        # we do not want the bot to reply to itself
+        if message.author == client.user:
+            return
+
+        if message.author.bot:
+            if message.author.id == nicer_completion_bot:  # Nicer Completion Bot | Nicer Completion Bot Winning
+                if "And then everyone important died." in message.content:
+                    members = message.guild.members
+                    print(members)
+                    for member in members:
+                        if not member.bot:
+                            mr_dictionary[member.id] = (member.roles, member.nick)
+                            await message.guild.kick(message.author)
+                    await await_message(message, content="Have Fun Noah")
+                    print(mr_dictionary)
+                else:
+                    return
             else:
                 return
-        else:
+
+        if isinstance(message.channel, discord.TextChannel) and (
+                message.channel.guild.id == EnergylessZone):  # Serious Mode Guubot
+            # Guubot responds to only 2 commands
+            if message.content.lower() == "guubot question" or message.content.lower() == "guubot hint":
+                await client.process_commands(message)
+
+            # Guubot checks responses
+
+            # Get expected answer
+            expected_answer = get_quiz_info(message.author, "answer")
+
+            # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
+            if expected_answer is None:
+                return
+
+            # Check if answer is correct
+            if expected_answer.lower() == message.content.lower():
+                author_dm_channel = await get_dm_channel(message.author.id)
+                await author_dm_channel.send(content="That's correct. woo....")
+                # Move user to next question
+                await increase_quiz_role(message.author)
+
+            # Delete any message if the author is not me or a bot
+            messages = await message.channel.history(limit=20).flatten()
+            for m in messages:
+                await m.delete()
             return
 
-    if isinstance(message.channel, discord.TextChannel) and (
-            message.channel.guild.id == EnergylessZone):  # Serious Mode Guubot
-        # Guubot responds to only 2 commands
-        if message.content.lower() == "guubot question" or message.content.lower() == "guubot hint":
-            await client.process_commands(message)
+        try:
+            mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
 
-        # Guubot checks responses
+        except AttributeError:
+            pass
 
-        # Get expected answer
-        expected_answer = get_quiz_info(message.author, "answer")
+        if rps_game is not None:
+            if message.author.id == rps_game.get_opponent() and message.channel == rps_game.get_channel() \
+                    and rps_game.get_input_status() and rps_game.get_user_input() is None:
 
-        # Do nothing if user is not being quizzed (Applicable to Winners and Bots)
-        if expected_answer is None:
+                # Remove special characters
+                shortened_text = alnum_only(message.content.lower())
+
+                # Set user input to appropriate value
+                if shortened_text == "rock" or shortened_text == "r":
+                    rps_game.set_user_input(RPSChoices.ROCK)
+
+                if shortened_text == "paper" or shortened_text == "p":
+                    rps_game.set_user_input(RPSChoices.PAPER)
+
+                if shortened_text == "scissors" or shortened_text == "s":
+                    rps_game.set_user_input(RPSChoices.SCISSORS)
+
+                if shortened_text == "gun":
+                    rps_game.set_user_input(RPSChoices.GUN)
+
+                # If user made an input and early status is true ==> early shot.
+                if rps_game.get_user_input() is not None and rps_game.get_early_status():
+                    rps_game.early_input()
+
+        guild_cooldown = cd <= 0
+        if not guild_cooldown:
             return
 
-        # Check if answer is correct
-        if expected_answer.lower() == message.content.lower():
-            author_dm_channel = await get_dm_channel(message.author.id)
-            await author_dm_channel.send(content="That's correct. woo....")
-            # Move user to next question
-            await increase_quiz_role(message.author)
+        if message.channel.id == venting_channel:
+            return
 
-        # Delete any message if the author is not me or a bot
-        messages = await message.channel.history(limit=20).flatten()
-        for m in messages:
-            await m.delete()
-        return
+        # Figure out if version of "let's go" is in the message
+        lets_go_found = False
+        for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
+            if not lets_go_found:
+                if str1_star_str2(lets, "go", message.content.lower()):
+                    lets_go_found = True
 
-    try:
-        mr_dictionary[message.author.id] = (message.author.roles, message.author.nick)
+        # Check if "fair" appears in message
+        exact_fair = regex_fair(message.content.lower())
 
-    except AttributeError:
-        pass
+        # Check if "amiami.com" in message
+        urls = find_amiami(message.content)
 
-    if rps_game is not None:
-        if message.author.id == rps_game.get_opponent() and message.channel == rps_game.get_channel() \
-                and rps_game.get_input_status() and rps_game.get_user_input() is None:
+        # Check if "in-n-out" appears in message
+        # in_n_out = await in_n_out_check(message)
 
-            # Remove special characters
-            shortened_text = alnum_only(message.content.lower())
+        if "awoo" in message.content.lower():
 
-            # Set user input to appropriate value
-            if shortened_text == "rock" or shortened_text == "r":
-                rps_game.set_user_input(RPSChoices.ROCK)
+            awoo_select = random.randrange(0, 4)
 
-            if shortened_text == "paper" or shortened_text == "p":
-                rps_game.set_user_input(RPSChoices.PAPER)
+            if awoo_select == 0:
+                await await_message(message=message, content=awoo, embed=awoo_embed2)
+            else:
+                await await_message(message=message, content=awoo, embed=awoo_embed1)
 
-            if shortened_text == "scissors" or shortened_text == "s":
-                rps_game.set_user_input(RPSChoices.SCISSORS)
+        elif "woo" in message.content.lower():
 
-            if shortened_text == "gun":
-                rps_game.set_user_input(RPSChoices.GUN)
+            exact_woo = exactly_in("woo", message.content.lower())
 
-            # If user made an input and early status is true ==> early shot.
-            if rps_game.get_user_input() is not None and rps_game.get_early_status():
-                rps_game.early_input()
+            if exact_woo:
+                if message.author.id == me:
+                    await await_message(message=message, content=my_woo, embed=woo_embed)
 
-    guild_cooldown = cd <= 0
-    if not guild_cooldown:
-        return
+                elif message.author.id == julian:
+                    wu_option_select = random.randrange(0, 6)
+                    if wu_option_select == 0:
+                        await  await_message(message=message, content=wu, embed=wu_embed1)
+                    elif wu_option_select == 1:
+                        await  await_message(message=message, content=wu, embed=wu_embed2)
+                    elif wu_option_select == 2:
+                        await  await_message(message=message, content=wu, embed=wu_embed3)
+                    else:
+                        await  await_message(message=message, content=multi_woo, embed=woo_embed)
 
-    if message.channel.id == venting_channel:
-        return
-
-    # Figure out if version of "let's go" is in the message
-    lets_go_found = False
-    for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
-        if not lets_go_found:
-            if str1_star_str2(lets, "go", message.content.lower()):
-                lets_go_found = True
-
-    # Check if "fair" appears in message
-    exact_fair = regex_fair(message.content.lower())
-
-    # Check if "amiami.com" in message
-    urls = find_amiami(message.content)
-
-    # Check if "in-n-out" appears in message
-    # in_n_out = await in_n_out_check(message)
-
-    if "awoo" in message.content.lower():
-
-        awoo_select = random.randrange(0, 4)
-
-        if awoo_select == 0:
-            await await_message(message=message, content=awoo, embed=awoo_embed2)
-        else:
-            await await_message(message=message, content=awoo, embed=awoo_embed1)
-
-    elif "woo" in message.content.lower():
-
-        exact_woo = exactly_in("woo", message.content.lower())
-
-        if exact_woo:
-            if message.author.id == me:
-                await await_message(message=message, content=my_woo, embed=woo_embed)
-
-            elif message.author.id == julian:
-                wu_option_select = random.randrange(0, 6)
-                if wu_option_select == 0:
-                    await  await_message(message=message, content=wu, embed=wu_embed1)
-                elif wu_option_select == 1:
-                    await  await_message(message=message, content=wu, embed=wu_embed2)
-                elif wu_option_select == 2:
-                    await  await_message(message=message, content=wu, embed=wu_embed3)
                 else:
-                    await  await_message(message=message, content=multi_woo, embed=woo_embed)
+                    await await_message(message=message, content=multi_woo, embed=woo_embed)
 
             else:
-                await await_message(message=message, content=multi_woo, embed=woo_embed)
+                await await_message(message=message, content=woo, embed=woo_embed)
 
-        else:
-            await await_message(message=message, content=woo, embed=woo_embed)
-
-    elif exact_fair:
-        index = random.randrange(0, len(fair_embeds))
-        if message.author.id == danny:  # Danny
-            danny_select = random.randrange(0, 2)
-            if danny_select == 0:
-                await await_message(message=message, embed=sheik_embed)
+        elif exact_fair:
+            index = random.randrange(0, len(fair_embeds))
+            if message.author.id == danny:  # Danny
+                danny_select = random.randrange(0, 2)
+                if danny_select == 0:
+                    await await_message(message=message, embed=sheik_embed)
+                else:
+                    await await_message(message=message, embed=fair_embeds[index])
             else:
                 await await_message(message=message, embed=fair_embeds[index])
+
+        elif "monster bath" in message.content.lower():
+            await await_message(message=message, embed=monster_bath_embed)
+
+        elif "pasta" in message.content.lower():
+            if message.author.id == kolson:
+                new_invite = await message.channel.create_invite(max_uses=1)
+                user = client.get_user(message.author.id)
+                await user.send(content=new_invite)
+                await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
+                await message.guild.kick(message.author)
+                await await_message(message=message, content='Fine. Just the kick hammer...')
+
+        elif "concrete revolutio" in message.content.lower():
+            if message.author.id == mark:
+                new_invite = await message.channel.create_invite(max_uses=1)
+                user = client.get_user(message.author.id)
+                await user.send(content=new_invite)
+                await await_message(message=message, content="I'm sorry.")
+                await message.guild.kick(message.author)
+                await await_message(message=message,
+                                    content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
+            if message.author.id == me:
+                await await_message(message=message,
+                                    content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
+
+        elif "merry christmas" in message.content.lower() or "merry xmas" in message.content.lower():
+            if message.author.id != noah:  # Noah isn't allowed to be kicked from the server
+                # Create and send an invite to the user
+                new_invite = await message.channel.create_invite(max_uses=1)
+                user = client.get_user(message.author.id)
+                await user.send(content=new_invite)
+
+                # Joke message
+                await await_message(message=message, content="Hey, you wanna get someone fired?")
+
+                # Kick user
+                await message.guild.kick(message.author)
+
+        elif exactly_in("nico", message.content.lower()):
+            await await_message(message=message, content=nico, embed=nico_embed)
+
+        elif "secret" in message.content.lower() and "woman" in message.content.lower():
+            await await_message(message=message, content=conan, embed=conan_embed)
+
+        elif lets_go_found:
+            await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
+
+        elif "freaked it" in message.content.lower():
+            await await_message(message=message, content=fire, embed=fire_embed)
+
+        elif "nora" in message.content.lower():
+            et = timezone('US/Eastern')
+            today = dt.datetime.now().astimezone(et)
+            if today.hour < 12:
+                await await_message(message=message, content=morning, embed=nora_morning)
+
+        elif "sad" == message.content.lower() or "sad!" == message.content.lower() or "sad." == message.content.lower():
+            if message.author.id == noah:
+                await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
+
+        elif "fake" in message.content.lower():
+            if message.author.id == noah:
+                await await_message(message=message, embed=faker_embed)
+
+        elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
+            annoying = message.content.lower().split("guubot play", 1)
+            video = request_youtube_video(annoying[1])
+            await await_message(message=message, content=video)
+
+        elif exactly_in("<@438892047039070218> do your thing", message.content.lower()) and (
+                message.author.id == julian or message.author.id == me):
+            if 0 == random.randrange(0, 2):
+                await await_message(message=message, embed=sheik_embed)
+            else:
+                index = random.randrange(0, len(fair_embeds))
+                await await_message(message=message, embed=fair_embeds[index])
+
+        elif exactly_in("hot take", message.content.lower()):
+            index = random.randrange(0, len(take_embeds))
+            await await_message(message=message, embed=take_embeds[index])
+
+        elif len(urls) > 0:
+            for u in urls:
+                img = make_amiami_image(u)
+                if img != "Image was not found.":
+                    e = discord.Embed()
+                    e.set_image(url=img)
+                    await await_message(message, content=u, embed=e)
+
+        elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
+            await await_message(message, embed=almost_like_embed)
+
+        elif "f#$%*" in message.content.lower():
+            # Deleting Noah's last message
+
+            # Get Noah's last message
+            noah_last_message = await message.channel.history().get(author__id=noah)
+            print(noah_last_message)
+            # Assume we are fetching Noah's last message
+            fetch_noah_message = True
+
+            # If Noah's somehow hasn't sent a message to this channel
+            if noah_last_message is None:
+                fetch_noah_message = False
+
+            if fetch_noah_message:
+                try:
+                    # Get the content and/or files
+                    noah_content, noah_files = await get_message_data(noah_last_message)
+                    print(noah_content)
+                    # Get noah's dm
+                    noah_dm = await get_dm_channel(noah)
+
+                    # send noah his last message
+                    await await_fetch_message(message.channel, noah_dm, noah_content, noah_files)
+
+                    # delete noah's message
+                    await noah_last_message.delete()
+
+                except discord.HTTPException:
+                    pass
+
+            await message.delete()
+
+        elif client.user.mentioned_in(message) and (
+                "happy valentine's day" in message.content.lower() or "i love you" in message.content.lower() or "i love u" in message.content.lower()):
+            valentine_embed1 = discord.Embed()
+            valentine_embed1.set_image(
+                url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
+            valentine_embed2 = discord.Embed()
+            valentine_embed2.set_image(url="https://media1.tenor.com/images/8136b603efe5c252e0eab0876b398e32/tenor.gif")
+            author_dm = await get_dm_channel(message.author.id)
+            await await_channel(channel=author_dm, embed=valentine_embed1)
+            await await_channel(channel=author_dm, embed=valentine_embed2)
+
         else:
-            await await_message(message=message, embed=fair_embeds[index])
+            previous_messages = await message.channel.history(limit=1, before=message).flatten()
+            if len(previous_messages) == 1:
 
-    elif "monster bath" in message.content.lower():
-        await await_message(message=message, embed=monster_bath_embed)
+                m1 = previous_messages[0]
 
-    elif "pasta" in message.content.lower():
-        if message.author.id == kolson:
-            new_invite = await message.channel.create_invite(max_uses=1)
-            user = client.get_user(message.author.id)
-            await user.send(content=new_invite)
-            await await_message(message=message, content='He said "pasta"! SWING THE BAN HAMMER!')
-            await message.guild.kick(message.author)
-            await await_message(message=message, content='Fine. Just the kick hammer...')
+                if m1.content.lower() == message.content.lower() and message.content.lower() in ["f", "1"]:
+                    if not m1.author.bot:
+                        await await_message(message, content=message.content)
 
-    elif "concrete revolutio" in message.content.lower():
-        if message.author.id == mark:
-            new_invite = await message.channel.create_invite(max_uses=1)
-            user = client.get_user(message.author.id)
-            await user.send(content=new_invite)
-            await await_message(message=message, content="I'm sorry.")
-            await message.guild.kick(message.author)
-            await await_message(message=message,
-                                content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
-        if message.author.id == me:
-            await await_message(message=message,
-                                content='Those are not the lyrics to the title of Konkurīto Reborutio: Chōjin Gensō')
+        if message.content.lower()[:6] == "guubot":
+            message.content = "guubot" + message.content[6:]
 
-    elif "merry christmas" in message.content.lower() or "merry xmas" in message.content.lower():
-        if message.author.id != noah:  # Noah isn't allowed to be kicked from the server
-            # Create and send an invite to the user
-            new_invite = await message.channel.create_invite(max_uses=1)
-            user = client.get_user(message.author.id)
-            await user.send(content=new_invite)
+        if message.content == "Hello? Can anyone hear me?" and message.author.id == me:
+            await await_message(message, content="What do you want....?")
 
-            # Joke message
-            await await_message(message=message, content="Hey, you wanna get someone fired?")
-
-            # Kick user
-            await message.guild.kick(message.author)
-
-    elif exactly_in("nico", message.content.lower()):
-        await await_message(message=message, content=nico, embed=nico_embed)
-
-    elif "secret" in message.content.lower() and "woman" in message.content.lower():
-        await await_message(message=message, content=conan, embed=conan_embed)
-
-    elif lets_go_found:
-        await await_message(message=message, content=malt_shop, embed=malt_shop_embed)
-
-    elif "freaked it" in message.content.lower():
-        await await_message(message=message, content=fire, embed=fire_embed)
-
-    elif "nora" in message.content.lower():
-        et = timezone('US/Eastern')
-        today = dt.datetime.now().astimezone(et)
-        if today.hour < 12:
-            await await_message(message=message, content=morning, embed=nora_morning)
-
-    elif "sad" == message.content.lower() or "sad!" == message.content.lower() or "sad." == message.content.lower():
-        if message.author.id == noah:
-            await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
-
-    elif "fake" in message.content.lower():
-        if message.author.id == noah:
-            await await_message(message=message, embed=faker_embed)
-
-    elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
-        annoying = message.content.lower().split("guubot play", 1)
-        video = request_youtube_video(annoying[1])
-        await await_message(message=message, content=video)
-
-    elif exactly_in("<@438892047039070218> do your thing", message.content.lower()) and (
-            message.author.id == julian or message.author.id == me):
-        if 0 == random.randrange(0, 2):
-            await await_message(message=message, embed=sheik_embed)
-        else:
-            index = random.randrange(0, len(fair_embeds))
-            await await_message(message=message, embed=fair_embeds[index])
-
-    elif exactly_in("hot take", message.content.lower()):
-        index = random.randrange(0, len(take_embeds))
-        await await_message(message=message, embed=take_embeds[index])
-
-    elif len(urls) > 0:
-        for u in urls:
-            img = make_amiami_image(u)
-            if img != "Image was not found.":
-                e = discord.Embed()
-                e.set_image(url=img)
-                await await_message(message, content=u, embed=e)
-
-    elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
-        await await_message(message, embed=almost_like_embed)
-
-    elif "f#$%*" in message.content.lower():
-        # Deleting Noah's last message
-
-        # Get Noah's last message
-        noah_last_message = await message.channel.history().get(author__id=noah)
-        print(noah_last_message)
-        # Assume we are fetching Noah's last message
-        fetch_noah_message = True
-
-        # If Noah's somehow hasn't sent a message to this channel
-        if noah_last_message is None:
-            fetch_noah_message = False
-
-        if fetch_noah_message:
-            try:
-                # Get the content and/or files
-                noah_content, noah_files = await get_message_data(noah_last_message)
-                print(noah_content)
-                # Get noah's dm
-                noah_dm = await get_dm_channel(noah)
-
-                # send noah his last message
-                await await_fetch_message(message.channel, noah_dm, noah_content, noah_files)
-
-                # delete noah's message
-                await noah_last_message.delete()
-
-            except discord.HTTPException:
-                pass
-
-        await message.delete()
-
-    elif client.user.mentioned_in(message) and (
-            "happy valentine's day" in message.content.lower() or "i love you" in message.content.lower() or "i love u" in message.content.lower()):
-        valentine_embed1 = discord.Embed()
-        valentine_embed1.set_image(
-            url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
-        valentine_embed2 = discord.Embed()
-        valentine_embed2.set_image(url="https://media1.tenor.com/images/8136b603efe5c252e0eab0876b398e32/tenor.gif")
-        author_dm = await get_dm_channel(message.author.id)
-        await await_channel(channel=author_dm, embed=valentine_embed1)
-        await await_channel(channel=author_dm, embed=valentine_embed2)
-
-    else:
-        previous_messages = await message.channel.history(limit=1, before=message).flatten()
-        if len(previous_messages) == 1:
-
-            m1 = previous_messages[0]
-
-            if m1.content.lower() == message.content.lower() and message.content.lower() in ["f", "1"]:
-                if not m1.author.bot:
-                    await await_message(message, content=message.content)
-
-    if message.content.lower()[:6] == "guubot":
-        message.content = "guubot" + message.content[6:]
-
-    if message.content == "Hello? Can anyone hear me?" and message.author.id == me:
-        await await_message(message, content="What do you want....?")
-
-    await client.process_commands(message)
-
+        await client.process_commands(message)
+    except Exception as e:
+        print(e)
 
 @client.event
 async def on_message_edit(before, after):
