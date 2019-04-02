@@ -1831,11 +1831,7 @@ async def on_message(message):
 
         elif "sad" == message.content.lower() or "sad!" == message.content.lower() or "sad." == message.content.lower():
             if message.author.id == noah:
-                await await_message(message=message, content="Smile\nSweet\nSister\nSadistic\nSurprise\nService")
-
-        elif "fake" in message.content.lower():
-            if message.author.id == noah:
-                await await_message(message=message, embed=faker_embed)
+                await await_message(message=message, content="Shit\nShit\nShit\nShit\nShit\nShit")
 
         elif "guubot play" in message.content.lower() and message.content.lower().find("guubot play") > 0:
             annoying = message.content.lower().split("guubot play", 1)
@@ -1897,17 +1893,6 @@ async def on_message(message):
 
             await message.delete()
 
-        elif client.user.mentioned_in(message) and (
-                "happy valentine's day" in message.content.lower() or "i love you" in message.content.lower() or "i love u" in message.content.lower()):
-            valentine_embed1 = discord.Embed()
-            valentine_embed1.set_image(
-                url="http://bestanimations.com/Signs&Shapes/Hearts/animatedhearts/super-cute-pink-kawaii-girl-pink-hearts-animated-gif.gif")
-            valentine_embed2 = discord.Embed()
-            valentine_embed2.set_image(url="https://media1.tenor.com/images/8136b603efe5c252e0eab0876b398e32/tenor.gif")
-            author_dm = await get_dm_channel(message.author.id)
-            await await_channel(channel=author_dm, embed=valentine_embed1)
-            await await_channel(channel=author_dm, embed=valentine_embed2)
-
         else:
             previous_messages = await message.channel.history(limit=1, before=message).flatten()
             if len(previous_messages) == 1:
@@ -1920,9 +1905,6 @@ async def on_message(message):
 
         if message.content.lower()[:6] == "guubot":
             message.content = "guubot" + message.content[6:]
-
-        if message.content == "Hello? Can anyone hear me?" and message.author.id == me:
-            await await_message(message, content="What do you want....?")
 
         await client.process_commands(message)
     except Exception as e:
