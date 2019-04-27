@@ -278,9 +278,19 @@ def make_mention(user_id: int):
 
 
 def find_amiami(string):
+    amiami_images = find_website(string, "https://www.amiami.com/eng/detail")
+    return amiami_images
+
+
+def find_twitter(string):
+    twitter_images = find_website(string, "https://twitter.com/")
+    return twitter_images
+
+
+def find_website(string, website_url):
     urls = []
-    while string.find("https://www.amiami.com/eng/detail") != -1:
-        start = string.find("https://www.amiami.com/eng/detail")
+    while string.find(website_url) != -1:
+        start = string.find(website_url)
         string = string[start:]
         end = string.find(" ")
         if end == -1:
@@ -290,7 +300,7 @@ def find_amiami(string):
         urls.append(ur)
         string = string[end:]
     if len(urls) > 0:
-        print("Found amiami:", urls)
+        print("Found urls:", urls)
     return urls
 
 
@@ -518,6 +528,35 @@ def request_youtube_video(keyword: str):
     print("Returning despacito")
     return despacito
 
+
+def request_bing_image(keyword: str):
+    print("Bing image requested ", keyword)
+    keyword = keyword.strip()
+    query = urllib.parse.quote(keyword)
+    url = "https://www.bing.com/images/search?q=" + query
+    response = urllib.request.urlopen(url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for vid in soup.findAll(attrs={'alt': 'Image result for ' + query}):
+        video_url = 'https://www.youtube.com' + vid['href']
+        find_index = video_url.find('https://www.youtube.com/watch')
+        if find_index == 0:
+            print(video_url)
+            return video_url
+
+
+def request_twitter_images(url: str):
+    print("Twitter images requested: ", url)
+    response = urllib.request.urlopen(url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    tweet = soup.find(attrs={'class': 'AdaptiveMedia-container'})
+    results = []
+    if tweet is not None:
+        for twitter_image in tweet.findAll(attrs={'class': 'AdaptiveMedia-photoContainer'}):
+            results.append(twitter_image['data-image-url'])
+    return results
 
 def request_google_vision(url):
     print("Starting request")
@@ -1723,7 +1762,10 @@ async def on_message(message):
         exact_fair = regex_fair(message.content.lower())
 
         # Check if "amiami.com" in message
-        urls = find_amiami(message.content)
+        amiami_urls = find_amiami(message.content)
+
+        # Check if "twitter.com" in message
+        twitter_urls = find_twitter(message.content)
 
         # Check if "in-n-out" appears in message
         # in_n_out = await in_n_out_check(message)
@@ -1850,13 +1892,22 @@ async def on_message(message):
             index = random.randrange(0, len(take_embeds))
             await await_message(message=message, embed=take_embeds[index])
 
-        elif len(urls) > 0:
-            for u in urls:
+        elif len(amiami_urls) > 0:
+            for u in amiami_urls:
                 img = make_amiami_image(u)
                 if img != "Image was not found.":
                     e = discord.Embed()
                     e.set_image(url=img)
                     await await_message(message, content=u, embed=e)
+
+        elif len(twitter_urls) > 0:
+            for u in twitter_urls:
+                twitter_images = request_twitter_images(u)
+                if len(twitter_images) > 1:
+                    for twitter_image in twitter_images:
+                        e = discord.Embed()
+                        e.set_image(url=twitter_image)
+                        await await_message(message, embed=e)
 
         elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
             await await_message(message, embed=almost_like_embed)
