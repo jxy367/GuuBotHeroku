@@ -1044,13 +1044,15 @@ async def remove_quiz_roles(member):
 
 
 # Various awaited responses
-async def await_message(message: discord.Message, content=None, embed=None):
-    if content is None:
-        await message.channel.send(embed=embed)
-    elif embed is None:
-        await message.channel.send(content=content)
-    else:
-        await message.channel.send(content=content, embed=embed)
+async def await_message(message: discord.Message, content=None, embed=None, files=None):
+    await message.channel.send(content=content, embed=embed, files=files)
+
+    # if content is None:
+    #    await message.channel.send(embed=embed)
+    # elif embed is None:
+    #    await message.channel.send(content=content)
+    # else:
+    #    await message.channel.send(content=content, embed=embed)
 
     reset_cooldown(message)
 
@@ -1110,7 +1112,8 @@ async def play(ctx: discord.ext.commands.Context, *, value):
 
 @client.command()
 async def echo(ctx, *, phrase):
-    await ctx.send(phrase)
+    content, files = await get_message_data(ctx.message)
+    await await_message(ctx.message, content=phrase, files=files)
 
 
 @client.command()
