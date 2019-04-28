@@ -1111,7 +1111,7 @@ async def play(ctx: discord.ext.commands.Context, *, value):
 
 
 @client.command()
-async def echo(ctx, *, phrase):
+async def echo(ctx, *, phrase=""):
     content, files = await get_message_data(ctx.message)
     await await_message(ctx.message, content=phrase, files=files)
 
