@@ -108,10 +108,6 @@ sheik_embed.set_image(url='https://i.imgur.com/kL7DF.gif')
 powerful_embed = discord.Embed()
 powerful_embed.set_image(url="https://i.ytimg.com/vi/4DFsaVdQstE/maxresdefault.jpg")
 
-almost_like_embed = discord.Embed()
-almost_like_embed.set_image(
-    url="http://memeshappen.com/media/created/omg-its-almost-like--i-don39t-even-care-meme-18321.jpg")
-
 ye_embed = discord.Embed()
 ye_embed.set_image(url="https://i.ytimg.com/vi/-HXcxGnmiSI/maxresdefault.jpg")
 
@@ -1903,7 +1899,6 @@ async def on_message(message):
 
             if len(comic_images) > 0:
                 print(comic_images)
-                print("We here")
 
                 image_files = []
                 i = 1
@@ -2009,9 +2004,6 @@ async def on_message(message):
                         e = discord.Embed()
                         e.set_image(url=twitter_image)
                         await await_message(message, embed=e)
-
-        elif "it's almost like" in message.content.lower() or "its almost like" in message.content.lower():
-            await await_message(message, embed=almost_like_embed)
 
         elif "f#$%*" in message.content.lower():
             # Deleting Noah's last message
