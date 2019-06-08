@@ -1903,10 +1903,12 @@ async def on_message(message):
 
             if len(comic_images) > 0:
                 print(comic_images)
+                print("We here")
 
                 i = 1
                 await await_message(message=message, content="Episode found")
                 for image_url in comic_images:
+                    print("In for loop")
                     async with aiohttp.ClientSession(headers={'referer': "https://www.webtoons.com/"}) as session:
                         async with session.get(image_url) as resp:
                             d = io.BytesIO(await resp.read())
