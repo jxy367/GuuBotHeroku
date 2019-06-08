@@ -15,6 +15,7 @@ from multiprocessing.dummy import Pool
 from urllib import parse
 from urllib import request
 
+import aiohttp
 import discord
 import requests
 from bs4 import BeautifulSoup
@@ -491,7 +492,7 @@ def get_cooldown_key(message_or_channel):
         elif isinstance(message_or_channel, discord.TextChannel):
             key = message_or_channel.id
         else:
-            key = "unforunate"
+            key = "unfortunate"
     if key not in on_cooldown:
         on_cooldown[key] = 0
     return key
@@ -1041,6 +1042,74 @@ async def increase_quiz_role(member):
 async def remove_quiz_roles(member):
     new_roles = [role for role in member.roles if role.name not in quiz_roles]
     await member.edit(roles=new_roles)
+
+
+def get_bug_cat_comic(ep_num: int):
+    comic_url = get_bug_cat_comic_url(ep_num)
+    if comic_url == -1:
+        return ""
+
+    comic_images = get_bug_cat_comic_images(comic_url)
+    return comic_images
+
+
+def get_bug_cat_comic_url(ep_num: int):
+    main_request = requests.get(
+        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num))
+    alt_request = requests.get(
+        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num + 8))
+    main_url = main_request.url
+    alt_url = alt_request.url
+    main_title_section = main_url.split("/")[6]
+    alt_title_section = alt_url.split("/")[6]
+
+    if main_title_section.count(str(ep_num)) >= 1:
+        print(main_url)
+        return main_url
+
+    elif alt_title_section.count(str(ep_num)) >= 1:
+        print(alt_url)
+        return alt_url
+
+    else:
+        x = ep_num
+        while main_request.status_code == 200:
+            x = x + 1
+            main_request = requests.get(
+                "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(x))
+            url = main_request.url
+            if url.count(str(ep_num)) == 1:
+                return url
+    return -1
+
+
+def get_latest_bug_cat_comic():
+    list_url = "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/list?title_no=394&page=1"
+
+    response = urllib.request.urlopen(list_url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    list_object = soup.find(attrs={'id': "_listUl"})
+    list_item = list_object.findChild()
+    episode_object = list_item.findChild()
+    episode_url = episode_object['href']
+
+    comic_images = get_bug_cat_comic_images(episode_url)
+    return comic_images
+
+
+def get_bug_cat_comic_images(url: str):
+    response = urllib.request.urlopen(url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    comic_images = []
+
+    for image in soup.findAll(attrs={'class': "_images"}):
+        comic_images.append(image['data-url'])
+
+    return comic_images
 
 
 # Various awaited responses
@@ -1754,6 +1823,8 @@ async def on_message(message):
         if message.channel.id == venting_channel:
             return
 
+        bugcat_comic_call = "bugcat ep " in message.content.lower()[:10]
+
         # Figure out if version of "let's go" is in the message
         lets_go_found = False
         for lets in ["let's", "lets", "let" + u"\u2019" + "s"]:
@@ -1817,6 +1888,30 @@ async def on_message(message):
                     await await_message(message=message, embed=fair_embeds[index])
             else:
                 await await_message(message=message, embed=fair_embeds[index])
+
+        elif bugcat_comic_call:
+            comic_images = []
+
+            value = message.content.lower().strip()[10:]
+
+            if value == "latest":
+                comic_images = get_latest_bug_cat_comic()
+
+            if value.isnumeric() and int(value) > 0:
+                ep_num = int(value)
+                comic_images = get_bug_cat_comic(ep_num)
+
+            if len(comic_images) > 0:
+                print(comic_images)
+
+                i = 1
+                await await_message(message=message, content="Episode found")
+                for image_url in comic_images:
+                    async with aiohttp.ClientSession(headers={'referer': "https://www.webtoons.com/"}) as session:
+                        async with session.get(image_url) as resp:
+                            d = io.BytesIO(await resp.read())
+                            await await_message(message=message, files=discord.File(d, str(i) + ".jpg"))
+                            i += 1
 
         elif "monster bath" in message.content.lower():
             await await_message(message=message, embed=monster_bath_embed)
