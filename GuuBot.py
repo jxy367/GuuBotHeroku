@@ -1910,9 +1910,14 @@ async def on_message(message):
                 for image_url in comic_images:
                     print("In for loop")
                     async with aiohttp.ClientSession(headers={'referer': "https://www.webtoons.com/"}) as session:
+                        print("has session")
                         async with session.get(image_url) as resp:
-                            d = io.BytesIO(await resp.read())
-                            await await_message(message=message, files=discord.File(d, str(i) + ".jpg"))
+                            print("has resp")
+                            data = io.BytesIO(await resp.read())
+                            print("Data")
+                            print(data)
+                            await await_message(message=message, files=discord.File(data, str(i) + ".jpg"))
+                            print(i)
                             i += 1
 
         elif "monster bath" in message.content.lower():
