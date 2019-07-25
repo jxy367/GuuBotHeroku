@@ -2045,11 +2045,15 @@ async def on_message(message):
 
                 # if len(twitter_text) > 0:
                 #    await message.channel.send(content=twitter_text)
-                if len(twitter_images) > 0:
+                first_image = True
+                if len(twitter_images) > 1:
                     for twitter_image in twitter_images:
-                        e = discord.Embed()
-                        e.set_image(url=twitter_image)
-                        await await_message(message, embed=e)
+                        if first_image:
+                            first_image = False
+                        else:
+                            e = discord.Embed()
+                            e.set_image(url=twitter_image)
+                            await await_message(message, embed=e)
 
         elif "f#$%*" in message.content.lower():
             # Deleting Noah's last message
