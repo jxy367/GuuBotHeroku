@@ -572,6 +572,7 @@ def request_twitter_text(url: str):
         description = tweet_text[0]
         try:
             description_text = description['content']
+            description_text = description_text[1:-1]
             if description_text is None or len(description_text) <= 0:
                 description_text = ""
         except KeyError:
