@@ -567,15 +567,33 @@ def request_twitter_text(url: str):
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
     tweet_text = soup.findAll(attrs={'property': 'og:description'})
+    description_text = ""
     if tweet_text is not None:
-        for description_text in tweet_text:
-            try:
-                text = description_text['content']
-                if len(text) > 0:
-                    return text
-            except KeyError:
-                pass
-    return ""
+        description = tweet_text[0]
+        try:
+            description_text = description['content']
+            if description_text is None or len(description_text) <= 0:
+                description_text = ""
+        except KeyError:
+            pass
+
+    alt = ""
+    user_data = soup.findAll(attrs={'class': 'ProfileAvatar-image'})
+    if user_data is not None:
+        try:
+            user_data = user_data[0]
+            alt = user_data['alt']
+            if alt is None or len(alt) <= 0:
+                alt = ""
+        except KeyError:
+            pass
+
+    handle = re.findall('/([^/]*)/', url)[1]
+    if handle is None or len(handle) <= 0:
+        handle = ""
+
+    return_text = (alt + " (@" + handle + ")\n" + description_text)
+    return return_text
 
 
 def request_google_vision(url):
