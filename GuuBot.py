@@ -560,6 +560,23 @@ def request_twitter_images(url: str):
     return found_images
 
 
+def request_twitter_text(url: str):
+    print("Twitter text requested: ", url)
+    response = urllib.request.urlopen(url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    tweet_text = soup.findAll(attrs={'property': 'og:description'})
+    if tweet_text is not None:
+        for description_text in tweet_text:
+            try:
+                text = description_text['content']
+                if len(text) > 0:
+                    return text
+            except KeyError:
+                pass
+    return ""
+
+
 def request_google_vision(url):
     print("Starting request")
 
@@ -2003,8 +2020,11 @@ async def on_message(message):
 
         elif len(twitter_urls) > 0:
             for u in twitter_urls:
+                twitter_text = request_twitter_text(u)
                 twitter_images = request_twitter_images(u)
-                if len(twitter_images) > 1:
+                if len(twitter_text) > 0:
+                    await message.channel.send(content=twitter_text)
+                if len(twitter_images) > 0:
                     for twitter_image in twitter_images:
                         e = discord.Embed()
                         e.set_image(url=twitter_image)
