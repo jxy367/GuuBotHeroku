@@ -2040,10 +2040,11 @@ async def on_message(message):
 
         elif len(twitter_urls) > 0:
             for u in twitter_urls:
-                twitter_text = request_twitter_text(u)
+                # twitter_text = request_twitter_text(u)
                 twitter_images = request_twitter_images(u)
-                if len(twitter_text) > 0:
-                    await message.channel.send(content=twitter_text)
+
+                # if len(twitter_text) > 0:
+                #    await message.channel.send(content=twitter_text)
                 if len(twitter_images) > 0:
                     for twitter_image in twitter_images:
                         e = discord.Embed()
