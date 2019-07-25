@@ -554,7 +554,8 @@ def request_twitter_images(url: str):
         for twitter_image in tweet_images:
             try:
                 img_url = twitter_image['content']
-                found_images.append(img_url)
+                if "media" in img_url:
+                    found_images.append(img_url)
             except KeyError:
                 pass
     return found_images
