@@ -548,12 +548,17 @@ def request_twitter_images(url: str):
     response = urllib.request.urlopen(url)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    tweet = soup.find(attrs={'class': 'AdaptiveMedia-container'})
-    results = []
-    if tweet is not None:
-        for twitter_image in tweet.findAll(attrs={'class': 'AdaptiveMedia-photoContainer'}):
-            results.append(twitter_image['data-image-url'])
-    return results
+    tweet_images = soup.findAll(attrs={'property': 'og:image'})
+    found_images = []
+    if tweet_images is not None:
+        for twitter_image in tweet_images:
+            try:
+                img_url = twitter_image['content']
+                found_images.append(img_url)
+            except KeyError:
+                pass
+    return found_images
+
 
 def request_google_vision(url):
     print("Starting request")
