@@ -1008,7 +1008,7 @@ def create_reminder_message(ctx, reminder_string: str):
         return False, ""
 
     possible_author_id = ""
-    if possible_author_mention.end() == colon_location:
+    if possible_author_mention is not None and possible_author_mention.end() == colon_location:
         possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2]
 
     author_mention = ""
