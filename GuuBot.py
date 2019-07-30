@@ -1121,7 +1121,8 @@ async def reminder_loop():
         for reminder in reminders:
             if reminder < now_datetime:
                 msg, channel = reminders.pop(reminder)
-                channel.send(msg)
+                await channel.send(msg)
+                break
         await asyncio.sleep(1)
 
 
