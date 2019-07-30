@@ -1001,7 +1001,7 @@ def create_reminder_message(ctx, reminder_string: str):
     if colon_location < 0 or pipe_location < 0:
         format_failure = True
 
-    if not format_failure and (possible_author_mention is None and possible_me_location < 0):
+    if possible_author_mention is None and possible_me_location < 0:
         format_failure = True
 
     if format_failure:
