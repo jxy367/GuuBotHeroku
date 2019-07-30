@@ -263,6 +263,13 @@ with open("MagicGuuBallResponses", 'r') as f:
     for line in f:
         magic_guuball_responses.append(line.strip())
 
+reminders = {}
+units_of_time = {"second": dt.timedelta(seconds=1), "seconds": dt.timedelta(seconds=1),
+                 "minute": dt.timedelta(minutes=1), "minutes": dt.timedelta(minutes=1),
+                 "hour": dt.timedelta(hours=1), "hours": dt.timedelta(hours=1),
+                 "day": dt.timedelta(hours=24), "days": dt.timedelta(hours=24),
+                 "week": dt.timedelta(hours=168), "weeks": dt.timedelta(hours=168),
+                 "moment": dt.timedelta(seconds=90), "moments": dt.timedelta(seconds=90)}
 
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
@@ -652,6 +659,74 @@ def request_google_vision(url):
     return descriptions
 
 
+def get_bug_cat_comic(ep_num: int):
+    comic_url = get_bug_cat_comic_url(ep_num)
+    if comic_url == -1:
+        return ""
+
+    comic_images = get_bug_cat_comic_images(comic_url)
+    return comic_images
+
+
+def get_bug_cat_comic_url(ep_num: int):
+    main_request = requests.get(
+        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num))
+    alt_request = requests.get(
+        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num + 8))
+    main_url = main_request.url
+    alt_url = alt_request.url
+    main_title_section = main_url.split("/")[6]
+    alt_title_section = alt_url.split("/")[6]
+
+    if main_title_section.count(str(ep_num)) >= 1:
+        print(main_url)
+        return main_url
+
+    elif alt_title_section.count(str(ep_num)) >= 1:
+        print(alt_url)
+        return alt_url
+
+    else:
+        x = ep_num
+        while main_request.status_code == 200:
+            x = x + 1
+            main_request = requests.get(
+                "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(x))
+            url = main_request.url
+            if url.count(str(ep_num)) == 1:
+                return url
+    return -1
+
+
+def get_latest_bug_cat_comic():
+    list_url = "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/list?title_no=394&page=1"
+
+    response = urllib.request.urlopen(list_url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    list_object = soup.find(attrs={'id': "_listUl"})
+    list_item = list_object.findChild()
+    episode_object = list_item.findChild()
+    episode_url = episode_object['href']
+
+    comic_images = get_bug_cat_comic_images(episode_url)
+    return comic_images
+
+
+def get_bug_cat_comic_images(url: str):
+    response = urllib.request.urlopen(url)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    comic_images = []
+
+    for image in soup.findAll(attrs={'class': "_images"}):
+        comic_images.append(image['data-url'])
+
+    return comic_images
+
+
 def regex_fair(message: str):
     list_of_fairs = ["".join(p) for p in permutations("fair")]
     for word in list_of_fairs:
@@ -864,6 +939,37 @@ def get_member_role(member):
     return None
 
 
+# On successful question answering, user moves on to next question
+async def increase_quiz_role(member):
+    current_role = get_member_role(member)
+    current_role_name = current_role.name
+    if current_role_name == "Winner":
+        return
+
+    cr_index = quiz_roles.index(current_role_name)
+    new_index = cr_index + 1
+    new_role_name = quiz_roles[new_index]
+    for role in member.guild.roles:
+        if role.name == new_role_name:
+            await member.remove_roles(current_role)
+            await member.add_roles(role)
+            break
+
+    # Congratulate players who finished the game
+    if new_role_name == "Winner":
+        await member.edit(nick="")
+        announcement_channel = discord.utils.get(member.guild.text_channels, name='announcements')
+        await announcement_channel.send(make_mention(member.id) + " answered all the questions!")
+
+    return
+
+
+# Delete all quiz roles
+async def remove_quiz_roles(member):
+    new_roles = [role for role in member.roles if role.name not in quiz_roles]
+    await member.edit(roles=new_roles)
+
+
 # Check for in-n-out in message
 async def in_n_out_check(msg):
     content = msg.content
@@ -885,6 +991,73 @@ async def in_n_out_check(msg):
 
     return
 
+
+def create_reminder_message(ctx, reminder_string: str):
+    colon_location = reminder_string.find(":")
+    pipe_location = reminder_string.find("|")
+    possible_author_mention = re.search(r'@<(.*?)>:', reminder_string)
+    possible_me_location = reminder_string.find("me")
+    format_failure = False
+    if colon_location < 0 or pipe_location < 0:
+        format_failure = True
+
+    if not format_failure and (possible_author_mention is None and possible_me_location < 0):
+        format_failure = True
+
+    if format_failure:
+        return False, ""
+
+    possible_author_id = ""
+    if possible_author_mention.end() == colon_location:
+        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2]
+
+    author_mention = ""
+    if reminder_string[0:3].lower() == "me:":
+        author_mention = make_mention(ctx.author.id)
+    elif len(possible_author_id) > 0 and (ctx.guild.get_member(possible_author_id) is not None):
+        author_mention = reminder_string[possible_author_mention.start():possible_author_mention.end() - 1]
+    else:
+        return False, ""
+
+    msg_start = colon_location + 1
+    msg_end = pipe_location
+    msg = reminder_string[msg_start:msg_end]
+    msg = msg.strip()
+    msg = author_mention + " " + msg
+    return True, msg
+
+
+def create_reminder_datetime(reminder_string):
+    pipe_location = reminder_string.find("|")
+    reminder_string = reminder_string[pipe_location:]
+    reminder_string = reminder_string.strip()
+    reminder_string = reminder_string.lower()
+    reminder_string = reminder_string.split(" ")
+    total_timedelta = dt.timedelta(seconds=0)
+    for i in range(1, len(reminder_string)):
+        if reminder_string[i] in units_of_time:
+            if reminder_string[i - 1].isdigit():
+                num = int(reminder_string[i - 1])
+                total_timedelta += num * units_of_time[reminder_string[i]]
+
+    if total_timedelta.total_seconds() == 0:
+        return False, dt.datetime.now()
+
+    else:
+        return True, dt.datetime.now() + total_timedelta
+
+
+def add_reminder(ctx, reminder_string):
+    global reminders
+    msg_bool, msg = create_reminder_message(ctx, reminder_string)
+    datetime_bool, datetime = create_reminder_datetime(reminder_string)
+    if msg_bool and datetime_bool:
+        while datetime in reminders:
+            datetime + dt.timedelta(seconds=1)
+        reminders[datetime] = (msg, ctx.channel)
+        return True
+    else:
+        return False
 
 # Get information of message
 async def get_message_data(msg):
@@ -936,6 +1109,19 @@ async def cooldown():
             on_cooldown[guild] = on_cooldown[guild] - 1
             if on_cooldown[guild] < 0:
                 on_cooldown[guild] = 0
+        await asyncio.sleep(1)
+
+
+# reminder loop
+async def reminder_loop():
+    global reminders
+    await client.wait_until_ready()
+    while not client.is_closed():
+        now_datetime = dt.datetime.now()
+        for reminder in reminders:
+            if reminder < now_datetime:
+                msg, channel = reminders.pop(reminder)
+                channel.send(msg)
         await asyncio.sleep(1)
 
 
@@ -1049,105 +1235,6 @@ async def rps_loop():
                 rps_game = None
 
         await asyncio.sleep(1)
-
-
-# On successful question answering, user moves on to next question
-async def increase_quiz_role(member):
-    current_role = get_member_role(member)
-    current_role_name = current_role.name
-    if current_role_name == "Winner":
-        return
-
-    cr_index = quiz_roles.index(current_role_name)
-    new_index = cr_index + 1
-    new_role_name = quiz_roles[new_index]
-    for role in member.guild.roles:
-        if role.name == new_role_name:
-            await member.remove_roles(current_role)
-            await member.add_roles(role)
-            break
-
-    # Congratulate players who finished the game
-    if new_role_name == "Winner":
-        await member.edit(nick="")
-        announcement_channel = discord.utils.get(member.guild.text_channels, name='announcements')
-        await announcement_channel.send(make_mention(member.id) + " answered all the questions!")
-
-    return
-
-
-# Delete all quiz roles
-async def remove_quiz_roles(member):
-    new_roles = [role for role in member.roles if role.name not in quiz_roles]
-    await member.edit(roles=new_roles)
-
-
-def get_bug_cat_comic(ep_num: int):
-    comic_url = get_bug_cat_comic_url(ep_num)
-    if comic_url == -1:
-        return ""
-
-    comic_images = get_bug_cat_comic_images(comic_url)
-    return comic_images
-
-
-def get_bug_cat_comic_url(ep_num: int):
-    main_request = requests.get(
-        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num))
-    alt_request = requests.get(
-        "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(ep_num + 8))
-    main_url = main_request.url
-    alt_url = alt_request.url
-    main_title_section = main_url.split("/")[6]
-    alt_title_section = alt_url.split("/")[6]
-
-    if main_title_section.count(str(ep_num)) >= 1:
-        print(main_url)
-        return main_url
-
-    elif alt_title_section.count(str(ep_num)) >= 1:
-        print(alt_url)
-        return alt_url
-
-    else:
-        x = ep_num
-        while main_request.status_code == 200:
-            x = x + 1
-            main_request = requests.get(
-                "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/a/viewer?title_no=394&episode_no=" + str(x))
-            url = main_request.url
-            if url.count(str(ep_num)) == 1:
-                return url
-    return -1
-
-
-def get_latest_bug_cat_comic():
-    list_url = "https://www.webtoons.com/zh-hant/comedy/maomaochongkapo/list?title_no=394&page=1"
-
-    response = urllib.request.urlopen(list_url)
-    html = response.read()
-    soup = BeautifulSoup(html, 'html.parser')
-
-    list_object = soup.find(attrs={'id': "_listUl"})
-    list_item = list_object.findChild()
-    episode_object = list_item.findChild()
-    episode_url = episode_object['href']
-
-    comic_images = get_bug_cat_comic_images(episode_url)
-    return comic_images
-
-
-def get_bug_cat_comic_images(url: str):
-    response = urllib.request.urlopen(url)
-    html = response.read()
-    soup = BeautifulSoup(html, 'html.parser')
-
-    comic_images = []
-
-    for image in soup.findAll(attrs={'class': "_images"}):
-        comic_images.append(image['data-url'])
-
-    return comic_images
 
 
 # Various awaited responses
@@ -1727,6 +1814,18 @@ async def please(ctx, *, nice_request):
         await msg.delete()
         await await_ctx(ctx=ctx, content="Thanks for asking politely")
 
+
+@client.command()
+async def remind(ctx, *, reminder_string):
+    result = add_reminder(ctx, reminder_string)
+    output_response = ""
+    if result:
+        output_response = "Reminder created"
+    else:
+        output_response = "Reminder creation failed\n guubot remind me: msg | # (seconds/minutes/hours/etc)"
+
+    await await_ctx(ctx=ctx, content=output_response)
+
 client.remove_command('help')
 
 
@@ -1762,6 +1861,8 @@ async def help(ctx):
     embed.add_field(name="guubot data [number]", value="Gets messages from the last [number] weeks and compiles data",
                     inline=False)
     embed.add_field(name="guubot please [request]", value="Guubot does one thing at most", inline=False)
+    embed.add_field(name="guubot remind me: [msg] | [number] [seconds/minutes/hours/etc]",
+                    value="Guubot sends a reminder", inline=False)
     embed.add_field(name="guubot help", value="Gives this message", inline=False)
 
     await ctx.send(embed=embed)
@@ -2223,6 +2324,7 @@ async def on_ready():
     client.loop.create_task(reset_display_name())
     client.loop.create_task(cooldown())
     client.loop.create_task(rps_loop())
+    client.loop.create_tast(reminder_loop())
     expand1 = client.get_emoji(expand1)
     expand2 = client.get_emoji(expand2)
     expand3 = client.get_emoji(expand3)
