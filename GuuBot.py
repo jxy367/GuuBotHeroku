@@ -1019,7 +1019,7 @@ def create_reminder_message(ctx, reminder_string: str):
         print("Possible author mention is not none")
 
     if possible_author_mention is not None and (possible_author_mention.end() == colon_location + 1):
-        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 1]
+        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2]
         print("Possible author id: " + possible_author_id)
 
     author_mention = ""
