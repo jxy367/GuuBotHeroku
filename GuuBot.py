@@ -1019,14 +1019,14 @@ def create_reminder_message(ctx, reminder_string: str):
         print("Possible author mention is not none")
 
     if possible_author_mention is not None and (possible_author_mention.end() == colon_location + 1):
-        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2]
-        print("Possible author id: " + possible_author_id)
+        possible_author_id = int(reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2])
+        print("Possible author id: " + str(possible_author_id))
 
     author_mention = ""
     if reminder_string[0:3].lower() == "me:":
         author_mention = make_mention(ctx.author.id)
-    elif len(possible_author_id) > 0 and (ctx.guild.get_member(int(possible_author_id)) is not None):
-        author_mention = reminder_string[possible_author_mention.start():possible_author_mention.end() - 1]
+    elif len(possible_author_id) > 0 and (ctx.guild.get_member(possible_author_id) is not None):
+        author_mention = make_mention(possible_author_id)
     else:
         print("Reminder: user not identified")
         return False, ""
