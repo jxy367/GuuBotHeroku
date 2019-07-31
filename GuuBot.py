@@ -993,9 +993,14 @@ async def in_n_out_check(msg):
 
 
 def create_reminder_message(ctx, reminder_string: str):
+    print("Reminder string: " + reminder_string)
     colon_location = reminder_string.find(":")
     pipe_location = reminder_string.find("|")
+
     possible_author_mention = re.search(r'@<(.*?)>:', reminder_string)
+    if possible_author_mention is None:
+        print("Reminder: re failed")
+
     possible_me_location = reminder_string.find("me")
     format_failure = False
     if colon_location < 0 or pipe_location < 0:
@@ -1008,8 +1013,6 @@ def create_reminder_message(ctx, reminder_string: str):
         return False, ""
 
     possible_author_id = ""
-    if possible_author_mention is None:
-        print("Reminder: re failed")
 
     if possible_author_mention is not None:
         print("Reminder: possible author mention is not none")
