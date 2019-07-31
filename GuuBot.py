@@ -1025,7 +1025,7 @@ def create_reminder_message(ctx, reminder_string: str):
     author_mention = ""
     if reminder_string[0:3].lower() == "me:":
         author_mention = make_mention(ctx.author.id)
-    elif len(possible_author_id) > 0 and (ctx.guild.get_member(possible_author_id) is not None):
+    elif len(possible_author_id) > 0 and (ctx.guild.get_member(int(possible_author_id)) is not None):
         author_mention = reminder_string[possible_author_mention.start():possible_author_mention.end() - 1]
     else:
         print("Reminder: user not identified")
