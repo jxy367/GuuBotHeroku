@@ -997,11 +997,11 @@ def create_reminder_message(ctx, reminder_string: str):
     colon_location = reminder_string.find(":")
     pipe_location = reminder_string.find("|")
 
-    possible_author_mention = re.search(r'<<(.*?)>:', reminder_string)
+    possible_author_mention = re.search(r'<@(.*?)>:', reminder_string)
 
     possible_me_location = reminder_string.find("me")
     format_failure = False
-    if colon_location < 0 or pipe_location < 0:
+    if colon_location < 0 or pipe_location < 0 or pipe_location < colon_location:
         format_failure = True
 
     if possible_author_mention is None and possible_me_location < 0:
@@ -1015,8 +1015,11 @@ def create_reminder_message(ctx, reminder_string: str):
     if possible_author_mention is None:
         print("Reminder: re failed")
 
-    if possible_author_mention is not None and possible_author_mention.end() == colon_location + 1:
-        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 2]
+    if possible_author_mention is not None:
+        print("Possible author mention is not none")
+
+    if possible_author_mention is not None and (possible_author_mention.end() == colon_location + 1):
+        possible_author_id = reminder_string[possible_author_mention.start() + 2:possible_author_mention.end() - 1]
         print("Possible author id: " + possible_author_id)
 
     author_mention = ""
