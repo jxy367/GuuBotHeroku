@@ -1,3 +1,13 @@
+'''
+@Author:
+@Date:
+@LastModifiedBy:
+@LastEditTime:
+@Email:
+@FilePath:
+@Description:
+'''
+
 import asyncio
 import base64
 # from datetime import *
@@ -271,6 +281,7 @@ units_of_time = {"second": dt.timedelta(seconds=1), "seconds": dt.timedelta(seco
                  "week": dt.timedelta(hours=168), "weeks": dt.timedelta(hours=168),
                  "moment": dt.timedelta(seconds=90), "moments": dt.timedelta(seconds=90)}
 
+faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"]
 # Voice stuff
 # discord.opus.load_opus('libopus-0.dll')
 # with youtube_dl.YoutubeDL() as ydl:
@@ -1070,6 +1081,19 @@ def add_reminder(ctx, reminder_string):
         return True
     else:
         return False
+
+
+# Owoifies text
+def owoify(start_string):
+    text = start_string
+    text = re.sub(r'(?:r|l)', "w", text)
+    text = re.sub(r'(?:R|L)', "W", text)
+    text = re.sub(r'(n)([aeiou])', r"\1y\2", text, flags=re.I)
+    text = re.sub(r'ove', "uv", text)
+    text = re.sub(r'th', "ff", text)
+    text = re.sub(r'!+', " " + random.choice(faces) + " ", text)
+    return text
+
 
 # Get information of message
 async def get_message_data(msg):
@@ -1976,6 +2000,7 @@ async def on_message(message):
             return
 
         bugcat_comic_call = "bugcat ep " in message.content.lower()[:10]
+        guwubot_found = "guwubot " in message.content.lower()[:8]
 
         # Figure out if version of "let's go" is in the message
         lets_go_found = False
@@ -2066,6 +2091,10 @@ async def on_message(message):
                             image_files.append(discord.File(data, str(i) + ".jpg"))
                             i += 1
                 await await_message(message=message, files=image_files)
+
+        elif guwubot_found:
+            owoified_text = owoify(message.content[8:])
+            await await_message(message=message, content=owoified_text)
 
         elif "monster bath" in message.content.lower():
             await await_message(message=message, embed=monster_bath_embed)
